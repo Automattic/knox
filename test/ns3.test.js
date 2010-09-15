@@ -10,7 +10,25 @@ module.exports = {
     assert.match(ns3.version, /^\d+\.\d+\.\d+$/);
   },
   
-  'test .createClient()': function(assert){
+  'test .createClient() invalid': function(assert){
+    var err;
+    try {
+      ns3.createClient({});
+    } catch (e) {
+      err = e;
+    }
+    assert.equal('aws "key" required', err.message);
+    
+    var err;
+    try {
+      ns3.createClient({ key: 'foo' });
+    } catch (e) {
+      err = e;
+    }
+    assert.equal('aws "secret" required', err.message);
+  },
+  
+  'test .createClient() valid': function(assert){
     var client = ns3.createClient({
         key: 'foobar'
       , secret: 'baz'
