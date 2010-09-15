@@ -13,13 +13,14 @@ module.exports = {
       , md5: '09c68b914d66457508f6ad727d860d5b'
       , contentType: 'text/plain'
       , resource: '/learnboost'
+      , date: new Date('may 25 1987')
     });
     
     var expected = [
         'PUT'
       , '09c68b914d66457508f6ad727d860d5b'
       , 'text/plain'
-      , new Date().toUTCString()
+      , new Date('may 25 1987').toUTCString()
       , '/learnboost'
     ].join('\n');
     
