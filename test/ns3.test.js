@@ -3,7 +3,16 @@
  * Module dependencies.
  */
 
-var ns3 = require('ns3');
+var ns3 = require('ns3')
+  , fs = require('fs');
+
+try {
+  var auth = JSON.parse(fs.readFileSync('auth', 'ascii'));
+} catch (err) {
+  console.error('`make test` requires ./auth to contain a JSON string with');
+  console.error('`key, secret, and bucket in order to run tests.');
+  process.exit(1);
+}
 
 module.exports = {
   'test .version': function(assert){
@@ -47,5 +56,9 @@ module.exports = {
     assert.equal('baz', client.secret);
     assert.equal('misc', client.bucket);
     assert.equal('s3.amazonaws.com', client.host);
+  },
+  
+  'test PUT': function(assert){
+    
   }
 };
