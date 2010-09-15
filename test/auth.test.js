@@ -37,5 +37,19 @@ module.exports = {
     });
 
     assert.equal('bTT7MI/iAdtBc6qhB+39DogbGII=', str);
+  },
+  
+  'test .canonicalizeHeaders()': function(assert){
+    var str = auth.canonicalizeHeaders({
+        'X-Amz-Date': 'some date'
+      , 'X-Amz-Acl': 'private'
+    });
+    
+    var expected = [
+        'x-amz-acl:private'
+      , 'x-amz-date:some date'
+    ].join('\n');
+
+    assert.equal(expected, str);
   }
 };
