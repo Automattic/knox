@@ -43,6 +43,7 @@ module.exports = {
     var str = auth.canonicalizeHeaders({
         'X-Amz-Date': 'some date'
       , 'X-Amz-Acl': 'private'
+      , 'X-Foo': 'bar'
     });
     
     var expected = [
