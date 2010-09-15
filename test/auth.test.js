@@ -28,7 +28,7 @@ module.exports = {
   },
   
   'test .sign()': function(assert){
-    var str = auth.sign({
+    var str = auth.sign('test', {
         verb: 'PUT'
       , md5: '09c68b914d66457508f6ad727d860d5b'
       , contentType: 'text/plain'
@@ -36,6 +36,6 @@ module.exports = {
       , date: new Date('may 25 1987')
     });
 
-    assert.equal('9huBjjAJN00uCvd14ofvHu6mhGE=', str);
+    assert.equal('bTT7MI/iAdtBc6qhB+39DogbGII=', str);
   }
 };
