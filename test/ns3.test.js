@@ -93,5 +93,26 @@ module.exports = {
       assert.equal(13, res.headers['content-length'])
       done();
     }).end();
+  },
+  
+  'test DELETE': function(assert, done){
+    client.del('/test/user.json').on('response', function(res){
+      assert.equal(204, res.statusCode);
+      done();
+    }).end();
+  },
+  
+  'test GET 404': function(assert, done){
+    client.get('/test/user.json').on('response', function(res){
+      assert.equal(404, res.statusCode);
+      done();
+    }).end();
+  },
+  
+  'test GET 404': function(assert, done){
+    client.get('/test/user.json').on('response', function(res){
+      assert.equal(404, res.statusCode);
+      done();
+    }).end();
   }
 };
