@@ -26,6 +26,14 @@ module.exports = {
       err = e;
     }
     assert.equal('aws "secret" required', err.message);
+    
+    var err;
+    try {
+      ns3.createClient({ key: 'foo', secret: 'bar' });
+    } catch (e) {
+      err = e;
+    }
+    assert.equal('aws "bucket" required', err.message);
   },
   
   'test .createClient() valid': function(assert){
