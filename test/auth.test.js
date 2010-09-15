@@ -28,8 +28,9 @@ module.exports = {
   },
   
   'test .sign()': function(assert){
-    var str = auth.sign('test', {
+    var str = auth.sign({
         verb: 'PUT'
+      , secret: 'test'
       , md5: '09c68b914d66457508f6ad727d860d5b'
       , contentType: 'text/plain'
       , resource: '/learnboost'
