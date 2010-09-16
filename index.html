@@ -1,0 +1,483 @@
+<a href="http://github.com/LearnBoost/knox"><img alt="Fork me on GitHub" id="ribbon" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a><html>
+	<head>
+		<title>Knox</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<style>body {
+    margin: 0;
+    padding: 0;
+    font: 14px/1.5 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif;
+    color: #252519;
+}
+a {
+    color: #252519;
+}
+a:hover {
+    text-decoration: underline;
+    color: #19469D;
+}
+p {
+    margin: 12px 0;
+}
+h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+}
+table#source {
+    width: 100%;
+    border-collapse: collapse;
+}
+table#source td:first-child {
+    padding: 30px 40px 30px 40px;
+    vertical-align: top;
+}
+table#source td:first-child,
+table#source td:first-child pre {
+    width: 450px;
+}
+table#source td:last-child {
+    padding: 30px 0 30px 40px;
+    border-left: 1px solid #E5E5EE;
+    background: #F5F5FF;
+}
+table#source tr {
+    border-bottom: 1px solid #E5E5EE;
+}
+table#source tr.filename {
+    padding-top: 40px;
+    border-top: 1px solid #E5E5EE;
+}
+table#source tr.filename td:first-child {
+    text-transform: capitalize;
+}
+table#source tr.filename td:last-child {
+    font-size: 12px;
+}
+table#source tr.filename h2 {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+table#source tr.code h1,
+table#source tr.code h2,
+table#source tr.code h3 {
+    margin-top: 30px;
+    font-family: "Lucida Grande", "Helvetica Nueue", Arial, sans-serif;
+    font-size: 18px;
+}
+table#source tr.code h2 {
+    font-size: 16px;
+}
+table#source tr.code h3 {
+    font-size: 14px;
+}
+table#source tr.code ul {
+    margin: 15px 0 15px 35px;
+    padding: 0;
+}
+table#source tr.code ul li {
+    margin: 0;
+    padding: 1px 0;
+}
+table#source tr.code ul li p {
+    margin: 0;
+    padding: 0;
+}
+table#source tr.code td:first-child pre {
+    padding: 20px;
+}
+#ribbon {
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+code .string { color: #219161; }
+code .regexp { color: #219161; }
+code .keyword { color: #954121; }
+code .number { color: #19469D; }
+code .comment { color: #bbb; }
+code .this { color: #19469D; }</style>
+		<script>
+			$(function(){
+				$('tr.code').hide();
+				$('tr.filename').toggle(function(){
+					$(this).nextUntil('.filename').fadeIn();
+				}, function(){
+					$(this).nextUntil('.filename').fadeOut();
+				});
+			});
+		</script>
+	</head>
+	<body>
+<table id="source"><tbody><tr><td><h1>Knox</h1><p>Light-weight Amazon S3 client for <a href="http://nodejs.org">NodeJS</a>.</p></td><td></td></tr><tr class="filename"><td><h2 id="lib/knox/auth.js"><a href="#">auth</a></h2></td><td>lib/knox/auth.js</td></tr><tr class="code">
+<td class="docs">
+<p>Module dependencies.
+ </p>
+</td>
+<td class="code">
+<pre><code><span class="keyword">var</span> <span class="variable">crypto</span> = <span class="variable">require</span>(<span class="string">'crypto'</span>);</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Return an "Authorization" header value with the given <code>options</code>
+in the form of "AWS &lt;key&gt;:&lt;signature&gt;"</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  options</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">authorization</span> = <span class="keyword">function</span>(<span class="variable">options</span>){
+  <span class="keyword">return</span> <span class="string">'AWS '</span> + <span class="variable">options</span>.<span class="variable">key</span> + <span class="string">':'</span> + <span class="variable">exports</span>.<span class="variable">sign</span>(<span class="variable">options</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Create a base64 sha1 HMAC for <code>options</code>. </p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  options</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">sign</span> = <span class="keyword">function</span>(<span class="variable">options</span>){
+  <span class="keyword">var</span> <span class="variable">str</span> = <span class="variable">exports</span>.<span class="variable">stringToSign</span>(<span class="variable">options</span>);
+  <span class="keyword">return</span> <span class="variable">crypto</span>.<span class="variable">createHmac</span>(<span class="string">'sha1'</span>, <span class="variable">options</span>.<span class="variable">secret</span>).<span class="variable">update</span>(<span class="variable">str</span>).<span class="variable">digest</span>(<span class="string">'base64'</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Return a string for sign() with the given <code>options</code>.</p>
+
+<h2>Spec</h2>
+
+<p>   &lt;verb&gt;\n
+   &lt;md5&gt;\n
+   &lt;content-type&gt;\n
+   &lt;date&gt;\n
+   [headers\n]
+   &lt;resource&gt;</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  options</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">stringToSign</span> = <span class="keyword">function</span>(<span class="variable">options</span>){
+  <span class="keyword">var</span> <span class="variable">headers</span> = <span class="variable">options</span>.<span class="variable">amazonHeaders</span> || <span class="string">''</span>;
+  <span class="keyword">if</span> (<span class="variable">headers</span>) <span class="variable">headers</span> += <span class="string">'\n'</span>;
+  <span class="keyword">return</span> [
+      <span class="variable">options</span>.<span class="variable">verb</span>
+    , <span class="variable">options</span>.<span class="variable">md5</span>
+    , <span class="variable">options</span>.<span class="variable">contentType</span>
+    , <span class="variable">options</span>.<span class="variable">date</span>.<span class="variable">toUTCString</span>()
+    , <span class="variable">headers</span> + <span class="variable">options</span>.<span class="variable">resource</span>
+  ].<span class="variable">join</span>(<span class="string">'\n'</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Perform the following:</p>
+
+<ul><li>ignore non-amazon headers</li><li>lowercase fields</li><li>sort lexicographically</li><li>trim whitespace between ":"</li><li>join with newline</li></ul>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  headers</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">canonicalizeHeaders</span> = <span class="keyword">function</span>(<span class="variable">headers</span>){
+  <span class="keyword">var</span> <span class="variable">buf</span> = []
+    , <span class="variable">fields</span> = <span class="class">Object</span>.<span class="variable">keys</span>(<span class="variable">headers</span>);
+  <span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number integer">0</span>, <span class="variable">len</span> = <span class="variable">fields</span>.<span class="variable">length</span>; <span class="variable">i</span> &<span class="variable">lt</span>; <span class="variable">len</span>; ++<span class="variable">i</span>) {
+    <span class="keyword">var</span> <span class="variable">field</span> = <span class="variable">fields</span>[<span class="variable">i</span>]
+      , <span class="variable">val</span> = <span class="variable">headers</span>[<span class="variable">field</span>]
+      , <span class="variable">field</span> = <span class="variable">field</span>.<span class="variable">toLowerCase</span>();
+    <span class="keyword">if</span> (<span class="number integer">0</span> !== <span class="variable">field</span>.<span class="variable">indexOf</span>(<span class="string">'x-amz'</span>)) <span class="keyword">continue</span>;
+    <span class="variable">buf</span>.<span class="variable">push</span>(<span class="variable">field</span> + <span class="string">':'</span> + <span class="variable">val</span>);
+  }
+  <span class="keyword">return</span> <span class="variable">buf</span>.<span class="variable">sort</span>().<span class="variable">join</span>(<span class="string">'\n'</span>);
+};</code></pre>
+</td>
+</tr><tr class="filename"><td><h2 id="lib/knox/client.js"><a href="#">client</a></h2></td><td>lib/knox/client.js</td></tr><tr class="code">
+<td class="docs">
+<p>Module dependencies.
+ </p>
+</td>
+<td class="code">
+<pre><code><span class="keyword">var</span> <span class="variable">utils</span> = <span class="variable">require</span>(<span class="string">'./utils'</span>)
+  , <span class="variable">auth</span> = <span class="variable">require</span>(<span class="string">'./auth'</span>)
+  , <span class="variable">http</span> = <span class="variable">require</span>(<span class="string">'http'</span>)
+  , <span class="variable">join</span> = <span class="variable">require</span>(<span class="string">'path'</span>).<span class="variable">join</span>;</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Initialize a <code>Client</code> with the given <code>options</code>.</p>
+
+<h2>Required</h2>
+
+<ul><li><code>key</code>     amazon api key</li><li><code>secret</code>  amazon secret</li><li><code>bucket</code>  bucket name string, ex: "learnboost"</li></ul>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  options</p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="keyword">var</span> <span class="class">Client</span> = <span class="variable">module</span>.<span class="variable">exports</span> = <span class="variable">exports</span> = <span class="keyword">function</span> <span class="class">Client</span>(<span class="variable">options</span>) {
+  <span class="this">this</span>.<span class="variable">host</span> = <span class="string">'s3.amazonaws.com'</span>;
+  <span class="variable">utils</span>.<span class="variable">merge</span>(<span class="this">this</span>, <span class="variable">options</span>);
+  <span class="keyword">if</span> (!<span class="this">this</span>.<span class="variable">key</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="class">Error</span>(<span class="string">'aws &quot;key&quot; required'</span>);
+  <span class="keyword">if</span> (!<span class="this">this</span>.<span class="variable">secret</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="class">Error</span>(<span class="string">'aws &quot;secret&quot; required'</span>);
+  <span class="keyword">if</span> (!<span class="this">this</span>.<span class="variable">bucket</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="class">Error</span>(<span class="string">'aws &quot;bucket&quot; required'</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Request with <code>filename</code> the given <code>method</code>, and optional <code>headers</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  method</p></li><li><p><strong>param</strong>: <em>String</em>  filename</p></li><li><p><strong>param</strong>: <em>Object</em>  headers</p></li><li><p><strong>return</strong>: <em>ClientRequest</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="class">Client</span>.<span class="variable">prototype</span>.<span class="variable">request</span> = <span class="keyword">function</span>(<span class="variable">method</span>, <span class="variable">filename</span>, <span class="variable">headers</span>){
+  <span class="keyword">var</span> <span class="variable">client</span> = <span class="variable">http</span>.<span class="variable">createClient</span>(<span class="number integer">80</span>, <span class="this">this</span>.<span class="variable">host</span>)
+    , <span class="variable">path</span> = <span class="variable">join</span>(<span class="string">'/'</span>, <span class="this">this</span>.<span class="variable">bucket</span>, <span class="variable">filename</span>)
+    , <span class="variable">date</span> = <span class="keyword">new</span> <span class="class">Date</span>
+    , <span class="variable">headers</span> = <span class="variable">headers</span> || {};
+
+  <span class="comment">// Default headers</span>
+  <span class="variable">utils</span>.<span class="variable">merge</span>(<span class="variable">headers</span>, {
+      <span class="class">Date</span>: <span class="variable">date</span>.<span class="variable">toUTCString</span>()
+    , <span class="class">Host</span>: <span class="this">this</span>.<span class="variable">host</span>
+  });
+
+  <span class="comment">// Authorization header</span>
+  <span class="variable">headers</span>.<span class="class">Authorization</span> = <span class="variable">auth</span>.<span class="variable">authorization</span>({
+      <span class="variable">key</span>: <span class="this">this</span>.<span class="variable">key</span>
+    , <span class="variable">secret</span>: <span class="this">this</span>.<span class="variable">secret</span>
+    , <span class="variable">verb</span>: <span class="variable">method</span>
+    , <span class="variable">date</span>: <span class="variable">date</span>
+    , <span class="variable">resource</span>: <span class="variable">path</span>
+    , <span class="variable">contentType</span>: <span class="variable">headers</span>[<span class="string">'Content-Type'</span>]
+    , <span class="variable">amazonHeaders</span>: <span class="variable">auth</span>.<span class="variable">canonicalizeHeaders</span>(<span class="variable">headers</span>)
+  });
+
+  <span class="keyword">var</span> <span class="variable">req</span> = <span class="variable">client</span>.<span class="variable">request</span>(<span class="variable">method</span>, <span class="variable">path</span>, <span class="variable">headers</span>);
+  <span class="variable">req</span>.<span class="variable">url</span> = <span class="this">this</span>.<span class="variable">url</span>(<span class="variable">filename</span>);
+  <span class="keyword">return</span> <span class="variable">req</span>;
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>PUT data to <code>filename</code> with optional <code>headers</code>.</p>
+
+<h2>Example</h2>
+
+<pre><code>// Fetch the size
+fs.stat('Readme.md', function(err, stat){
+ // Create our request
+ var req = client.put('/test/Readme.md', {
+     'Content-Length': stat.size
+   , 'Content-Type': 'text/plain'
+ });
+ fs.readFile('Readme.md', function(err, buf){
+   // Output response
+   req.on('response', function(res){
+     console.log(res.statusCode);
+     console.log(res.headers);
+     res.on('data', function(chunk){
+       console.log(chunk.toString());
+     });
+   }); 
+   // Send the request with the file's Buffer obj
+   req.end(buf);
+ });
+});</code></pre>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  filename</p></li><li><p><strong>param</strong>: <em>Object</em>  headers</p></li><li><p><strong>return</strong>: <em>ClientRequest</em> </p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="class">Client</span>.<span class="variable">prototype</span>.<span class="variable">put</span> = <span class="keyword">function</span>(<span class="variable">filename</span>, <span class="variable">headers</span>){
+  <span class="variable">headers</span> = <span class="variable">utils</span>.<span class="variable">merge</span>({
+      <span class="class">Expect</span>: <span class="string">'100-continue'</span>
+    , <span class="string">'x-amz-acl'</span>: <span class="string">'public-read'</span>
+  }, <span class="variable">headers</span> || {});
+  <span class="keyword">return</span> <span class="this">this</span>.<span class="variable">request</span>(<span class="string">'PUT'</span>, <span class="variable">filename</span>, <span class="variable">headers</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>GET <code>filename</code> with optional <code>headers</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  filename</p></li><li><p><strong>param</strong>: <em>Object</em>  headers</p></li><li><p><strong>return</strong>: <em>ClientRequest</em> </p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="class">Client</span>.<span class="variable">prototype</span>.<span class="variable">get</span> = <span class="keyword">function</span>(<span class="variable">filename</span>, <span class="variable">headers</span>){
+  <span class="keyword">return</span> <span class="this">this</span>.<span class="variable">request</span>(<span class="string">'GET'</span>, <span class="variable">filename</span>, <span class="variable">headers</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Issue a HEAD request on <code>filename</code> with optional `headers.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  filename</p></li><li><p><strong>param</strong>: <em>Object</em>  headers</p></li><li><p><strong>return</strong>: <em>ClientRequest</em> </p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="class">Client</span>.<span class="variable">prototype</span>.<span class="variable">head</span> = <span class="keyword">function</span>(<span class="variable">filename</span>, <span class="variable">headers</span>){
+  <span class="keyword">return</span> <span class="this">this</span>.<span class="variable">request</span>(<span class="string">'HEAD'</span>, <span class="variable">filename</span>, <span class="variable">headers</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>DELETE <code>filename</code> with optional `headers.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  filename</p></li><li><p><strong>param</strong>: <em>Object</em>  headers</p></li><li><p><strong>return</strong>: <em>ClientRequest</em> </p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="class">Client</span>.<span class="variable">prototype</span>.<span class="variable">del</span> = <span class="keyword">function</span>(<span class="variable">filename</span>, <span class="variable">headers</span>){
+  <span class="keyword">return</span> <span class="this">this</span>.<span class="variable">request</span>(<span class="string">'DELETE'</span>, <span class="variable">filename</span>, <span class="variable">headers</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Return a url to the given <code>filename</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  filename</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="class">Client</span>.<span class="variable">prototype</span>.<span class="variable">url</span> = <span class="keyword">function</span>(<span class="variable">filename</span>){
+  <span class="keyword">return</span> <span class="string">'http://'</span> + <span class="this">this</span>.<span class="variable">bucket</span> + <span class="string">'.'</span> + <span class="this">this</span>.<span class="variable">host</span> + <span class="variable">join</span>(<span class="string">'/'</span>, <span class="variable">filename</span>);
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Shortcut for <code>new Client()</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  options</p></li><li><p><strong>see</strong>: <em>Client</em>
+()</p></li><li><p><strong>api</strong>: <em>public</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">createClient</span> = <span class="keyword">function</span>(<span class="variable">options</span>){
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="class">Client</span>(<span class="variable">options</span>);
+};</code></pre>
+</td>
+</tr><tr class="filename"><td><h2 id="lib/knox/index.js"><a href="#">index</a></h2></td><td>lib/knox/index.js</td></tr><tr class="code">
+<td class="docs">
+<p>Client is the main export.
+ </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span> = <span class="variable">module</span>.<span class="variable">exports</span> = <span class="variable">require</span>(<span class="string">'./client'</span>);</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Library version.</p>
+
+<ul><li><p><strong>type</strong>: <em>String</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">version</span> = <span class="string">'0.0.1'</span>;</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Expose utilities.</p>
+
+<ul><li><p><strong>type</strong>: <em>Object</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">utils</span> = <span class="variable">require</span>(<span class="string">'./utils'</span>);</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Expose auth utils.</p>
+
+<ul><li><p><strong>type</strong>: <em>Object</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">auth</span> = <span class="variable">require</span>(<span class="string">'./auth'</span>);</code></pre>
+</td>
+</tr><tr class="filename"><td><h2 id="lib/knox/utils.js"><a href="#">utils</a></h2></td><td>lib/knox/utils.js</td></tr><tr class="code">
+<td class="docs">
+<p>Merge object <code>b</code> with object <code>a</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>Object</em>  a</p></li><li><p><strong>param</strong>: <em>Object</em>  b</p></li><li><p><strong>return</strong>: <em>Object</em>  a</p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">merge</span> = <span class="keyword">function</span>(<span class="variable">a</span>, <span class="variable">b</span>){
+  <span class="keyword">var</span> <span class="variable">keys</span> = <span class="class">Object</span>.<span class="variable">keys</span>(<span class="variable">b</span>);
+  <span class="keyword">for</span> (<span class="keyword">var</span> <span class="variable">i</span> = <span class="number integer">0</span>, <span class="variable">len</span> = <span class="variable">keys</span>.<span class="variable">length</span>; <span class="variable">i</span> &<span class="variable">lt</span>; <span class="variable">len</span>; ++<span class="variable">i</span>) {
+    <span class="keyword">var</span> <span class="variable">key</span> = <span class="variable">keys</span>[<span class="variable">i</span>];
+    <span class="variable">a</span>[<span class="variable">key</span>] = <span class="variable">b</span>[<span class="variable">key</span>]
+  }
+  <span class="keyword">return</span> <span class="variable">a</span>;
+};</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Base64.
+ </p>
+</td>
+<td class="code">
+<pre><code><span class="variable">exports</span>.<span class="variable">base64</span> = {</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Base64 encode the given <code>str</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  str</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">encode</span>: <span class="keyword">function</span>(<span class="variable">str</span>){
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="class">Buffer</span>(<span class="variable">str</span>).<span class="variable">toString</span>(<span class="string">'base64'</span>);
+  },</code></pre>
+</td>
+</tr>
+<tr class="code">
+<td class="docs">
+<p>Base64 decode the given <code>str</code>.</p>
+
+<h2></h2>
+
+<ul><li><p><strong>param</strong>: <em>String</em>  str</p></li><li><p><strong>return</strong>: <em>String</em> </p></li><li><p><strong>api</strong>: <em>private</em></p></li></ul>
+</td>
+<td class="code">
+<pre><code><span class="variable">decode</span>: <span class="keyword">function</span>(<span class="variable">str</span>){
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="class">Buffer</span>(<span class="variable">str</span>, <span class="string">'base64'</span>).<span class="variable">toString</span>();
+  }
+};</code></pre>
+</td>
+</tr>	</body>
+</html></tbody></table>
