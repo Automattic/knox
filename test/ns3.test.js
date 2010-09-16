@@ -67,8 +67,9 @@ module.exports = {
       fs.readFile(path, function(err, buf){
         if (err) throw err;
         var req = client.put('/test/user.json', {
-          'Content-Length': stat.size,
-          'Content-Type': 'application/json'
+            'Content-Length': stat.size
+          , 'Content-Type': 'application/json'
+          , 'x-amz-acl': 'private'
         });
         req.on('response', function(res){
           switch (++n) {

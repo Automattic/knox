@@ -53,5 +53,7 @@ module.exports = {
     ].join('\n');
 
     assert.equal(expected, str);
+    
+    assert.equal('', auth.canonicalizeHeaders({}));
   }
 };
