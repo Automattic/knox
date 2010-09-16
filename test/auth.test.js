@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-var ns3 = require('ns3')
-  , auth = ns3.auth;
+var knox = require('knox')
+  , auth = knox.auth;
 
 module.exports = {
   'test .stringToSign()': function(assert){

@@ -3,8 +3,8 @@
  * Module dependencies.
  */
 
-var ns3 = require('ns3')
-  , utils = ns3.utils;
+var knox = require('knox')
+  , utils = knox.utils;
 
 module.exports = {
   'test .base64.encode()': function(assert){

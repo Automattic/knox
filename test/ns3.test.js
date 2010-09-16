@@ -3,12 +3,12 @@
  * Module dependencies.
  */
 
-var ns3 = require('ns3')
+var knox = require('knox')
   , fs = require('fs');
 
 try {
   var auth = JSON.parse(fs.readFileSync('auth', 'ascii'));
-  var client = ns3.createClient(auth);
+  var client = knox.createClient(auth);
 } catch (err) {
   console.error('`make test` requires ./auth to contain a JSON string with');
   console.error('`key, secret, and bucket in order to run tests.');
@@ -17,13 +17,13 @@ try {
 
 module.exports = {
   'test .version': function(assert){
-    assert.match(ns3.version, /^\d+\.\d+\.\d+$/);
+    assert.match(knox.version, /^\d+\.\d+\.\d+$/);
   },
   
   'test .createClient() invalid': function(assert){
     var err;
     try {
-      ns3.createClient({});
+      knox.createClient({});
     } catch (e) {
       err = e;
     }
@@ -31,7 +31,7 @@ module.exports = {
     
     var err;
     try {
-      ns3.createClient({ key: 'foo' });
+      knox.createClient({ key: 'foo' });
     } catch (e) {
       err = e;
     }
@@ -39,7 +39,7 @@ module.exports = {
     
     var err;
     try {
-      ns3.createClient({ key: 'foo', secret: 'bar' });
+      knox.createClient({ key: 'foo', secret: 'bar' });
     } catch (e) {
       err = e;
     }
@@ -47,7 +47,7 @@ module.exports = {
   },
   
   'test .createClient() valid': function(assert){
-    var client = ns3.createClient({
+    var client = knox.createClient({
         key: 'foobar'
       , secret: 'baz'
       , bucket: 'misc'
