@@ -39,6 +39,10 @@ we listen for the _response_ event, just as we would for any `http.Client` reque
       req.end(buf);
     });
 
+By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__ the file. To alter this simply pass this header to the client request method. Note that the field name __MUST__ be lowercase, do not use 'X-Amz-Acl' etc, as this will currently result in duplicate headers (although different case).
+
+    client.put('/test/Readme.md', { 'x-amz-acl': 'private' });
+
 ### GET
 
 Below is an example __GET__ request on the file we just shoved at s3, and simply outputs the response status code, headers, and body.
