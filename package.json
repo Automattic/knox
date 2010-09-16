@@ -5,5 +5,6 @@
   "version": "0.0.1",
   "author": "TJ Holowaychuk <tj@learnboost.com>",
   "main": "./lib/knox/index.js",
+  "dependencies": { "mime": ">= 1.0.0" },
   "engines": { "node": ">= 0.2.0" }
 }
