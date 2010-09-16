@@ -15,6 +15,19 @@
 
   - TJ Holowaychuk ([visionmedia](http://github.com/visionmedia))
 
+## Running Tests
+
+To run the test suite you must first have an S3 account, and create
+a file named _./auth_, which contains your credentials as json, for example:
+
+    {"key":"<api-key-here>",
+     "secret":"<secret-here>",
+     "bucket":"<your-bucket-name>"}
+
+Then simply execute:
+
+    $ make test
+
 ## License 
 
 (The MIT License)
