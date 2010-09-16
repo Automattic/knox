@@ -95,6 +95,15 @@ module.exports = {
     }).end();
   },
   
+  'test HEAD': function(assert, done){
+    client.head('/test/user.json').on('response', function(res){
+      assert.equal(200, res.statusCode);
+      assert.equal('application/json', res.headers['content-type'])
+      assert.equal(13, res.headers['content-length'])
+      done();
+    }).end();
+  },
+  
   'test DELETE': function(assert, done){
     client.del('/test/user.json').on('response', function(res){
       assert.equal(204, res.statusCode);
@@ -109,8 +118,8 @@ module.exports = {
     }).end();
   },
   
-  'test GET 404': function(assert, done){
-    client.get('/test/user.json').on('response', function(res){
+  'test HEAD 404': function(assert, done){
+    client.head('/test/user.json').on('response', function(res){
       assert.equal(404, res.statusCode);
       done();
     }).end();
