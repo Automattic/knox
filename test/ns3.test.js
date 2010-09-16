@@ -80,7 +80,7 @@ module.exports = {
     });
   },
   
-  'test PUT': function(assert, done){
+  'test .put()': function(assert, done){
     var n = 0;
     fs.stat(jsonFixture, function(err, stat){
       if (err) throw err;
@@ -113,7 +113,7 @@ module.exports = {
     });
   },
   
-  'test GET': function(assert, done){
+  'test .get()': function(assert, done){
     client.get('/test/user.json').on('response', function(res){
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type'])
@@ -122,7 +122,7 @@ module.exports = {
     }).end();
   },
   
-  'test HEAD': function(assert, done){
+  'test .head()': function(assert, done){
     client.head('/test/user.json').on('response', function(res){
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type'])
@@ -131,21 +131,21 @@ module.exports = {
     }).end();
   },
   
-  'test DELETE': function(assert, done){
+  'test .del()': function(assert, done){
     client.del('/test/user.json').on('response', function(res){
       assert.equal(204, res.statusCode);
       done();
     }).end();
   },
   
-  'test GET 404': function(assert, done){
+  'test .get() 404': function(assert, done){
     client.get('/test/user.json').on('response', function(res){
       assert.equal(404, res.statusCode);
       done();
     }).end();
   },
   
-  'test HEAD 404': function(assert, done){
+  'test .head() 404': function(assert, done){
     client.head('/test/user.json').on('response', function(res){
       assert.equal(404, res.statusCode);
       done();
