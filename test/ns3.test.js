@@ -158,6 +158,14 @@ module.exports = {
     }).end();
   },
   
+  'test .deleteFile()': function(assert, done){
+    client.deleteFile('/test/user.json', function(err, res){
+      assert.ok(!err);
+      assert.equal(204, res.statusCode);
+      done();
+    });
+  },
+  
   'test .get() 404': function(assert, done){
     client.get('/test/user.json').on('response', function(res){
       assert.equal(404, res.statusCode);
