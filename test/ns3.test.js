@@ -78,6 +78,9 @@ module.exports = {
               break;
             case 2:
               assert.equal(200, res.statusCode);
+              assert.equal(
+                  'http://learnboost.s3.amazonaws.com/test/Readme.md'
+                , client.url('/test/Readme.md'));
               done();
               break;
           }
