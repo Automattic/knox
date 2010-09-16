@@ -15,6 +15,8 @@ try {
   process.exit(1);
 }
 
+var jsonFixture = __dirname + '/fixtures/user.json';
+
 module.exports = {
   'test .version': function(assert){
     assert.match(knox.version, /^\d+\.\d+\.\d+$/);
@@ -59,12 +61,30 @@ module.exports = {
     assert.equal('s3.amazonaws.com', client.host);
   },
   
+  'test .putFile()': function(assert, done){
+    var n = 0;
+    client.putFile(jsonFixture, '/test/user.json', function(err, res){
+      assert.ok(!err, 'putFile() got an error!');
+      switch (++n) {
+        case 1:
+          assert.equal(100, res.statusCode);
+          break;
+        case 2:
+          assert.equal(200, res.statusCode);
+          client.get('/test/user.json').on('response', function(res){
+            assert.equal('application/json', res.headers['content-type']);
+            done();
+          }).end();
+          break;
+      }
+    });
+  },
+  
   'test PUT': function(assert, done){
-    var path = __dirname + '/fixtures/user.json'
-      , n = 0;
-    fs.stat(path, function(err, stat){
+    var n = 0;
+    fs.stat(jsonFixture, function(err, stat){
       if (err) throw err;
-      fs.readFile(path, function(err, buf){
+      fs.readFile(jsonFixture, function(err, buf){
         if (err) throw err;
         var req = client.put('/test/user.json', {
             'Content-Length': stat.size
