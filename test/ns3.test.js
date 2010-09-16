@@ -141,6 +141,16 @@ module.exports = {
     }).end();
   },
   
+  'test .headFile()': function(assert, done){
+    client.headFile('/test/user.json', function(err, res){
+      assert.ok(!err);
+      assert.equal(200, res.statusCode);
+      assert.equal('application/json', res.headers['content-type'])
+      assert.equal(13, res.headers['content-length'])
+      done();
+    });
+  },
+  
   'test .del()': function(assert, done){
     client.del('/test/user.json').on('response', function(res){
       assert.equal(204, res.statusCode);
