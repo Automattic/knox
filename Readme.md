@@ -3,6 +3,14 @@
 
  Node Amazon S3 Client.
 
+## Features
+
+  - Not outdated :), developed for node 0.2.x
+  - RESTful api (`client.get()`, `client.put()`, etc)
+  - Uses node's crypto library (fast!, the others used native js)
+  - Very node-like low-level request api via `http.Client`
+  - Highly documented
+
 ## Authors
 
   - TJ Holowaychuk ([visionmedia](http://github.com/visionmedia))
