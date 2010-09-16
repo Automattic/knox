@@ -15,6 +15,52 @@
 
   - TJ Holowaychuk ([visionmedia](http://github.com/visionmedia))
 
+## Examples
+
+The following examples demonstrate some capabilities of knox and the s3 REST API.
+
+### PUT
+
+Below we do several things, first we read _Readme.md_ into memory,
+and initialize a client request via `client.put()`, passing the destination
+filename as the first parameter (_/test/Readme.md_), and some headers. Then
+we listen for the _response_ event, just as we would for any `http.Client` request, if we have a 200 response, great! output the destination url to stdout.
+
+    fs.readFile('Readme.md', function(err, buf){
+      var req = client.put('/test/Readme.md', {
+          'Content-Length': buf.length
+        , 'Content-Type': 'text/plain'
+      });
+      req.on('response', function(res){
+        if (200 == res.statusCode) {
+          console.log('saved to %s', req.url);
+        }
+      });
+      req.end(buf);
+    });
+
+### GET
+
+Below is an example __GET__ request on the file we just shoved at s3, and simply outputs the response status code, headers, and body.
+
+    client.get('/test/Readme.md').on('response', function(res){
+      console.log(res.statusCode);
+      console.log(res.headers);
+      res.setEncoding('utf8');
+      res.on('data', function(chunk){
+        console.log(chunk);
+      });
+    }).end();
+
+## DELETE
+
+Delete our file:
+
+    client.del('/test/Readme.md').on('response', function(res){
+      console.log(res.statusCode);
+      console.log(res.headers);
+    }).end();
+
 ## Running Tests
 
 To run the test suite you must first have an S3 account, and create
