@@ -49,6 +49,12 @@ By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__ t
 
     client.put('/test/Readme.md', { 'x-amz-acl': 'private' });
 
+Each HTTP verb has an alternate method with the "File" suffix, for example `put()` also has a higher level method named `putFile()`, accepting a src filename and performs the dirty work shown above for you. Here is an example usage:
+
+    client.putFile('my.json', '/user.json', function(err, res){
+      // Logic :)
+    }); 
+
 ### GET
 
 Below is an example __GET__ request on the file we just shoved at s3, and simply outputs the response status code, headers, and body.
