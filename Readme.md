@@ -17,7 +17,13 @@
 
 ## Examples
 
-The following examples demonstrate some capabilities of knox and the s3 REST API.
+The following examples demonstrate some capabilities of knox and the s3 REST API. First things first, create an s3 client:
+
+    var client = knox.createClient({
+        key: '<api-key-here>'
+      , secret: '<secret-here>'
+      , bucket: 'learnboost'
+    });
 
 ### PUT
 
