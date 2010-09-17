@@ -52,7 +52,7 @@ By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__ t
 Each HTTP verb has an alternate method with the "File" suffix, for example `put()` also has a higher level method named `putFile()`, accepting a src filename and performs the dirty work shown above for you. Here is an example usage:
 
     client.putFile('my.json', '/user.json', function(err, res){
-      // Logic :)
+      // Logic
     }); 
 
 ### GET
@@ -76,6 +76,12 @@ Delete our file:
       console.log(res.statusCode);
       console.log(res.headers);
     }).end();
+
+Likewise we also have `client.deleteFile()` as a more concise (yet less flexible) solution:
+
+    client.deleteFile('/test/Readme.md', function(err, res){
+      // Logic
+    });
 
 ## Running Tests
 
