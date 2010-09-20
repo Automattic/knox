@@ -113,6 +113,16 @@ module.exports = {
     });
   },
   
+  'test .putStream()': function(assert, done){
+    var stream = fs.createReadStream(jsonFixture)
+      , headers = { 'Content-Type': 'application/json' };
+    client.putStream(stream, '/test/user.json', headers, function(err, res){
+        console.log(err);
+        console.log(res.statusCode);
+        console.log(res.headers);
+    });
+  },
+  
   'test .getFile()': function(assert, done){
     client.getFile('/test/user.json', function(err, res){
       assert.ok(!err);
