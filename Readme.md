@@ -55,6 +55,13 @@ Each HTTP verb has an alternate method with the "File" suffix, for example `put(
       // Logic
     }); 
 
+Another alternative is to stream via `Client#putStream()`, for example:
+
+    var stream = fs.createReadStream('data.json');
+    client.putStream(stream, '/some-data.json', function(err, res){
+      // Logic
+    });
+
 ### GET
 
 Below is an example __GET__ request on the file we just shoved at s3, and simply outputs the response status code, headers, and body.

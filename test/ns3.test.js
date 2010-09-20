@@ -114,9 +114,8 @@ module.exports = {
   },
   
   'test .putStream()': function(assert, done){
-    var stream = fs.createReadStream(jsonFixture)
-      , headers = { 'Content-Type': 'application/json' };
-    client.putStream(stream, '/test/user.json', headers, function(err, res){
+    var stream = fs.createReadStream(jsonFixture);
+    client.putStream(stream, '/test/user.json', function(err, res){
       assert.ok(!err);
       if (100 !== res.statusCode) assert.equal(200, res.statusCode);
       done();
