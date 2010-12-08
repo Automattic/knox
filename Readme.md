@@ -62,6 +62,17 @@ Another alternative is to stream via `Client#putStream()`, for example:
       // Logic
     });
 
+An example of moving a file:
+
+    client.put('0/0/0.png', {
+        'Content-Type': 'image/jpg',
+        'Content-Length': '0',
+        'x-amz-copy-source': '/test-tiles/0/0/0.png',
+        'x-amz-metadata-directive': 'REPLACE'
+    }).on('response', function(res) {
+      // Logic
+    }).end();
+
 ### GET
 
 Below is an example __GET__ request on the file we just shoved at s3, and simply outputs the response status code, headers, and body.
