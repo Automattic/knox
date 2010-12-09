@@ -99,10 +99,10 @@ module.exports = {
             case 2:
               assert.equal(200, res.statusCode);
               assert.equal(
-                  'http://learnboost.s3.amazonaws.com/test/user.json'
+                  'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
                 , client.url('/test/user.json'));
               assert.equal(
-                  'http://learnboost.s3.amazonaws.com/test/user.json'
+                  'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
                 , req.url);
               done();
               break;
