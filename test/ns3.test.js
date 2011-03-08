@@ -9,7 +9,9 @@ var knox = require('knox')
 try {
   var auth = JSON.parse(fs.readFileSync('auth', 'ascii'));
   var client = knox.createClient(auth);
+  var multiPartClient = knox.createMultiPartClient(auth);
 } catch (err) {
+  console.log(err);
   console.error('`make test` requires ./auth to contain a JSON string with');
   console.error('`key, secret, and bucket in order to run tests.');
   process.exit(1);
@@ -116,6 +118,15 @@ module.exports = {
   'test .putStream()': function(assert, done){
     var stream = fs.createReadStream(jsonFixture);
     client.putStream(stream, '/test/user.json', function(err, res){
+      assert.ok(!err);
+      if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+      done();
+    });
+  },
+  
+  'test multiPartClient.putStream()': function(assert, done){
+    var stream = fs.createReadStream(jsonFixture);
+    multiPartClient.putStream(stream, 'test/user.json', function(err, res){
       assert.ok(!err);
       if (100 !== res.statusCode) assert.equal(200, res.statusCode);
       done();
