@@ -65,18 +65,11 @@ module.exports = {
     var n = 0;
     client.putFile(jsonFixture, '/test/user.json', function(err, res){
       assert.ok(!err, 'putFile() got an error!');
-      switch (++n) {
-        case 1:
-          assert.equal(100, res.statusCode);
-          break;
-        case 2:
-          assert.equal(200, res.statusCode);
-          client.get('/test/user.json').on('response', function(res){
-            assert.equal('application/json', res.headers['content-type']);
-            done();
-          }).end();
-          break;
-      }
+      assert.equal(200, res.statusCode);
+      client.get('/test/user.json').on('response', function(res){
+        assert.equal('application/json', res.headers['content-type']);
+        done();
+      }).end();
     });
   },
   
@@ -92,21 +85,14 @@ module.exports = {
           , 'x-amz-acl': 'private'
         });
         req.on('response', function(res){
-          switch (++n) {
-            case 1:
-              assert.equal(100, res.statusCode);
-              break;
-            case 2:
-              assert.equal(200, res.statusCode);
-              assert.equal(
-                  'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
-                , client.url('/test/user.json'));
-              assert.equal(
-                  'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
-                , req.url);
-              done();
-              break;
-          }
+          assert.equal(200, res.statusCode);
+          assert.equal(
+              'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
+            , client.url('/test/user.json'));
+          assert.equal(
+              'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
+            , req.url);
+          done();
         });
         req.end(buf);
       })
