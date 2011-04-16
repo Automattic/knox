@@ -13,14 +13,14 @@ module.exports = {
       , md5: '09c68b914d66457508f6ad727d860d5b'
       , contentType: 'text/plain'
       , resource: '/learnboost'
-      , date: new Date('may 25 1987')
+      , date: new Date('Mon, May 25 1987 00:00:00 GMT')
     });
     
     var expected = [
         'PUT'
       , '09c68b914d66457508f6ad727d860d5b'
       , 'text/plain'
-      , new Date('may 25 1987').toUTCString()
+      , new Date('Mon, May 25 1987 00:00:00 GMT').toUTCString()
       , '/learnboost'
     ].join('\n');
     
@@ -34,10 +34,10 @@ module.exports = {
       , md5: '09c68b914d66457508f6ad727d860d5b'
       , contentType: 'text/plain'
       , resource: '/learnboost'
-      , date: new Date('may 25 1987')
+      , date: new Date('Mon, May 25 1987 00:00:00 GMT')
     });
 
-    assert.equal('bTT7MI/iAdtBc6qhB+39DogbGII=', str);
+    assert.equal('7xIdjyy+W17/k0le5kwBnfrZTiM=', str);
   },
   
   'test .canonicalizeHeaders()': function(assert){
