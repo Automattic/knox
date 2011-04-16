@@ -58,9 +58,20 @@ module.exports = {
     assert.equal('foobar', client.key);
     assert.equal('baz', client.secret);
     assert.equal('misc', client.bucket);
-    assert.equal('s3.amazonaws.com', client.host);
+    assert.equal('misc.s3.amazonaws.com', client.endpoint);
   },
   
+  'test .createClient() custom endpoint': function(assert){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , endpoint: 's3-eu-west-1.amazonaws.com'
+    });
+
+    assert.equal('s3-eu-west-1.amazonaws.com', client.endpoint);
+  },
+
   'test .putFile()': function(assert, done){
     var n = 0;
     client.putFile(jsonFixture, '/test/user.json', function(err, res){
