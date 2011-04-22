@@ -119,6 +119,15 @@ module.exports = {
     });
   },
   
+  'test .find()': function(assert, done){
+    client.find('?prefix=test/', function(err, res){
+      assert.ok(!err);
+      assert.equal('object', typeof res);
+      assert.equal('test/user.json', res[0]);
+      done();
+    });
+  },
+  
   'test .getFile()': function(assert, done){
     client.getFile('/test/user.json', function(err, res){
       assert.ok(!err);
