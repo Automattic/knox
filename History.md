@@ -1,4 +1,9 @@
 
+0.0.5 / 2011-06-07 
+==================
+
+  * Fixed; ignoring certain query params when preparing stringToSign. [Rajiv Navada]
+
 0.0.4 / 2011-05-20 
 ==================
 
