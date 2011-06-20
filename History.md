@@ -1,4 +1,9 @@
 
+0.0.9 / 2011-06-20 
+==================
+
+  * Fixed signedUrl signature, needs encodeURIComponent() not escape() to prevent SignatureDoesNotMatch errors on signatures containing plus signs.
+
 0.0.8 / 2011-06-15 
 ==================
 
