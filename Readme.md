@@ -127,7 +127,7 @@ client.deleteFile('/test/Readme.md', function(err, res){
 To run the test suite you must first have an S3 account, and create
 a file named _./auth_, which contains your credentials as json, for example:
 
-```json
+```javascript
 {"key":"<api-key-here>",
  "secret":"<secret-here>",
  "bucket":"<your-bucket-name>"}
