@@ -58,7 +58,7 @@ module.exports = {
     assert.equal('foobar', client.key);
     assert.equal('baz', client.secret);
     assert.equal('misc', client.bucket);
-    assert.equal('misc.s3.amazonaws.com', client.endpoint);
+    assert.equal('s3.amazonaws.com', client.endpoint);
   },
   
   'test .createClient() custom endpoint': function(assert){
@@ -74,10 +74,10 @@ module.exports = {
 
   'test .putFile()': function(assert, done){
     var n = 0;
-    client.putFile(jsonFixture, '/test/user.json', function(err, res){
+    client.putFile(jsonFixture, '/test/user2.json', function(err, res){
       assert.ok(!err, 'putFile() got an error!');
       assert.equal(200, res.statusCode);
-      client.get('/test/user.json').on('response', function(res){
+      client.get('/test/user2.json').on('response', function(res){
         assert.equal('application/json', res.headers['content-type']);
         done();
       }).end();
@@ -98,10 +98,10 @@ module.exports = {
         req.on('response', function(res){
           assert.equal(200, res.statusCode);
           assert.equal(
-              'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
+              'http://'+client.endpoint+'/'+client.bucket+'/test/user.json'
             , client.url('/test/user.json'));
           assert.equal(
-              'http://'+client.bucket+'.s3.amazonaws.com/test/user.json'
+              'http://'+client.endpoint+'/'+client.bucket+'/test/user.json'
             , req.url);
           done();
         });
@@ -165,7 +165,7 @@ module.exports = {
   },
   
   'test .deleteFile()': function(assert, done){
-    client.deleteFile('/test/user.json', function(err, res){
+    client.deleteFile('/test/user2.json', function(err, res){
       assert.ok(!err);
       assert.equal(204, res.statusCode);
       done();
