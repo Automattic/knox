@@ -197,6 +197,24 @@ module.exports = {
   			assert.ok(pinfo.etag !== null);
   			client.completeUpload(resourceName, upinfo.uploadId, [pinfo], function(e, cinfo){
   				assert.ok(e === null);
+  				done();
+  			});
+  		});
+  	});
+  },
+  
+  'test for multipart upload and abort': function(assert, done){
+  	var resourceName = '/test/blob.bin';
+  	client.beginUpload(resourceName, function(e, upinfo){
+  		assert.ok(e === null);
+  		var buf = new Buffer('Hello, world!', 'utf8');
+  		client.putPart(resourceName, upinfo.uploadId, 1, buf, function(e, pinfo){
+  			assert.ok(e === null);
+  			assert.equal(1, pinfo.partNumber);
+  			assert.ok(pinfo.etag !== null);
+  			client.abortUpload(resourceName, upinfo.uploadId, function(success){
+  				assert.ok(success);
+  				done();
   			});
   		});
   	});
