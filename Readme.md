@@ -150,7 +150,7 @@ Uploading part using callback:
 ### Complete Multipart Upload
 
 This operation completes a multipart upload by assembling previously uploaded parts. You should
-specify an array of parts to be commited and upload ID(obtained from beginUpload function).
+specify an array of parts to be commited and upload ID(obtained from `beginUpload` function).
 
     client.beginUpload('/test/blob.bin', function(e, upinfo){
     	var part = new Buffer('Hello, world!', 'utf8');
@@ -172,11 +172,37 @@ will be invalidated.
     	var part = new Buffer('Hello, world!', 'utf8');
     	//Upload part of the object
 		client.putPart('/test/blob.bin', 1, upinfo.uploadId, part, function(e, pinfo){
+			//Abort upload
 			client.abortUpload('/test/blob.bin', upinfo.uploadId, function(success){
 				console.log('Abort:' + success);
 			});
 		});
 	});
+	
+### List Parts
+
+Obtains status of the multipart upload.
+
+    client.getParts('/test/blob.bin', '<Upload-Id>', function(err, info){
+    	//Print uploaded parts
+    	for(var p in info.parts) {
+    		console.log('Part #' + info.parts[p].partNumber);
+    		console.log('ETag: ' + info.parts[p].etag);
+    		console.log('Size, in bytes: ' + info.parts[p].size);
+    	}
+    });
+
+The second parameter of the `getParts` function can accept object with the following predefined named values:
+
+* `uploadId` - upload ID;
+* `max-parts` - the maximum number of parts to return in the response body;
+* `part-number-marker` - specifies the part after which listing should begin.
+
+For example:
+
+    client.getParts('/test/blob.bin', {'uploadId': '<Upload-Id>', 'max-parts': 3}, function(err, info) { });
+    
+These paramaters are described [here](http://docs.amazonwebservices.com/AmazonS3/latest/API/index.html?mpUploadInitiate.html).
 
 ## Running Tests
 
