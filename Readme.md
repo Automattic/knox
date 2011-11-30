@@ -10,6 +10,7 @@
   - Uses node's crypto library (fast!, the others used native js)
   - Very node-like low-level request api via `http.Client`
   - Highly documented
+  - Multipart upload
 
 ## Authors
 
@@ -90,7 +91,7 @@ Below is an example __GET__ request on the file we just shoved at s3, and simply
       });
     }).end();
 
-## DELETE
+### DELETE
 
 Delete our file:
 
@@ -104,6 +105,78 @@ Likewise we also have `client.deleteFile()` as a more concise (yet less flexible
     client.deleteFile('/test/Readme.md', function(err, res){
       // Logic
     });
+    
+### Initiate Multipart Upload
+
+The Multipart upload API enables you to upload large objects in parts transactionally. For more info, 
+see [here](http://docs.amazonwebservices.com/AmazonS3/latest/dev/index.html?mpuoverview.html).
+
+Initiate multipart upload:
+
+    client.beginUpload('/test/blob.bin', function(e, upinfo){ });
+    
+The first argument of the callback contains an error info. If it is _null_ then multipart upload is initiated
+successfully. The second argument contains information about multipart upload transaction:
+
+* `upinfo.bucket` - name of the bucket to which the multipart upload was initiated;
+* `upinfo.key` - object key for which the multipart upload was initiated;
+* `upinfo.uploadId` - ID for the initiated multipart upload.
+
+`uploadId` is an important field which is used by other multipart upload operations.
+
+### Upload Part
+
+Uploading part using response stream:
+
+    client.beginUpload('/test/blob.bin', function(e, upinfo){
+    	//Upload the first part
+    	var req = client.putPart('/test/blob.bin', 1, upinfo.uploadId);
+    	var part = new Buffer('Hello, world!\n', 'utf8');	//file part as Buffer
+    	req.end(part);	//send buffer
+    	//Upload the second part
+    	req = client.putPart('/test/blob.bin', 2, upinfo.uploadId);
+    	req.end('Ciao, mondo!', 'utf8');	//Italian
+    });
+    
+Uploading part using callback:
+
+	client.beginUpload('/test/blob.bin', function(e, upinfo){
+		var part = new Buffer('Hello, world!', 'utf8');
+		client.putPart('/test/blob.bin', 1, upinfo.uploadId, part, function(e, pinfo){
+			console.log('ETag = ' + pinfo.etag);
+		});
+	});
+	
+### Complete Multipart Upload
+
+This operation completes a multipart upload by assembling previously uploaded parts. You should
+specify an array of parts to be commited and upload ID(obtained from beginUpload function).
+
+    client.beginUpload('/test/blob.bin', function(e, upinfo){
+    	var part = new Buffer('Hello, world!', 'utf8');
+    	//Upload part of the object
+		client.putPart('/test/blob.bin', 1, upinfo.uploadId, part, function(e, pinfo){
+			//complete multipart upload and create a new object on Amazon S3
+			client.completeUpload('/test/blob.bin', upinfo.uploadId, [pinfo], function(e, cinfo){
+				console.log('Success: ' + e !== null);
+			});
+		});
+    });
+
+### Abort Multipart Upload
+
+This operations aborts multipart upload and removes all uploaded parts. Upload ID associated with the multipart upload
+will be invalidated.
+
+    client.beginUpload('/test/blob.bin', function(e, upinfo){
+    	var part = new Buffer('Hello, world!', 'utf8');
+    	//Upload part of the object
+		client.putPart('/test/blob.bin', 1, upinfo.uploadId, part, function(e, pinfo){
+			client.abortUpload('/test/blob.bin', upinfo.uploadId, function(success){
+				console.log('Abort:' + success);
+			});
+		});
+	});
 
 ## Running Tests
 
