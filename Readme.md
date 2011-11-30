@@ -196,7 +196,7 @@ The second parameter of the `getParts` function can accept object with the follo
 
 * `uploadId` - upload ID;
 * `max-parts` - the maximum number of parts to return in the response body;
-* `part-number-marker` - specifies the part after which listing should begin.
+* `part-number-marker` - the part number after which listing should begin.
 
 For example:
 
