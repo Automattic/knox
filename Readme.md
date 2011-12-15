@@ -196,13 +196,24 @@ The second parameter of the `getParts` function can accept object with the follo
 
 * `uploadId` - upload ID;
 * `max-parts` - the maximum number of parts to return in the response body;
-* `part-number-marker` - specifies the part after which listing should begin.
+* `part-number-marker` - the part number after which listing should begin.
 
 For example:
 
     client.getParts('/test/blob.bin', {'uploadId': '<Upload-Id>', 'max-parts': 3}, function(err, info) { });
     
 These paramaters are described [here](http://docs.amazonwebservices.com/AmazonS3/latest/API/index.html?mpUploadInitiate.html).
+
+### How to resume the multipart upload
+
+If you have partially uploaded file then it is not good solution to use `getParts` function to calculate remainded size and
+resume uploading. Use `getUploadInfo` function for this purpose:
+
+    client.getUploadInfo('/test/blob.bin', '<Upload-id>', function(err, summary){
+    	console.log(summary.totalSize);	//total number of already uploaded bytes, this field can be used to compute offset in the blob
+    	console.log(summary.count);		//count of already uploaded parts
+    	console.log(summary.lastPart);	//the number of the last uploaded part.
+    });
 
 ## Running Tests
 
