@@ -25,9 +25,18 @@ The following examples demonstrate some capabilities of knox and the s3 REST API
       , bucket: 'learnboost'
     });
 
-By default knox will send all requests to the global endpoint (bucket.s3.amazonaws.com).
+By default knox will send all requests to the global endpoint (s3.amazonaws.com/bucket).
 This works regardless of the region where the bucket is. But if you want to manually set
 the endpoint (for performance reasons) you can do it with the `endpoint` option.
+
+Communications use HTTPS by default. You can force HTTP by setting the `insecure` option. e.g.
+
+    var client = knox.createClient({
+        key: '<api-key-here>'
+      , secret: '<secret-here>'
+      , bucket: 'learnboost'
+      , insecure: true
+    });
 
 ### PUT
 
@@ -116,7 +125,7 @@ a file named _./auth_, which contains your credentials as json, for example:
 
 Then simply execute:
 
-    $ make test
+    $ NODE_PATH=lib make test
 
 ## License 
 
