@@ -29,13 +29,13 @@ By default knox will send all requests to the global endpoint (s3.amazonaws.com/
 This works regardless of the region where the bucket is. But if you want to manually set
 the endpoint (for performance reasons) you can do it with the `endpoint` option.
 
-Communications use HTTPS by default. You can force HTTP by setting the `insecure` option. e.g.
+Communications use HTTPS by default. You can force HTTP by setting the `secure` option to `false`. e.g.
 
     var client = knox.createClient({
         key: '<api-key-here>'
       , secret: '<secret-here>'
       , bucket: 'learnboost'
-      , insecure: true
+      , secure: false
     });
 
 ### PUT
