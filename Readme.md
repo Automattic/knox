@@ -25,7 +25,7 @@ The following examples demonstrate some capabilities of knox and the s3 REST API
       , bucket: 'learnboost'
     });
 
-By default knox will send all requests to the global endpoint (s3.amazonaws.com/bucket).
+By default knox will send all requests to the global endpoint (s3.amazonaws.com).
 This works regardless of the region where the bucket is. But if you want to manually set
 the endpoint (for performance reasons) you can do it with the `endpoint` option.
 
