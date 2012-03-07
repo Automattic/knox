@@ -105,6 +105,19 @@ Likewise we also have `client.deleteFile()` as a more concise (yet less flexible
       // Logic
     });
 
+Delete multi-objects
+
+    var json2xml = require('json2xml');
+    var xml_data = '<?xml version="1.0" encoding="UTF-8"?>' + json2xml.toXml('Delete', { Object: [
+      { Key: '0/0/0.png'},
+      { Key: '0/0/1.png'},
+      { Key: '0/0/2.png'}
+    ]});
+    client.deleteAll(xml_data, function(err, res){
+      console.log(res.statusCode);
+      console.log(res.headers);
+    });
+
 ## Running Tests
 
 To run the test suite you must first have an S3 account, and create
