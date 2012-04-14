@@ -1,7 +1,7 @@
 
 # knox
 
- Node Amazon S3 Client.
+ Node Amazon S3 Client / Google Cloud Storage (using v1.0 authentication).
 
 ## Features
 
@@ -23,9 +23,10 @@ The following examples demonstrate some capabilities of knox and the s3 REST API
         key: '<api-key-here>'
       , secret: '<secret-here>'
       , bucket: 'learnboost'
+      , service: 'amazon' or 'google'
     });
 
-By default knox will send all requests to the global endpoint (bucket.s3.amazonaws.com).
+By default knox will send all requests to the global endpoint (bucket.s3.amazonaws.com/bucket.commondatastorage.googleapis.com).
 This works regardless of the region where the bucket is. But if you want to manually set
 the endpoint (for performance reasons) you can do it with the `endpoint` option.
 
@@ -52,6 +53,9 @@ we listen for the _response_ event, just as we would for any `http.Client` reque
 By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__ the file. To alter this simply pass this header to the client request method. Note that the field name __MUST__ be lowercase, do not use 'X-Amz-Acl' etc, as this will currently result in duplicate headers (although different case).
 
     client.put('/test/Readme.md', { 'x-amz-acl': 'private' });
+    or
+    client.put('/test/Readme.md', { 'x-goog-acl': 'private' });
+
 
 Each HTTP verb has an alternate method with the "File" suffix, for example `put()` also has a higher level method named `putFile()`, accepting a src filename and performs the dirty work shown above for you. Here is an example usage:
 
