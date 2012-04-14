@@ -23,6 +23,7 @@ The following examples demonstrate some capabilities of knox and the s3 REST API
         key: '<api-key-here>'
       , secret: '<secret-here>'
       , bucket: 'learnboost'
+      , service: 'amazon' or 'google'
     });
 
 By default knox will send all requests to the global endpoint (bucket.s3.amazonaws.com/bucket.commondatastorage.googleapis.com).
