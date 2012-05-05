@@ -4,10 +4,11 @@
  */
 
 var knox = require('knox')
-  , auth = knox.auth;
+  , auth = knox.auth
+  , assert = require('assert');
 
 module.exports = {
-  'test .stringToSign()': function(assert){
+  'test .stringToSign()': function(done){
     var str = auth.stringToSign({
         verb: 'PUT'
       , md5: '09c68b914d66457508f6ad727d860d5b'
@@ -15,7 +16,7 @@ module.exports = {
       , resource: '/learnboost'
       , date: new Date('Mon, May 25 1987 00:00:00 GMT')
     });
-    
+
     var expected = [
         'PUT'
       , '09c68b914d66457508f6ad727d860d5b'
@@ -23,11 +24,12 @@ module.exports = {
       , new Date('Mon, May 25 1987 00:00:00 GMT').toUTCString()
       , '/learnboost'
     ].join('\n');
-    
+
     assert.equal(expected, str);
+    done();
   },
-  
-  'test .sign()': function(assert){
+
+  'test .sign()': function(done){
     var str = auth.sign({
         verb: 'PUT'
       , secret: 'test'
@@ -38,22 +40,24 @@ module.exports = {
     });
 
     assert.equal('7xIdjyy+W17/k0le5kwBnfrZTiM=', str);
+    done();
   },
-  
-  'test .canonicalizeHeaders()': function(assert){
+
+  'test .canonicalizeHeaders()': function(done){
     var str = auth.canonicalizeHeaders({
         'X-Amz-Date': 'some date'
       , 'X-Amz-Acl': 'private'
       , 'X-Foo': 'bar'
     });
-    
+
     var expected = [
         'x-amz-acl:private'
       , 'x-amz-date:some date'
     ].join('\n');
 
     assert.equal(expected, str);
-    
+
     assert.equal('', auth.canonicalizeHeaders({}));
+    done();
   }
 };
