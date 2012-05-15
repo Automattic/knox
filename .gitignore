@@ -1,3 +1,5 @@
 .DS_Store
 test.js
 auth
+node_modules/
+npm-debug.log

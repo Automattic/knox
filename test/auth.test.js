@@ -3,11 +3,12 @@
  * Module dependencies.
  */
 
-var knox = require('knox')
-  , auth = knox.auth;
+var knox = require('..')
+  , auth = knox.auth
+  , assert = require('assert');
 
 module.exports = {
-  'test .stringToSign()': function(assert){
+  'test .stringToSign()': function(){
     var str = auth.stringToSign({
         verb: 'PUT'
       , md5: '09c68b914d66457508f6ad727d860d5b'
@@ -27,7 +28,7 @@ module.exports = {
     assert.equal(expected, str);
   },
   
-  'test .sign()': function(assert){
+  'test .sign()': function(){
     var str = auth.sign({
         verb: 'PUT'
       , secret: 'test'
@@ -40,7 +41,7 @@ module.exports = {
     assert.equal('7xIdjyy+W17/k0le5kwBnfrZTiM=', str);
   },
   
-  'test .canonicalizeHeaders()': function(assert){
+  'test .canonicalizeHeaders()': function(){
     var str = auth.canonicalizeHeaders({
         'X-Amz-Date': 'some date'
       , 'X-Amz-Acl': 'private'

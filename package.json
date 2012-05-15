@@ -9,5 +9,11 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/LearnBoost/knox.git"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }
