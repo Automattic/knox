@@ -5,7 +5,8 @@
 
 var knox = require('..')
   , fs = require('fs')
-  , assert = require('assert');
+  , assert = require('assert')
+  , crypto = require('crypto');
 
 try {
   var auth = JSON.parse(fs.readFileSync('auth', 'ascii'));
@@ -171,6 +172,25 @@ module.exports = {
       assert.equal(204, res.statusCode);
       done();
     });
+  },
+
+  'test /?delete': function (done) {
+    var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
+    xml.push('<Object><Key>/test/user3.json</Key></Object>');
+    xml.push('</Delete>');
+    xml = xml.join('');
+    var req = client.request('POST', '/?delete', {
+      'Content-Length': xml.length,
+      'Content-MD5': crypto.createHash('md5').update(xml).digest('base64'),
+      'Accept:': '*/*',
+    }).on('error', function (err) {
+      assert.ok(!err);
+    }).on('response', function (res) {
+      assert.equal(200, res.statusCode);
+      done();
+    });
+    req.write(xml);
+    req.end();
   },
   
   'test .get() 404': function(done){
