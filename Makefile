@@ -2,8 +2,7 @@
 test:
 	@./support/expresso/bin/expresso test/*.test.js \
 		--timeout 8000 \
-		--serial \
-		-I lib
+		--serial
 
 docs: index.html
 
