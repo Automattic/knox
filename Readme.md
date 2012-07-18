@@ -92,7 +92,7 @@ An example of moving a file:
 
 ```js
 client.put('0/0/0.png', {
-    'Content-Type': 'image/jpg'
+    'Content-Type': 'image/jpeg'
   , 'Content-Length': '0'
   , 'x-amz-copy-source': '/test-tiles/0/0/0.png'
   , 'x-amz-metadata-directive': 'REPLACE'
