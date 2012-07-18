@@ -1,4 +1,4 @@
-vNext / 2012-07-??
+0.0.11 / 2012-07-18
 ==================
 
 * Now using HTTPS by default, instead of HTTP. This can be disabled with the option `secure: false`.
