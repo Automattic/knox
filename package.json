@@ -4,7 +4,7 @@
   "keywords": ["aws", "amazon", "s3"],
   "version": "0.0.10",
   "author": "TJ Holowaychuk <tj@learnboost.com>",
-  "main": "./index.js",
+  "main": "./lib/index.js",
   "engines": { "node": ">= 0.2.0" },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   },
   "scripts": {
     "test": "mocha"
+  },
+  "directories": {
+    "lib": "./lib"
   }
 }
