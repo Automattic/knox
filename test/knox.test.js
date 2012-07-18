@@ -39,6 +39,13 @@ module.exports = {
       function () { knox.createClient({ key: 'foo', secret: 'bar' }); },
       /aws "bucket" required/
     );
+
+    assert.throws(
+      function () {
+        knox.createClient({ key: 'foo', secret: 'bar', bucket: 'BuCkEt' })
+      },
+      /bucket names must be all lower case/
+    );
   },
 
   'test .createClient() valid': function(){
