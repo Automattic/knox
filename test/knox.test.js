@@ -20,10 +20,6 @@ try {
 var jsonFixture = __dirname + '/fixtures/user.json';
 
 module.exports = {
-  'test .version': function(){
-    assert.ok(/^\d+\.\d+\.\d+$/.test(knox.version));
-  },
-
   'test .createClient() invalid': function(){
     assert.throws(
       function () { knox.createClient({}); },
