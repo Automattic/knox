@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git://github.com/LearnBoost/knox.git"
   },
+  "dependencies": {
+    "mime": "*"
+  },
   "devDependencies": {
     "mocha": "*"
   },
