@@ -25,29 +25,20 @@ module.exports = {
   },
 
   'test .createClient() invalid': function(){
-    var err;
-    try {
-      knox.createClient({});
-    } catch (e) {
-      err = e;
-    }
-    assert.equal('aws "key" required', err.message);
+    assert.throws(
+      function () { knox.createClient({}); },
+      /aws "key" required/
+    );
 
-    var err;
-    try {
-      knox.createClient({ key: 'foo' });
-    } catch (e) {
-      err = e;
-    }
-    assert.equal('aws "secret" required', err.message);
+    assert.throws(
+      function () { knox.createClient({ key: 'foo' }); },
+      /aws "secret" required/
+    );
 
-    var err;
-    try {
-      knox.createClient({ key: 'foo', secret: 'bar' });
-    } catch (e) {
-      err = e;
-    }
-    assert.equal('aws "bucket" required', err.message);
+    assert.throws(
+      function () { knox.createClient({ key: 'foo', secret: 'bar' }); },
+      /aws "bucket" required/
+    );
   },
 
   'test .createClient() valid': function(){
