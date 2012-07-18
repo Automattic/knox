@@ -1,0 +1,13 @@
+# From .gitignore
+.DS_Store
+test.js
+/auth
+/node_modules/
+/npm-debug.log
+
+# Additions for .npmignore only
+/test
+/.npmignore
+/History.md
+/index.html
+/Makefile
