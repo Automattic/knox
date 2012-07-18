@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git://github.com/LearnBoost/knox.git"
   },
+  "bugs": {
+    "url": "http://github.com/LearnBoost/knox/issues"
+  },
   "dependencies": {
     "mime": "*"
   },
