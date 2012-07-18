@@ -138,6 +138,16 @@ module.exports = {
     }).end();
   },
 
+  'test header lowercasing': function(){
+    var headers = { 'X-Amz-Acl': 'private' };
+    var req = client.put('/test/user.json', headers);
+
+    assert.equal('private', req.getHeader('x-amz-acl'));
+
+    req.on('error', function (){}); // swallow "socket hang up" from aborting
+    req.abort();
+  },
+
   'test .head()': function(done){
     client.head('/test/user.json').on('response', function(res){
       assert.equal(200, res.statusCode);

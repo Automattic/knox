@@ -59,8 +59,6 @@ fs.readFile('Readme.md', function(err, buf){
 
 By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__
 the file. To alter this simply pass this header to the client request method.
-Note that the field name __MUST__ be lowercase, do not use 'X-Amz-Acl' etc, as
-this will currently result in duplicate headers (although different case).
 
 ```js
 client.put('/test/Readme.md', { 'x-amz-acl': 'private' });
