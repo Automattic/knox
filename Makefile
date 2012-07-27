@@ -1,4 +1,7 @@
 
+test:
+	@./node_modules/.bin/mocha
+
 docs: index.html
 
 index.html:
