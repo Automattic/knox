@@ -78,13 +78,16 @@ client.putFile('my.json', '/user.json', function(err, res){
 Another alternative is to stream via `Client#putStream()`, for example:
 
 ```js
-var stream = fs.createReadStream('data.json');
-client.putStream(stream, '/some-data.json', function(err, res){
-  // Logic
+http.get('http://google.com/doodle.png', function(res){
+  var headers = {
+      'Content-Length': res.headers['content-length']
+    , 'Content-Type': res.headers['content-type']
+  };
+  client.putStream(res, '/doodle.png', headers, function (err, res) {
+    // Logic
+  });
 });
 ```
-
-(Note that this only works with file streams currently.)
 
 An example of moving a file:
 

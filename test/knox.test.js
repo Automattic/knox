@@ -5,6 +5,7 @@
 
 var knox = require('..')
   , fs = require('fs')
+  , http = require('http')
   , assert = require('assert')
   , crypto = require('crypto');
 
@@ -106,12 +107,35 @@ module.exports = {
     });
   },
 
-  'test .putStream()': function(done){
-    var stream = fs.createReadStream(jsonFixture);
-    client.putStream(stream, '/test/user.json', function(err, res){
-      assert.ok(!err);
-      if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-      done();
+  'test .putStream() with file stream': function(done){
+    fs.stat(jsonFixture, function(err, stat){
+      if (err) throw err;
+      var headers = {
+          'Content-Length': stat.size
+        , 'Content-Type': 'application/json'
+        , 'x-amz-acl': 'private'
+      };
+      var stream = fs.createReadStream(jsonFixture);
+      client.putStream(stream, '/test/user.json', headers, function(err, res){
+        assert.ok(!err);
+        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+        done();
+      });
+    })
+  },
+
+  'test .putStream() with http stream': function(done){
+    http.get('http://google.com', function(res){
+      var headers = {
+          'Content-Length': res.headers['content-length']
+        , 'Content-Type': res.headers['content-type']
+        , 'x-amz-acl': 'private'
+      };
+      client.putStream(res, '/google', headers, function (err, res) {
+        assert.ok(!err);
+        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+        done();
+      });
     });
   },
 
