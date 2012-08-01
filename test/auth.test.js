@@ -56,5 +56,15 @@ module.exports = {
     assert.equal(expected, str);
 
     assert.equal('', auth.canonicalizeHeaders({}));
+  },
+
+  'test .canonicalizeResource()': function(){
+
+    assert.equal(auth.canonicalizeResource('/bucket/'), '/bucket/');
+    assert.equal(auth.canonicalizeResource('/bucket/test/user2.json'), '/bucket/test/user2.json');
+    assert.equal(auth.canonicalizeResource('/bucket/?acl'), '/bucket/?acl');
+    assert.equal(auth.canonicalizeResource('/bucket/?delete'), '/bucket/?delete');
+    assert.equal(auth.canonicalizeResource('/bucket/?prefix=logs'), '/bucket/');
+    assert.equal(auth.canonicalizeResource('/bucket/?prefix=logs/&delimiter=/'), '/bucket/');
   }
 };

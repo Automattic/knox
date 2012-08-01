@@ -3,3 +3,4 @@ test.js
 /auth
 /node_modules/
 /npm-debug.log
+.idea
