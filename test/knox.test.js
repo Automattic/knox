@@ -139,6 +139,21 @@ module.exports = {
     });
   },
 
+  'test .copy()': function(done){
+    client.copy('/test/user.json', '/test/user3.json').on('response', function(res){
+      assert.equal(200, res.statusCode);
+      done();
+    }).end();
+  },
+
+  'test .copyFile()': function(done){
+    client.copyFile('test/user.json', 'test/user4.json', function(err, res){
+      assert.ok(!err);
+      assert.equal(200, res.statusCode);
+      done();
+    }).end();
+  },
+
   'test .getFile()': function(done){
     client.getFile('/test/user.json', function(err, res){
       assert.ok(!err);
@@ -150,7 +165,7 @@ module.exports = {
   },
 
   'test .get()': function(done){
-    client.get('/test/user.json').on('response', function(res){
+    client.get('/test/user4.json').on('response', function(res){
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type'])
       assert.equal(13, res.headers['content-length'])
@@ -212,7 +227,8 @@ module.exports = {
   },
 
   'test .deleteMultiple()': function(done){
-    client.deleteMultiple(['test/user.json', '/test/user2.json'],
+    var files = ['test/user.json', '/test/user2.json', '/test/user3.json'];
+    client.deleteMultiple(files,
                           function (err, res) {
       assert.ok(!err);
       assert.equal(200, res.statusCode);
@@ -222,7 +238,7 @@ module.exports = {
 
   'test /?delete': function (done) {
     var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
-    xml.push('<Object><Key>/test/user3.json</Key></Object>');
+    xml.push('<Object><Key>/test/user4.json</Key></Object>');
     xml.push('</Delete>');
     xml = xml.join('');
     var req = client.request('POST', '/?delete', {
