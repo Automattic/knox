@@ -226,6 +226,21 @@ module.exports = {
     });
   },
 
+  'test .request() to get ACL (?acl)': function (done) {
+    var req = client.request('GET', '/test/user3.json?acl')
+      .on('error', function (err) {
+        assert.ok(!err);
+      }).on('response', function (res) {
+        var data = '';
+        res.on('data', function (chunk) {
+          data += chunk;
+        }).on('end', function () {
+          assert.ok(data.indexOf('<Permission>FULL_CONTROL</Permission>') !== -1);
+          done();
+        }).on('error', done);
+      }).end();
+  },
+
   'test .deleteMultiple()': function(done){
     var files = ['test/user.json', '/test/user2.json', '/test/user3.json'];
     client.deleteMultiple(files,
