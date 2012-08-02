@@ -1,3 +1,13 @@
+0.1.0 / 2012-08-02
+==================
+
+  * `putStream` now works with every type of stream, not just file streams, and actually streams the data using `pipe`, instead of buffering chunks into memory. Note that a `'Content-Length'` header is now required, if you weren't using one already. (#14 #32 #48 #57 #72)
+  * `putFile` is now based on `putStream`, and thus no longer buffers the entire file into memory.
+  * Added `copyFile` method as a higher-level version of existing `copy`.
+  * Fixed signing logic for URLs with query parameters outside the Amazon whitelist. (Seth Purcell, #78)
+  * Leading slashes are now optional again, after becoming mandatory in 0.0.10. (#77)
+  * Lots of README updates for a more pleasant documentation experience.
+
 0.0.11 / 2012-07-18
 ===================
 
