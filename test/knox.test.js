@@ -158,6 +158,15 @@ module.exports = {
     }).end();
   },
 
+  'test .get() without leading slash': function(done){
+    client.get('test/user.json').on('response', function(res){
+      assert.equal(200, res.statusCode);
+      assert.equal('application/json', res.headers['content-type'])
+      assert.equal(13, res.headers['content-length'])
+      done();
+    }).end();
+  },
+
   'test header lowercasing': function(){
     var headers = { 'X-Amz-Acl': 'private' };
     var req = client.put('/test/user.json', headers);
