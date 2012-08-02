@@ -8,6 +8,7 @@
     "TJ Holowaychuk <tj@learnboost.com>",
     "Domenic Denicola <domenic@domenicdenicola.com>"
   ],
+  "license": "MIT",
   "main": "./lib/index.js",
   "engines": { "node": ">= 0.2.0" },
   "repository": {
