@@ -8,7 +8,7 @@ Node Amazon S3 Client.
   - Very Node-like low-level request capabilities via `http.Client`
   - Higher-level API with `client.putStream()`, `client.getFile()`, etc.
   - Copying and multi-file delete support
-  - Highly documented
+  - Streaming file upload and direct stream-piping support
 
 ## Examples
 
@@ -30,33 +30,32 @@ can do it with the `endpoint` option.
 
 ### PUT
 
-Below we do several things, first we read _Readme.md_ into memory,
-and initialize a client request via `client.put()`, passing the destination
-filename as the first parameter (_/test/Readme.md_), and some headers. Then
-we listen for the _response_ event, just as we would for any `http.Client`
-request, if we have a 200 response, great! output the destination url to
-stdout.
+If you want to directly upload some strings to S3, you can use the `Client#put`
+method with a string or buffer, just like you would for any `http.Client`
+request. You pass in the filename as the first parameter, some headers for the
+second, and then listen for a `'response'` event on the request. Then send the
+request using `req.end()`. If we get a 200 response, great!
 
 ```js
-fs.readFile('Readme.md', function(err, buf){
-  var req = client.put('/test/Readme.md', {
-      'Content-Length': buf.length
-    , 'Content-Type': 'text/plain'
-  });
-  req.on('response', function(res){
-    if (200 == res.statusCode) {
-      console.log('saved to %s', req.url);
-    }
-  });
-  req.end(buf);
+var object = { foo: "bar" };
+var string = JSON.stringify(object);
+var req = client.put('/test/obj.json', {
+    'Content-Length': string.length
+  , 'Content-Type': 'application/json'
 });
+req.on('response', function(res){
+  if (200 == res.statusCode) {
+    console.log('saved to %s', req.url);
+  }
+});
+req.end(string);
 ```
 
 By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__
 the file. To alter this simply pass this header to the client request method.
 
 ```js
-client.put('/test/Readme.md', { 'x-amz-acl': 'private' });
+client.put('/test/obj.json', { 'x-amz-acl': 'private' });
 ```
 
 Each HTTP verb has an alternate method with the "File" suffix, for example
@@ -84,9 +83,8 @@ http.get('http://google.com/doodle.png', function(res){
 });
 ```
 
-Both `putFile` and `putStream` will stream the file to S3 instead of reading it
-in to memory, so they are a much better choice than our original code in most
-cases.
+Note that both `putFile` and `putStream` will stream to S3 instead of reading
+into memory, which is great.
 
 ### GET
 
