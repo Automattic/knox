@@ -1,14 +1,14 @@
 0.0.11 / 2012-07-18
-==================
+===================
 
-* Now using HTTPS by default, instead of HTTP. This can be disabled with the option `secure: false`.
-* Now using the [mime](https://github.com/broofa/node-mime) package as a dependency instead of bundling an outdated version of it. This should result in a much more complete registry of MIME types for auto-detection when using `putFile`.
-* Trying to use bucket names that are not all lowercase will give an early error instead of failing with `SignatureDoesNotMatch` upon attempting any operation. [See #44](https://github.com/LearnBoost/knox/issues/44#issuecomment-7074177) for more information.
-* Fixed capturing of HTTP request errors to forward to the callback function for all "higher-level API" methods (i.e. those accepting callbacks). (@shuzhang, #71)
-* Fixed README example to use `"image/jpeg"` instead of `"image/jpg"`. (@jedwood, #74)
+  * Now using HTTPS by default, instead of HTTP. This can be disabled with the option `secure: false`.
+  * Now using the [mime](https://github.com/broofa/node-mime) package as a dependency instead of bundling an outdated version of it. This should result in a much more complete registry of MIME types for auto-detection when using `putFile`.
+  * Trying to use bucket names that are not all lowercase will give an early error instead of failing with `SignatureDoesNotMatch` upon attempting any operation. [See #44](https://github.com/LearnBoost/knox/issues/44#issuecomment-7074177) for more information.
+  * Fixed capturing of HTTP request errors to forward to the callback function for all "higher-level API" methods (i.e. those accepting callbacks). (@shuzhang, #71)
+  * Fixed README example to use `"image/jpeg"` instead of `"image/jpg"`. (@jedwood, #74)
 
 0.0.10 / 2012-07-16
-==================
+===================
 
   * Added `client.copy(sourceFilename, destFilename, headers)` method for copying files within a bucket.
   * Added `client.deleteMultiple(filenames, headers, cb)` method for [multi-object delete](http://docs.amazonwebservices.com/AmazonS3/latest/API/multiobjectdeleteapi.html).
