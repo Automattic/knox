@@ -10,11 +10,6 @@ Node Amazon S3 Client.
   - Copying and multi-file delete support
   - Highly documented
 
-## Authors
-
-  - TJ Holowaychuk ([visionmedia](https://github.com/visionmedia))
-  - Domenic Denicola ([domenic](https://github.com/domenic))
-
 ## Examples
 
 The following examples demonstrate some capabilities of knox and the S3 REST
