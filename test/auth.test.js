@@ -66,5 +66,6 @@ module.exports = {
     assert.equal(auth.canonicalizeResource('/bucket/?delete'), '/bucket/?delete');
     assert.equal(auth.canonicalizeResource('/bucket/?prefix=logs'), '/bucket/');
     assert.equal(auth.canonicalizeResource('/bucket/?prefix=logs/&delimiter=/'), '/bucket/');
+      assert.equal(auth.canonicalizeResource('/bucket/?prefix=log%20files/&delimiter=/'), '/bucket/');
   }
 };
