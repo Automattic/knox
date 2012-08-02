@@ -4,6 +4,10 @@
   "keywords": ["aws", "amazon", "s3"],
   "version": "0.0.11",
   "author": "TJ Holowaychuk <tj@learnboost.com>",
+  "contributors": [
+    "TJ Holowaychuk <tj@learnboost.com>",
+    "Domenic Denicola <domenic@domenicdenicola.com>"
+  ],
   "main": "./lib/index.js",
   "engines": { "node": ">= 0.2.0" },
   "repository": {
