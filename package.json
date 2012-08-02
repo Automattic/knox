@@ -10,7 +10,6 @@
   ],
   "license": "MIT",
   "main": "./lib/index.js",
-  "engines": { "node": ">= 0.2.0" },
   "repository": {
     "type": "git",
     "url": "git://github.com/LearnBoost/knox.git"
