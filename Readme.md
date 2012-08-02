@@ -1,13 +1,13 @@
-
 # knox
 
- Node Amazon S3 Client.
+Node Amazon S3 Client.
 
 ## Features
 
   - Familiar API (`client.get()`, `client.put()`, etc)
-  - Uses node's crypto library (fast!, the others used native js)
-  - Very node-like low-level request api via `http.Client`
+  - Very Node-like low-level request capabilities via `http.Client`
+  - Higher-level API with `client.putStream()`, `client.getFile()`, etc.
+  - Copying and multi-file delete support
   - Highly documented
 
 ## Authors
@@ -46,7 +46,7 @@ stdout.
 fs.readFile('Readme.md', function(err, buf){
   var req = client.put('/test/Readme.md', {
       'Content-Length': buf.length
-    ,  'Content-Type': 'text/plain'
+    , 'Content-Type': 'text/plain'
   });
   req.on('response', function(res){
     if (200 == res.statusCode) {
@@ -65,8 +65,8 @@ client.put('/test/Readme.md', { 'x-amz-acl': 'private' });
 ```
 
 Each HTTP verb has an alternate method with the "File" suffix, for example
-`put()` also has a higher level method named `putFile()`, accepting a src
-filename and performs the dirty work shown above for you. Here is an example
+`put()` also has a higher level method named `putFile()`, accepting a source
+filename and performing the dirty work shown above for you. Here is an example
 usage:
 
 ```js
@@ -89,18 +89,9 @@ http.get('http://google.com/doodle.png', function(res){
 });
 ```
 
-An example of moving a file:
-
-```js
-client.put('0/0/0.png', {
-    'Content-Type': 'image/jpeg'
-  , 'Content-Length': '0'
-  , 'x-amz-copy-source': '/test-tiles/0/0/0.png'
-  , 'x-amz-metadata-directive': 'REPLACE'
-}).on('response', function(res) {
-  // Logic
-}).end();
-```
+Both `putFile` and `putStream` will stream the file to S3 instead of reading it
+in to memory, so they are a much better choice than our original code in most
+cases.
 
 ### GET
 
@@ -118,6 +109,15 @@ client.get('/test/Readme.md').on('response', function(res){
 }).end();
 ```
 
+There is also `Client#getFile()` which uses a callback pattern instead of giving
+you the raw request:
+
+```js
+client.getFile('/test/Readme.md', function (err, res) {
+  // Logic
+});
+```
+
 ### DELETE
 
 Delete our file:
@@ -129,7 +129,7 @@ client.del('/test/Readme.md').on('response', function(res){
 }).end();
 ```
 
-Likewise we also have `client.deleteFile()` as a more concise (yet less
+Likewise we also have `Client#deleteFile()` as a more concise (yet less
 flexible) solution:
 
 ```js
@@ -137,6 +137,48 @@ client.deleteFile('/test/Readme.md', function(err, res){
   // Logic
 });
 ```
+
+### HEAD
+
+As you might expect we have `Client#head` and `Client#headFile`, following the
+same pattern as above.
+
+### Advanced Operations
+
+Knox supports a few advanced operations. Like copying files:
+
+```js
+client.copy('/test/Readme.md', '/test/Readme.markdown').on('response', function(res){
+  console.log(res.statusCode);
+  console.log(res.headers);
+}).end();
+
+// or
+
+client.copyFile('/test/Readme.md', '/test/Readme.markdown', function (err, res) {
+  // Logic
+});
+```
+
+and deleting multiple files at once:
+
+```js
+client.deleteMultiple(['/test/Readme.md', '/test/Readme.markdown'], function (err, res) {
+  // Logic
+});
+```
+
+And you can always issue ad-hoc requests, e.g. the following to
+[get an object's ACL][acl]:
+
+```js
+client.request('GET', '/test/Readme.md?acl').on('response', function (res) {
+  // Read and parse the XML response.
+  // Everyone loves XML parsing.
+}).end();
+```
+
+[acl]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html
 
 ## Running Tests
 
