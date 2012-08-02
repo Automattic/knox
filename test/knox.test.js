@@ -107,6 +107,20 @@ module.exports = {
     });
   },
 
+  'test .put() a string': function(done){
+      var string = "hello I am a string";
+      var req = client.put('/test/string.txt', {
+          'Content-Length': string.length
+        , 'Content-Type': 'text/plain'
+        , 'x-amz-acl': 'private'
+      });
+      req.on('response', function(res){
+        assert.equal(200, res.statusCode);
+        done();
+      });
+      req.end(string);
+  },
+
   'test .putStream() with file stream': function(done){
     fs.stat(jsonFixture, function(err, stat){
       if (err) throw err;
@@ -242,9 +256,8 @@ module.exports = {
   },
 
   'test .deleteMultiple()': function(done){
-    var files = ['test/user.json', '/test/user2.json', '/test/user3.json'];
-    client.deleteMultiple(files,
-                          function (err, res) {
+    var files = ['/test/user3.json', '/test/string.txt'];
+    client.deleteMultiple(files, function (err, res) {
       assert.ok(!err);
       assert.equal(200, res.statusCode);
       done();
