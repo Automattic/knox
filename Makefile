@@ -1,7 +1,6 @@
 
 test:
 	@./node_modules/.bin/mocha \
-		--require should \
 		--slow 500ms \
 		--reporter spec
 

@@ -21,8 +21,7 @@
     "mime": "*"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "*"
+    "mocha": "*"
   },
   "scripts": {
     "test": "mocha"
