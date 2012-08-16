@@ -2,7 +2,7 @@
   "name": "knox",
   "description": "Amazon S3 client",
   "keywords": ["aws", "amazon", "s3"],
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "TJ Holowaychuk <tj@learnboost.com>",
   "contributors": [
     "TJ Holowaychuk <tj@learnboost.com>",
