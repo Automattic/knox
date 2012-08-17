@@ -83,6 +83,19 @@ http.get('http://google.com/doodle.png', function(res){
 });
 ```
 
+And if you want a nice interface for putting a buffer or a string of data,
+use `Client#putBuffer()`:
+
+```js
+var buffer = new Buffer('a string of data');
+var headers = {
+  'Content-Type': 'text/plain'
+};
+client.putBuffer(buffer, '/string.txt', headers, function (err, res) {
+  // Logic
+});
+```
+
 Note that both `putFile` and `putStream` will stream to S3 instead of reading
 into memory, which is great.
 
