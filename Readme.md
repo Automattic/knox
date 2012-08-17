@@ -97,7 +97,9 @@ client.putBuffer(buffer, '/string.txt', headers, function(err, res){
 ```
 
 Note that both `putFile` and `putStream` will stream to S3 instead of reading
-into memory, which is great.
+into memory, which is great. And they return objects that emit `'progress'`
+events too, so you can monitor how the streaming goes! The progress events have
+fields `written`, `total`, and `percent`.
 
 ### GET
 
