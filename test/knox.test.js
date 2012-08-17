@@ -4,6 +4,7 @@
  */
 
 var knox = require('..')
+  , signQuery = require('../lib/auth').signQuery
   , fs = require('fs')
   , http = require('http')
   , assert = require('assert')
@@ -326,5 +327,20 @@ module.exports = {
       assert.equal(404, res.statusCode);
       done();
     }).end();
+  },
+
+  'test .signedUrl()': function(){
+    // Not much of a test, but hopefully will prevent regressions (see GH-81)
+    var signedUrl = client.signedUrl('/test/user.json', new Date(2020, 1, 1));
+    var signature = signQuery({
+        secret: client.secret
+      , date: 1580533200
+      , resource: '/' + client.bucket + '/test/user.json'
+    });
+
+    assert.equal('https://' + client.bucket +
+                 '.s3.amazonaws.com/test/user.json?Expires=1580533200&AWSAccessKeyId=' +
+                 client.key +
+                 '&Signature=' + encodeURIComponent(signature), signedUrl);
   }
 };
