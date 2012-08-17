@@ -77,7 +77,7 @@ http.get('http://google.com/doodle.png', function(res){
       'Content-Length': res.headers['content-length']
     , 'Content-Type': res.headers['content-type']
   };
-  client.putStream(res, '/doodle.png', headers, function (err, res) {
+  client.putStream(res, '/doodle.png', headers, function(err, res){
     // Logic
   });
 });
@@ -91,7 +91,7 @@ var buffer = new Buffer('a string of data');
 var headers = {
   'Content-Type': 'text/plain'
 };
-client.putBuffer(buffer, '/string.txt', headers, function (err, res) {
+client.putBuffer(buffer, '/string.txt', headers, function(err, res){
   // Logic
 });
 ```
@@ -119,7 +119,7 @@ There is also `Client#getFile()` which uses a callback pattern instead of giving
 you the raw request:
 
 ```js
-client.getFile('/test/Readme.md', function (err, res) {
+client.getFile('/test/Readme.md', function(err, res){
   // Logic
 });
 ```
@@ -161,7 +161,7 @@ client.copy('/test/Readme.md', '/test/Readme.markdown').on('response', function(
 
 // or
 
-client.copyFile('/test/Readme.md', '/test/Readme.markdown', function (err, res) {
+client.copyFile('/test/Readme.md', '/test/Readme.markdown', function(err, res){
   // Logic
 });
 ```
@@ -169,7 +169,7 @@ client.copyFile('/test/Readme.md', '/test/Readme.markdown', function (err, res) 
 and deleting multiple files at once:
 
 ```js
-client.deleteMultiple(['/test/Readme.md', '/test/Readme.markdown'], function (err, res) {
+client.deleteMultiple(['/test/Readme.md', '/test/Readme.markdown'], function(err, res){
   // Logic
 });
 ```
@@ -178,7 +178,7 @@ And you can always issue ad-hoc requests, e.g. the following to
 [get an object's ACL][acl]:
 
 ```js
-client.request('GET', '/test/Readme.md?acl').on('response', function (res) {
+client.request('GET', '/test/Readme.md?acl').on('response', function(res){
   // Read and parse the XML response.
   // Everyone loves XML parsing.
 }).end();
