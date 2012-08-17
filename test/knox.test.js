@@ -171,6 +171,19 @@ module.exports = {
     });
   },
 
+  'test .putBuffer()': function(done){
+    var buffer = new Buffer('a string of stuff');
+    var headers = {
+        'Content-Type': 'text/plain'
+      , 'x-amz-acl': 'private'
+    };
+    client.putBuffer(buffer, '/buffer.txt', headers, function (err, res) {
+      assert.ok(!err);
+        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+        done();
+    });
+  },
+
   'test .copy()': function(done){
     client.copy('/test/user.json', '/test/user3.json').on('response', function(res){
       assert.equal(200, res.statusCode);
@@ -206,10 +219,10 @@ module.exports = {
   },
 
   'test .get() without leading slash': function(done){
-    client.get('test/user.json').on('response', function(res){
+    client.get('buffer.txt').on('response', function(res){
       assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type'])
-      assert.equal(13, res.headers['content-length'])
+      assert.equal('text/plain', res.headers['content-type'])
+      assert.equal(17, res.headers['content-length'])
       done();
     }).end();
   },
@@ -274,7 +287,7 @@ module.exports = {
   },
 
   'test .deleteMultiple()': function(done){
-    var files = ['/test/user3.json', '/test/string.txt'];
+    var files = ['/test/user3.json', '/test/string.txt', '/buffer.txt'];
     client.deleteMultiple(files, function (err, res) {
       assert.ok(!err);
       assert.equal(200, res.statusCode);
