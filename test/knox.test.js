@@ -83,20 +83,22 @@ module.exports = {
   },
 
   'test .putFile() "progress" event': function(done){
-    var n = 0;
+    var progressHappened = false;
     var file = client.putFile(jsonFixture, '/test/user2.json', function(err, res){
       assert.ok(!err, 'putFile() got an error!');
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
         assert.equal('application/json', res.headers['content-type']);
+        assert.ok(progressHappened);
+        done();
       }).end();
     });
 
     file.on('progress', function(e){
+      progressHappened = true;
       assert(e.percent);
       assert(e.total);
       assert(e.written);
-      done();
     });
   },
 
@@ -168,6 +170,30 @@ module.exports = {
         assert.ok(!err);
         if (100 !== res.statusCode) assert.equal(200, res.statusCode);
         done();
+      });
+    });
+  },
+
+  'test .putStream() with http stream "progress" event': function(done){
+    var progressHappened = false;
+    http.get('http://google.com', function(res){
+      var headers = {
+          'Content-Length': res.headers['content-length']
+        , 'Content-Type': res.headers['content-type']
+        , 'x-amz-acl': 'private'
+      };
+      var req = client.putStream(res, '/google', headers, function (err, res) {
+        assert.ok(!err);
+        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+        assert.ok(progressHappened);
+        done();
+      });
+
+      req.on('progress', function(e){
+        progressHappened = true;
+        assert(e.percent);
+        assert(e.total);
+        assert(e.written);
       });
     });
   },
