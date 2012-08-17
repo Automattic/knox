@@ -1,8 +1,15 @@
-
-0.2.0 / 2012-08-16 
+0.3.0 / 2012-08-17
 ==================
 
-  * add `.putFile()` "progress" event
+  * Added `putStream` "progress" event to go along with `putFile`'s. `putStream` now also returns a request object, just like `put`.
+  * Added new `putBuffer` method as a higher-level way to PUT `Buffer`s.
+  * When uploading text files using `putFile`, `charset=UTF-8` is now added to the `'Content-Type'` header. (@pifantastic, #83)
+  * Fixed `signedUrl` method, which was last working in Knox 0.0.9. (@shawnburke, #81)
+
+0.2.0 / 2012-08-16
+==================
+
+  * Added `putFile` "progress" event.
 
 0.1.0 / 2012-08-02
 ==================
