@@ -24,7 +24,7 @@
     "mocha": "*"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --slow 500ms --reporter spec"
   },
   "directories": {
     "lib": "./lib"

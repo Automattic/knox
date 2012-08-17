@@ -1,8 +1,6 @@
 
 test:
-	@./node_modules/.bin/mocha \
-		--slow 500ms \
-		--reporter spec
+	npm test
 
 docs: index.html
 
