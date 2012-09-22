@@ -198,6 +198,18 @@ module.exports = {
     });
   },
 
+  'test .putStream() without "Content-Length" header errors': function(done){
+    var stream = fs.createReadStream(jsonFixture);
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+    client.putStream(stream, '/test/user.json', headers, function(err,res){
+      assert.ok(err);
+      assert(/Content-Length/.test(err.message));
+      done();
+    });
+  },
+
   'test .putBuffer()': function(done){
     var buffer = new Buffer('a string of stuff');
     var headers = {
