@@ -1,3 +1,10 @@
+0.3.1 / 2012-09-22
+==================
+
+  * No longer specifying `'x-amz-acl'` header as `'public-read'` by default. (@shlevy, #91).
+  * Made the port configurable with the new `port` option, and defaulting to insecure if the port is customized. (@pifantastic, #86)
+  * Made `putStream` give an early and user-intelligible error when no `'Content-Length'` header is set, instead of letting Amazon return a cryptic 501 about `'Transfer-Encoding'`.
+
 0.3.0 / 2012-08-17
 ==================
 
