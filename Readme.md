@@ -51,11 +51,10 @@ req.on('response', function(res){
 req.end(string);
 ```
 
-By default the _x-amz-acl_ header is _public-read_, meaning anyone can __GET__
-the file. To alter this simply pass this header to the client request method.
+By default the _x-amz-acl_ header is _private_. To alter this simply pass this header to the client request method.
 
 ```js
-client.put('/test/obj.json', { 'x-amz-acl': 'private' });
+client.put('/test/obj.json', { 'x-amz-acl': 'public-read' });
 ```
 
 Each HTTP verb has an alternate method with the "File" suffix, for example
