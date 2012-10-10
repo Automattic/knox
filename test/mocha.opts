@@ -1,1 +1,3 @@
 --ui exports
+--slow 500ms
+--reporter spec
