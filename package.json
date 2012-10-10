@@ -6,7 +6,8 @@
   "author": "TJ Holowaychuk <tj@learnboost.com>",
   "contributors": [
     "TJ Holowaychuk <tj@learnboost.com>",
-    "Domenic Denicola <domenic@domenicdenicola.com>"
+    "Domenic Denicola <domenic@domenicdenicola.com>",
+    "Oleg Slobodksoi <oleg008@gmail.com>"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
@@ -18,7 +19,8 @@
     "url": "https://github.com/LearnBoost/knox/issues"
   },
   "dependencies": {
-    "mime": "*"
+    "mime": "*",
+    "xml2js": "0.2.x"
   },
   "devDependencies": {
     "mocha": "*"
