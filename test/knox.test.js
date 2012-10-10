@@ -335,19 +335,25 @@ module.exports = {
   },
 
   'test .list()': function(done){
-    client.putFile(jsonFixture, '/list/user1.json', function(err, res){
-      client.putFile(jsonFixture, '/list/user2.json', function(err, res){
-        client.list({prefix: 'list'}, function(err, res){
+    var files = ['/list/user1.json', '/list/user2.json'];
+
+    client.putFile(jsonFixture, files[0], function(err, res){
+      client.putFile(jsonFixture, files[1], function(err, res){
+        client.list({prefix: 'list'}, function(err, data){
           assert.ok(!err);
-          assert.equal(res.Prefix, 'list');
-          assert.equal(res.IsTruncated, 'false');
-          assert.equal(res.MaxKeys, '1000');
-          assert.equal(res.Contents.length, 2);
+          assert.equal(data.Prefix, 'list');
+          assert.strictEqual(data.IsTruncated, true);
+          assert.strictEqual(data.MaxKeys, 1000);
+          assert.equal(data.Contents.length, 2);
+          assert.ok(data.Contents[0].LastModified instanceof Date);
+          assert.equal(typeof data.Contents[0].Size, 'number');
           assert.deepEqual(
-            Object.keys(res.Contents[0]),
+            Object.keys(data.Contents[0]),
             ['Key', 'LastModified', 'ETag', 'Size', 'Owner', 'StorageClass']
           );
-          done();
+          client.deleteMultiple(files, function(err, res) {
+            done();
+          });
         });
       });
     });
