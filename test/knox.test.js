@@ -334,6 +334,25 @@ module.exports = {
     });
   },
 
+  'test .list()': function(done){
+    client.putFile(jsonFixture, '/list/user1.json', function(err, res){
+      client.putFile(jsonFixture, '/list/user2.json', function(err, res){
+        client.list({prefix: 'list'}, function(err, res){
+          assert.ok(!err);
+          assert.equal(res.Prefix, 'list');
+          assert.equal(res.IsTruncated, 'false');
+          assert.equal(res.MaxKeys, '1000');
+          assert.equal(res.Contents.length, 2);
+          assert.deepEqual(
+            Object.keys(res.Contents[0]),
+            ['Key', 'LastModified', 'ETag', 'Size', 'Owner', 'StorageClass']
+          );
+          done();
+        });
+      });
+    });
+  },
+
   'test /?delete': function (done) {
     var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
     xml.push('<Object><Key>/test/user4.json</Key></Object>');
