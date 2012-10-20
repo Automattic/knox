@@ -394,15 +394,19 @@ module.exports = {
 
   'test .signedUrl()': function(){
     // Not much of a test, but hopefully will prevent regressions (see GH-81)
-    var signedUrl = client.signedUrl('/test/user.json', new Date(2020, 1, 1));
+    var date = new Date(2020, 1, 1);
+    var timestamp = date.getTime() * .001;
+    var signedUrl = client.signedUrl('/test/user.json', date);
     var signature = signQuery({
         secret: client.secret
-      , date: 1580533200
+      , date: timestamp
       , resource: '/' + client.bucket + '/test/user.json'
     });
 
     assert.equal('https://' + client.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=1580533200&AWSAccessKeyId=' +
+                 '.s3.amazonaws.com/test/user.json?Expires=' +
+                 timestamp +
+                 '&AWSAccessKeyId=' +
                  client.key +
                  '&Signature=' + encodeURIComponent(signature), signedUrl);
   }
