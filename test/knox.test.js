@@ -160,7 +160,11 @@ module.exports = {
   },
 
   'test .putStream() with http stream': function(done){
-    http.get('http://google.com', function(res){
+    var options = {
+        host: 'google.com'
+      , path: '/'
+    };
+    http.get(options, function(res){
       var headers = {
           'Content-Length': res.headers['content-length']
         , 'Content-Type': res.headers['content-type']
@@ -176,7 +180,11 @@ module.exports = {
 
   'test .putStream() with http stream "progress" event': function(done){
     var progressHappened = false;
-    http.get('http://google.com', function(res){
+    var options = {
+        host: 'google.com'
+      , path: '/'
+    };
+    http.get(options, function(res){
       var headers = {
           'Content-Length': res.headers['content-length']
         , 'Content-Type': res.headers['content-type']
