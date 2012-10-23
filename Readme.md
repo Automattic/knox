@@ -32,13 +32,13 @@ For your convenience when using buckets not in the US Standard region, you can s
 
 As of this writing, valid values for the `region` option are:
 
-US Standard (default): us-standard
-US West (Oregon): us-west-2
-US West (Northern California): us-west-1
-EU (Ireland): eu-west-1
-Asia Pacific (Singapore): ap-southeast-1
-Asia Pacific (Tokyo): ap-northeast-1
-South America (Sao Paulo): sa-east-1
+* US Standard (default): `us-standard`
+* US West (Oregon): `us-west-2`
+* US West (Northern California): `us-west-1`
+* EU (Ireland): `eu-west-1`
+* Asia Pacific (Singapore): `ap-southeast-1`
+* Asia Pacific (Tokyo): `ap-northeast-1`
+* South America (Sao Paulo): `sa-east-1`
 
 If new regions are added later, their subdomain names will also work when passed as the `region` option. [See the AWS endpoint documentation](http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region) for the latest list.
 
