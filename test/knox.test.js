@@ -13,9 +13,22 @@ var knox = require('..')
 try {
   var auth = JSON.parse(fs.readFileSync('auth', 'ascii'));
   var client = knox.createClient(auth);
+  auth.bucket = auth.bucketUsWest2;
+  // Without this we get a 307 redirect 
+  // that putFile can't handle (issue #66). Later
+  // when there is an implementation of #66 we can test
+  // both with and without this option present, but it's
+  // always a good idea for performance
+  auth.region = 'us-west-2';
+  var clientUsWest2 = knox.createClient(auth);
 } catch (err) {
+  console.log(err);
   console.error('The tests require ./auth to contain a JSON string with');
-  console.error('`key, secret, and bucket in order to run tests.');
+  console.error('key, secret, bucket and bucketUsWest2 in order to run tests.');
+  console.error('Both bucket and bucketUsWest2 must exist and should not');
+  console.error('contain anything you want to keep. bucket2 should be');
+  console.error('created in the us-west-2 (Oregon) region, not the default');
+  console.error('region.');
   process.exit(1);
 }
 
@@ -70,9 +83,43 @@ module.exports = {
     assert.equal('s3-eu-west-1.amazonaws.com', client.endpoint);
   },
 
+  'test .createClient() region is us-west-1': function(){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , region: 'us-west-1'
+    });
+
+    assert.equal('misc.s3-us-west-1.amazonaws.com', client.endpoint);
+  },
+
+  'test .createClient() region explicitly us-standard': function(){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , region: 'us-standard'
+    });
+
+    assert.equal('misc.s3.amazonaws.com', client.endpoint);
+  },
+
   'test .putFile()': function(done){
     var n = 0;
     client.putFile(jsonFixture, '/test/user2.json', function(err, res){
+      assert.ok(!err, 'putFile() got an error!');
+      assert.equal(200, res.statusCode);
+      client.get('/test/user2.json').on('response', function(res){
+        assert.equal('application/json', res.headers['content-type']);
+        done();
+      }).end();
+    });
+  },
+
+  'test .putFile() in us-west-2': function(done){
+    var n = 0;
+    clientUsWest2.putFile(jsonFixture, '/test/user2.json', function(err, res){
       assert.ok(!err, 'putFile() got an error!');
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){

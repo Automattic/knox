@@ -28,6 +28,22 @@ By default knox will send all requests to the global endpoint
 is. But if you want to manually set the endpoint (for performance reasons) you
 can do it with the `endpoint` option.
 
+For your convenience when using buckets not in the US Standard region, you can specify the `region` option. When you do so, the `endpoint` hostname is automatically assembled. 
+
+As of this writing, valid values for the `region` option are:
+
+US Standard (default): us-standard
+US West (Oregon): us-west-2
+US West (Northern California): us-west-1
+EU (Ireland): eu-west-1
+Asia Pacific (Singapore): ap-southeast-1
+Asia Pacific (Tokyo): ap-northeast-1
+South America (Sao Paulo): sa-east-1
+
+If new regions are added later, their subdomain names will also work when passed as the `region` option. [See the AWS endpoint documentation](http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region) for the latest list.
+
+**Convenience APIs such as `putFile` and `putStream` currently do not work as expected with buckets in regions other than US Standard unless you explicitly specify the region option.** This will eventually be addressed by resolving [issue #66](https://github.com/LearnBoost/knox/issues/66), however for performance reasons it is always best to specify the region option anyway.
+
 ### PUT
 
 If you want to directly upload some strings to S3, you can use the `Client#put`
