@@ -103,7 +103,7 @@ module.exports = {
   'test .putFile()': function(done){
     var n = 0;
     client.putFile(jsonFixture, '/test/user2.json', function(err, res){
-      assert.ok(!err, 'putFile() got an error!');
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
         assert.equal('application/json', res.headers['content-type']);
@@ -115,7 +115,7 @@ module.exports = {
   'test .putFile() in us-west-2': function(done){
     var n = 0;
     clientUsWest2.putFile(jsonFixture, '/test/user2.json', function(err, res){
-      assert.ok(!err, 'putFile() got an error!');
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
         assert.equal('application/json', res.headers['content-type']);
@@ -127,7 +127,7 @@ module.exports = {
   'test .putFile() "progress" event': function(done){
     var progressHappened = false;
     var file = client.putFile(jsonFixture, '/test/user2.json', function(err, res){
-      assert.ok(!err, 'putFile() got an error!');
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
         assert.equal('application/json', res.headers['content-type']);
@@ -153,7 +153,6 @@ module.exports = {
         var req = client.put('/test/user.json', {
             'Content-Length': stat.size
           , 'Content-Type': 'application/json'
-          , 'x-amz-acl': 'private'
         });
         req.on('response', function(res){
           assert.equal(200, res.statusCode);
@@ -175,7 +174,6 @@ module.exports = {
       var req = client.put('/test/string.txt', {
           'Content-Length': string.length
         , 'Content-Type': 'text/plain'
-        , 'x-amz-acl': 'private'
       });
       req.on('response', function(res){
         assert.equal(200, res.statusCode);
@@ -190,11 +188,10 @@ module.exports = {
       var headers = {
           'Content-Length': stat.size
         , 'Content-Type': 'application/json'
-        , 'x-amz-acl': 'private'
       };
       var stream = fs.createReadStream(jsonFixture);
       client.putStream(stream, '/test/user.json', headers, function(err, res){
-        assert.ok(!err);
+        assert.ifError(err);
         if (100 !== res.statusCode) assert.equal(200, res.statusCode);
         done();
       });
@@ -210,10 +207,9 @@ module.exports = {
       var headers = {
           'Content-Length': res.headers['content-length']
         , 'Content-Type': res.headers['content-type']
-        , 'x-amz-acl': 'private'
       };
       client.putStream(res, '/google', headers, function (err, res) {
-        assert.ok(!err);
+        assert.ifError(err);
         if (100 !== res.statusCode) assert.equal(200, res.statusCode);
         done();
       });
@@ -230,10 +226,9 @@ module.exports = {
       var headers = {
           'Content-Length': res.headers['content-length']
         , 'Content-Type': res.headers['content-type']
-        , 'x-amz-acl': 'private'
       };
       var req = client.putStream(res, '/google', headers, function (err, res) {
-        assert.ok(!err);
+        assert.ifError(err);
         if (100 !== res.statusCode) assert.equal(200, res.statusCode);
         assert.ok(progressHappened);
         done();
@@ -266,7 +261,6 @@ module.exports = {
       var headers = {
           'content-length': stat.size
         , 'Content-Type': 'application/json'
-        , 'x-amz-acl': 'private'
       };
       var stream = fs.createReadStream(jsonFixture);
       client.putStream(stream, '/test/user.json', headers, function(err, res){
@@ -279,12 +273,9 @@ module.exports = {
 
   'test .putBuffer()': function(done){
     var buffer = new Buffer('a string of stuff');
-    var headers = {
-        'Content-Type': 'text/plain'
-      , 'x-amz-acl': 'private'
-    };
+    var headers = { 'Content-Type': 'text/plain' };
     client.putBuffer(buffer, '/buffer.txt', headers, function (err, res) {
-      assert.ok(!err);
+      assert.ifError(err);
       if (100 !== res.statusCode) assert.equal(200, res.statusCode);
       done();
     });
@@ -299,7 +290,7 @@ module.exports = {
 
   'test .copyFile()': function(done){
     client.copyFile('test/user.json', 'test/user4.json', function(err, res){
-      assert.ok(!err);
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       done();
     }).end();
@@ -307,7 +298,7 @@ module.exports = {
 
   'test .getFile()': function(done){
     client.getFile('/test/user.json', function(err, res){
-      assert.ok(!err);
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type']);
       assert.equal(13, res.headers['content-length']);
@@ -354,7 +345,7 @@ module.exports = {
 
   'test .headFile()': function(done){
     client.headFile('/test/user.json', function(err, res){
-      assert.ok(!err);
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type']);
       assert.equal(13, res.headers['content-length']);
@@ -371,7 +362,7 @@ module.exports = {
 
   'test .deleteFile()': function(done){
     client.deleteFile('/test/user2.json', function(err, res){
-      assert.ok(!err);
+      assert.ifError(err);
       assert.equal(204, res.statusCode);
       done();
     });
@@ -380,7 +371,7 @@ module.exports = {
   'test .request() to get ACL (?acl)': function (done) {
     var req = client.request('GET', '/test/user3.json?acl')
       .on('error', function (err) {
-        assert.ok(!err);
+        assert.ifError(err);
       }).on('response', function (res) {
         var data = '';
         res.on('data', function (chunk) {
@@ -395,7 +386,7 @@ module.exports = {
   'test .deleteMultiple()': function(done){
     var files = ['/test/user3.json', '/test/string.txt', '/buffer.txt'];
     client.deleteMultiple(files, function (err, res) {
-      assert.ok(!err);
+      assert.ifError(err);
       assert.equal(200, res.statusCode);
       done();
     });
@@ -407,7 +398,7 @@ module.exports = {
     client.putFile(jsonFixture, files[0], function(err, res){
       client.putFile(jsonFixture, files[1], function(err, res){
         client.list({prefix: 'list'}, function(err, data){
-          assert.ok(!err);
+          assert.ifError(err);
           assert.equal(data.Prefix, 'list');
           assert.strictEqual(data.IsTruncated, true);
           assert.strictEqual(data.MaxKeys, 1000);
@@ -436,7 +427,7 @@ module.exports = {
       'Content-MD5': crypto.createHash('md5').update(xml).digest('base64'),
       'Accept:': '*/*'
     }).on('error', function (err) {
-      assert.ok(!err);
+      assert.ifError(err);
     }).on('response', function (res) {
       assert.equal(200, res.statusCode);
       done();
