@@ -172,6 +172,33 @@ client.deleteMultiple(['/test/Readme.md', '/test/Readme.markdown'], function(err
 });
 ```
 
+and [listing all the files in your bucket][list]:
+
+```js
+client.list({ prefix: 'my-prefix' }, function(err, data){
+  /* `data` will look roughly like:
+
+  {
+    Prefix: 'my-prefix',
+    IsTruncated: true,
+    MaxKeys: 1000,
+    Contents: [
+      {
+        Key: 'whatever'
+        LastModified: new Date(2012, 11, 25, 0, 0, 0),
+        ETag: 'whatever',
+        Size: 123,
+        Owner: 'you',
+        StorageClass: 'whatever'
+      },
+      ⋮
+    ]
+  }
+
+  */
+});
+```
+
 And you can always issue ad-hoc requests, e.g. the following to
 [get an object's ACL][acl]:
 
@@ -182,6 +209,7 @@ client.request('GET', '/test/Readme.md?acl').on('response', function(res){
 }).end();
 ```
 
+[list]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketGET.html
 [acl]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html
 
 ## Client Creation Options
