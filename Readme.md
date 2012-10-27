@@ -23,37 +23,7 @@ var client = knox.createClient({
 });
 ```
 
-By default knox will send all requests to the global endpoint
-(bucket.s3.amazonaws.com). This works regardless of the region where the bucket
-is. But if you want to manually set the endpoint (for performance reasons) you
-can do it with the `endpoint` option.
-
-For your convenience when using buckets not in the US Standard region, you can
-specify the `region` option. When you do so, the `endpoint` hostname is
-automatically assembled.
-
-As of this writing, valid values for the `region` option are:
-
-* US Standard (default): `us-standard`
-* US West (Oregon): `us-west-2`
-* US West (Northern California): `us-west-1`
-* EU (Ireland): `eu-west-1`
-* Asia Pacific (Singapore): `ap-southeast-1`
-* Asia Pacific (Tokyo): `ap-northeast-1`
-* South America (Sao Paulo): `sa-east-1`
-
-If new regions are added later, their subdomain names will also work when passed
-as the `region` option. See the [AWS endpoint documentation][endpoint-docs] for
-the latest list.
-
-**Convenience APIs such as `putFile` and `putStream` currently do not work as
-expected with buckets in regions other than US Standard without explicitly
-specify the region option.** This will eventually be addressed by resolving
-[issue #66][]; however, for performance reasons, it is always best to specify
-the region option anyway.
-
-[endpoint-docs]: http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region
-[issue #66]: https://github.com/LearnBoost/knox/issues/66
+More options are documented below for features like other endpoints or regions.
 
 ### PUT
 
@@ -214,6 +184,62 @@ client.request('GET', '/test/Readme.md?acl').on('response', function(res){
 
 [acl]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html
 
+## Client Creation Options
+
+Besides the required `key`, `secret`, and `bucket` options, you can supply any
+of the following:
+
+### `endpoint`
+
+By default knox will send all requests to the global endpoint
+(bucket.s3.amazonaws.com). This works regardless of the region where the bucket
+is. But if you want to manually set the endpoint (for performance reasons) you
+can do it with the `endpoint` option.
+
+### `region`
+
+For your convenience when using buckets not in the US Standard region, you can
+specify the `region` option. When you do so, the `endpoint` hostname is
+automatically assembled.
+
+As of this writing, valid values for the `region` option are:
+
+* US Standard (default): `us-standard`
+* US West (Oregon): `us-west-2`
+* US West (Northern California): `us-west-1`
+* EU (Ireland): `eu-west-1`
+* Asia Pacific (Singapore): `ap-southeast-1`
+* Asia Pacific (Tokyo): `ap-northeast-1`
+* South America (Sao Paulo): `sa-east-1`
+
+If new regions are added later, their subdomain names will also work when passed
+as the `region` option. See the [AWS endpoint documentation][endpoint-docs] for
+the latest list.
+
+**Convenience APIs such as `putFile` and `putStream` currently do not work as
+expected with buckets in regions other than US Standard without explicitly
+specify the region option.** This will eventually be addressed by resolving
+[issue #66][]; however, for performance reasons, it is always best to specify
+the region option anyway.
+
+[endpoint-docs]: http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region
+[issue #66]: https://github.com/LearnBoost/knox/issues/66
+
+### `secure` and `port`
+
+By default, knox uses HTTPS to connect to S3 on port 443. You can override
+either of these with the `secure` and `port` options. Note that if you specify a
+custom `port` option, the default for `secure` switches to `false`, although
+you can override it manually if you want to run HTTPS against a specific port.
+
+### `agent`
+
+If you want to use a custom [HTTP agent][], you can specify this with the
+`agent` option.
+
+[HTTP agent]: http://nodejs.org/docs/latest/api/http.html#http_class_http_agent
+
+
 ## Running Tests
 
 To run the test suite you must first have an S3 account, and create
@@ -221,13 +247,16 @@ a file named _./auth_, which contains your credentials as json, for example:
 
 ```json
 {
-  "key":"<api-key-here>",
-  "secret":"<secret-here>",
-  "bucket":"<your-bucket-name>"
+  "key": "<api-key-here>",
+  "secret": "<secret-here>",
+  "bucket": "<your-bucket-name>",
+  "bucketUsWest2": "<bucket-in-us-west-2-region-here>"
 }
 ```
 
 Then install the dev dependencies and execute the test suite:
 
-    $ npm install
-    $ npm test
+```
+$ npm install
+$ npm test
+```
