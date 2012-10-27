@@ -1,8 +1,3 @@
-
-/**
- * Module dependencies.
- */
-
 var knox = require('..')
   , signQuery = require('../lib/auth').signQuery
   , fs = require('fs')
@@ -11,7 +6,7 @@ var knox = require('..')
   , crypto = require('crypto');
 
 try {
-  var auth = JSON.parse(fs.readFileSync('auth', 'ascii'));
+  var auth = require("./auth.json");
   var client = knox.createClient(auth);
   auth.bucket = auth.bucketUsWest2;
   // Without this we get a 307 redirect
@@ -23,12 +18,12 @@ try {
   var clientUsWest2 = knox.createClient(auth);
 } catch (err) {
   console.error(err);
-  console.error('The tests require ./auth to contain a JSON string with');
-  console.error('key, secret, bucket and bucketUsWest2 in order to run tests.');
-  console.error('Both bucket and bucketUsWest2 must exist and should not');
-  console.error('contain anything you want to keep. bucket2 should be');
-  console.error('created in the us-west-2 (Oregon) region, not the default');
-  console.error('region.');
+  console.error('The tests require ./auth to contain a JSON string with key, ' +
+                'secret, bucket, and bucketUsWest2 in order to run tests. ' +
+                'Both bucket and bucketUsWest2 must exist and should not ' +
+                'contain anything you want to keep. bucketUsWest2 should be ' +
+                'created in the us-west-2 (Oregon) region, not the default ' +
+                'region.');
   process.exit(1);
 }
 
@@ -53,7 +48,7 @@ module.exports = {
 
     assert.throws(
       function () {
-        knox.createClient({ key: 'foo', secret: 'bar', bucket: 'BuCkEt' })
+        knox.createClient({ key: 'foo', secret: 'bar', bucket: 'BuCkEt' });
       },
       /bucket names must be all lower case/
     );
@@ -171,7 +166,7 @@ module.exports = {
           done();
         });
         req.end(buf);
-      })
+      });
     });
   },
 
@@ -203,7 +198,7 @@ module.exports = {
         if (100 !== res.statusCode) assert.equal(200, res.statusCode);
         done();
       });
-    })
+    });
   },
 
   'test .putStream() with http stream': function(done){
@@ -297,8 +292,8 @@ module.exports = {
     client.getFile('/test/user.json', function(err, res){
       assert.ok(!err);
       assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type'])
-      assert.equal(13, res.headers['content-length'])
+      assert.equal('application/json', res.headers['content-type']);
+      assert.equal(13, res.headers['content-length']);
       done();
     });
   },
@@ -306,8 +301,8 @@ module.exports = {
   'test .get()': function(done){
     client.get('/test/user4.json').on('response', function(res){
       assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type'])
-      assert.equal(13, res.headers['content-length'])
+      assert.equal('application/json', res.headers['content-type']);
+      assert.equal(13, res.headers['content-length']);
       done();
     }).end();
   },
@@ -315,8 +310,8 @@ module.exports = {
   'test .get() without leading slash': function(done){
     client.get('buffer.txt').on('response', function(res){
       assert.equal(200, res.statusCode);
-      assert.equal('text/plain', res.headers['content-type'])
-      assert.equal(17, res.headers['content-length'])
+      assert.equal('text/plain', res.headers['content-type']);
+      assert.equal(17, res.headers['content-length']);
       done();
     }).end();
   },
@@ -334,8 +329,8 @@ module.exports = {
   'test .head()': function(done){
     client.head('/test/user.json').on('response', function(res){
       assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type'])
-      assert.equal(13, res.headers['content-length'])
+      assert.equal('application/json', res.headers['content-type']);
+      assert.equal(13, res.headers['content-length']);
       done();
     }).end();
   },
@@ -344,8 +339,8 @@ module.exports = {
     client.headFile('/test/user.json', function(err, res){
       assert.ok(!err);
       assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type'])
-      assert.equal(13, res.headers['content-length'])
+      assert.equal('application/json', res.headers['content-type']);
+      assert.equal(13, res.headers['content-length']);
       done();
     });
   },
@@ -450,7 +445,7 @@ module.exports = {
   'test .signedUrl()': function(){
     // Not much of a test, but hopefully will prevent regressions (see GH-81)
     var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * .001;
+    var timestamp = date.getTime() * 0.001;
     var signedUrl = client.signedUrl('/test/user.json', date);
     var signature = signQuery({
         secret: client.secret

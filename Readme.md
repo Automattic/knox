@@ -242,8 +242,8 @@ If you want to use a custom [HTTP agent][], you can specify this with the
 
 ## Running Tests
 
-To run the test suite you must first have an S3 account, and create
-a file named _./auth_, which contains your credentials as json, for example:
+To run the test suite you must first have an S3 account. Then create a file named
+_./test/auth.json_, which contains your credentials as JSON, for example:
 
 ```json
 {

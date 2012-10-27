@@ -1,6 +1,3 @@
-.DS_Store
-test.js
-/auth
+/test/auth.json
 /node_modules/
 /npm-debug.log
-.idea
