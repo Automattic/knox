@@ -260,6 +260,23 @@ module.exports = {
     });
   },
 
+  'test .putStream() with lowercase "content-length" header is ok': function(done){
+    fs.stat(jsonFixture, function(err, stat){
+      if (err) throw err;
+      var headers = {
+          'content-length': stat.size
+        , 'Content-Type': 'application/json'
+        , 'x-amz-acl': 'private'
+      };
+      var stream = fs.createReadStream(jsonFixture);
+      client.putStream(stream, '/test/user.json', headers, function(err, res){
+        assert.ifError(err);
+        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+        done();
+      });
+    });
+  },
+
   'test .putBuffer()': function(done){
     var buffer = new Buffer('a string of stuff');
     var headers = {
@@ -268,8 +285,8 @@ module.exports = {
     };
     client.putBuffer(buffer, '/buffer.txt', headers, function (err, res) {
       assert.ok(!err);
-        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-        done();
+      if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+      done();
     });
   },
 
