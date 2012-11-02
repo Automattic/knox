@@ -19,6 +19,7 @@ API. First things first, create an S3 client:
 var client = knox.createClient({
     key: '<api-key-here>'
   , secret: '<secret-here>'
+  , token: '<optional-temporary-security-token-here>'
   , bucket: 'learnboost'
 });
 ```
