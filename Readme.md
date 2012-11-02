@@ -19,7 +19,6 @@ API. First things first, create an S3 client:
 var client = knox.createClient({
     key: '<api-key-here>'
   , secret: '<secret-here>'
-  , token: '<optional-temporary-security-token-here>'
   , bucket: 'learnboost'
 });
 ```
@@ -277,6 +276,15 @@ By default, knox uses HTTPS to connect to S3 on port 443. You can override
 either of these with the `secure` and `port` options. Note that if you specify a
 custom `port` option, the default for `secure` switches to `false`, although
 you can override it manually if you want to run HTTPS against a specific port.
+
+### `token`
+
+If you are using the [AWS Security Token Service][sts] APIs, you can construct
+the client with a `token` parameter containing the temporary security
+credentials token. This simply sets the _x-amz-security-token_ header on every
+request made by the client.
+
+[sts]: http://docs.amazonwebservices.com/STS/latest/UsingSTS/Welcome.html
 
 ### `agent`
 
