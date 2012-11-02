@@ -1,3 +1,8 @@
+0.4.1 / 2012-11-02
+==================
+
+  * Added `token` configuration option for temporary security tokens. (@corp186, #110)
+
 0.4.0 / 2012-10-27
 ==================
 
