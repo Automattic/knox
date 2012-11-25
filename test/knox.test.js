@@ -385,7 +385,7 @@ module.exports = {
 
   'test .deleteMultiple()': function(done){
     // intentionally mix no leading slashes or leading slashes: see #121.
-    var files = ['/test/user3.json', 'test/string.txt', '/buffer.txt'];
+    var files = ['/test/user3.json', 'test/string.txt', '/buffer.txt', 'google'];
     client.deleteMultiple(files, function (err, res) {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
@@ -421,6 +421,7 @@ module.exports = {
             ['Key', 'LastModified', 'ETag', 'Size', 'Owner', 'StorageClass']
           );
           client.deleteMultiple(files, function(err, res) {
+            assert.ifError(err);
             done();
           });
         });
@@ -430,7 +431,7 @@ module.exports = {
 
   'test /?delete': function (done) {
     var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
-    xml.push('<Object><Key>/test/user4.json</Key></Object>');
+    xml.push('<Object><Key>test/user4.json</Key></Object>');
     xml.push('</Delete>');
     xml = xml.join('');
     var req = client.request('POST', '/?delete', {
@@ -459,6 +460,17 @@ module.exports = {
       assert.equal(404, res.statusCode);
       done();
     }).end();
+  },
+
+  'test that we cleaned up and are not using people\'s S3 $$$': function(done){
+      client.list(function (err, data) {
+        assert.ifError(err);
+        var keys = data.Contents.map(function (entry) { return entry.Key; });
+
+        assert.deepEqual(keys, []);
+
+        done();
+      });
   },
 
   'test .signedUrl()': function(){
