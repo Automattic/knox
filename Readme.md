@@ -296,6 +296,15 @@ you need it!
 [@nathanoehlman]: https://github.com/nathanoehlman
 [knox-mpu]: https://npmjs.org/package/knox-mpu
 
+### Easy Download/Upload
+
+[@superjoe30][] has created a nice library, called [s3-client][], that makes it
+very easy to upload local files directly to S3, and download them back to your
+filesystem. For simple cases this is often exactly what you want!
+
+[@superjoe30]: https://github.com/superjoe30
+[s3-client]: https://npmjs.org/package/s3-client
+
 
 ## Running Tests
 
