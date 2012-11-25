@@ -384,11 +384,22 @@ module.exports = {
   },
 
   'test .deleteMultiple()': function(done){
-    var files = ['/test/user3.json', '/test/string.txt', '/buffer.txt'];
+    // intentionally mix no leading slashes or leading slashes: see #121.
+    var files = ['/test/user3.json', 'test/string.txt', '/buffer.txt'];
     client.deleteMultiple(files, function (err, res) {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
-      done();
+
+      client.list(function (err, data) {
+        assert.ifError(err);
+        var keys = data.Contents.map(function (entry) { return entry.Key; });
+
+        assert(keys.indexOf('test/user3.json') === -1);
+        assert(keys.indexOf('test/string.txt') === -1);
+        assert(keys.indexOf('buffer.txt') === -1);
+
+        done();
+      });
     });
   },
 
