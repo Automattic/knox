@@ -212,23 +212,6 @@ client.request('GET', '/test/Readme.md?acl').on('response', function(res){
 [list]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketGET.html
 [acl]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html
 
-### Multipart Upload
-
-S3's [multipart upload][] is their [rather-complicated][] way of uploading large
-files. In particular, it is the only way of streaming files without knowing
-their Content-Length ahead of time.
-
-Adding the complexity of multipart upload directly to knox is not a great idea.
-For example, it requires buffering at least 5 MiB of data at a time in memory,
-which you want to avoid if possible. Fortunately, [@nathanoehlman][] has created
-the excellent [knox-mpu][] package to let you use multipart upload with knox if
-you need it!
-
-[multipart upload]: aws.typepad.com/aws/2010/11/amazon-s3-multipart-upload.html
-[rather-complicated]: http://stackoverflow.com/q/8653146/3191
-[@nathanoehlman]: https://github.com/nathanoehlman
-[knox-mpu]: https://npmjs.org/package/knox-mpu
-
 ## Client Creation Options
 
 Besides the required `key`, `secret`, and `bucket` options, you can supply any
@@ -292,6 +275,26 @@ If you want to use a custom [HTTP agent][], you can specify this with the
 `agent` option.
 
 [HTTP agent]: http://nodejs.org/docs/latest/api/http.html#http_class_http_agent
+
+
+## Beyond Knox
+
+### Multipart Upload
+
+S3's [multipart upload][] is their [rather-complicated][] way of uploading large
+files. In particular, it is the only way of streaming files without knowing
+their Content-Length ahead of time.
+
+Adding the complexity of multipart upload directly to knox is not a great idea.
+For example, it requires buffering at least 5 MiB of data at a time in memory,
+which you want to avoid if possible. Fortunately, [@nathanoehlman][] has created
+the excellent [knox-mpu][] package to let you use multipart upload with knox if
+you need it!
+
+[multipart upload]: aws.typepad.com/aws/2010/11/amazon-s3-multipart-upload.html
+[rather-complicated]: http://stackoverflow.com/q/8653146/3191
+[@nathanoehlman]: https://github.com/nathanoehlman
+[knox-mpu]: https://npmjs.org/package/knox-mpu
 
 
 ## Running Tests
