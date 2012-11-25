@@ -1,3 +1,9 @@
+0.4.2 / 2012-11-24
+==================
+
+  * Fixed `deleteMultiple` when passed keys that start with leading slashes (like they do in the README example). (#121)
+  * Fixed `list` not always returning an array for the `Contents` property.
+
 0.4.1 / 2012-11-02
 ==================
 
