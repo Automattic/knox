@@ -1,3 +1,8 @@
+0.4.3 / 2012-12-05
+==================
+
+  * Fixed `list` always giving `IsTruncated` as `true`. (#124, @simonwex)
+
 0.4.2 / 2012-11-24
 ==================
 
