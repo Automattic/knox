@@ -411,7 +411,7 @@ module.exports = {
         client.list({prefix: 'list'}, function(err, data){
           assert.ifError(err);
           assert.equal(data.Prefix, 'list');
-          assert.strictEqual(data.IsTruncated, true);
+          assert.strictEqual(data.IsTruncated, false);
           assert.strictEqual(data.MaxKeys, 1000);
           assert.equal(data.Contents.length, 2);
           assert.ok(data.Contents[0].LastModified instanceof Date);
