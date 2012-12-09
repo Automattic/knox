@@ -1,3 +1,9 @@
+0.4.4 / 2012-12-08
+==================
+
+  * Added an informative error when using bucket names with periods in them without first turning off SSL. #125.
+  * Fixed all requests when passing in `'Content-type'` or `'Content-MD5'` headers using any casing other than those exact ones, e.g. `'content-type'`. #126.
+
 0.4.3 / 2012-12-05
 ==================
 
