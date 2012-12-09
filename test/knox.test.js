@@ -52,6 +52,13 @@ module.exports = {
       },
       /bucket names must be all lower case/
     );
+
+    assert.throws(
+      function () {
+        knox.createClient({ key: 'foo', secret: 'bar', bucket: 'buck.et' });
+      },
+      /SSL/
+    );
   },
 
   'test .createClient() valid': function(){
