@@ -281,6 +281,21 @@ module.exports = {
     });
   },
 
+  'test .putBuffer() with lowercase "content-type" header works': function(done){
+    var buffer = new Buffer('a string of stuff');
+    var headers = { 'content-type': 'text/plain' };
+    client.putBuffer(buffer, '/buffer2.txt', headers, function (err, res) {
+      assert.ifError(err);
+      if (100 !== res.statusCode) assert.equal(200, res.statusCode);
+      client.getFile('/buffer2.txt', function (err, res) {
+        assert.ifError(err);
+        assert.equal(200, res.statusCode);
+        assert.equal(res.headers['content-type'], 'text/plain');
+        done();
+      });
+    });
+  },
+
   'test .copy()': function(done){
     client.copy('/test/user.json', '/test/user3.json').on('response', function(res){
       assert.equal(200, res.statusCode);
@@ -385,7 +400,7 @@ module.exports = {
 
   'test .deleteMultiple()': function(done){
     // intentionally mix no leading slashes or leading slashes: see #121.
-    var files = ['/test/user3.json', 'test/string.txt', '/buffer.txt', 'google'];
+    var files = ['/test/user3.json', 'test/string.txt', '/buffer.txt', '/buffer2.txt', 'google'];
     client.deleteMultiple(files, function (err, res) {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
