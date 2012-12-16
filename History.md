@@ -1,3 +1,8 @@
+0.4.5 / 2012-12-16
+==================
+
+  * Bucket names with periods are now allowed again, even with SSL. #128
+
 0.4.4 / 2012-12-08
 ==================
 
