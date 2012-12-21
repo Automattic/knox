@@ -505,5 +505,23 @@ module.exports = {
                  '&AWSAccessKeyId=' +
                  client.key +
                  '&Signature=' + encodeURIComponent(signature), signedUrl);
+  },
+
+  'test .signedUrl() without a leading slash': function(){
+    var date = new Date(2020, 1, 1);
+    var timestamp = date.getTime() * 0.001;
+    var signedUrl = client.signedUrl('test/user.json', date); // no leading slash
+    var signature = signQuery({
+        secret: client.secret
+      , date: timestamp
+      , resource: '/' + client.bucket + '/test/user.json'
+    });
+
+    assert.equal('https://' + client.bucket +
+                 '.s3.amazonaws.com/test/user.json?Expires=' +
+                 timestamp +
+                 '&AWSAccessKeyId=' +
+                 client.key +
+                 '&Signature=' + encodeURIComponent(signature), signedUrl);
   }
 };
