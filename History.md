@@ -1,13 +1,18 @@
+0.4.6 / 2012-12-22
+==================
+
+  * Fixed `signedUrl` to work without a leading slash in the filename, like all other Knox methods. (#129, @relistan)
+
 0.4.5 / 2012-12-16
 ==================
 
-  * Bucket names with periods are now allowed again, even with SSL. #128
+  * Bucket names with periods are now allowed again, even with SSL. (#128)
 
 0.4.4 / 2012-12-08
 ==================
 
-  * Added an informative error when using bucket names with periods in them without first turning off SSL. #125.
-  * Fixed all requests when passing in `'Content-type'` or `'Content-MD5'` headers using any casing other than those exact ones, e.g. `'content-type'`. #126.
+  * Added an informative error when using bucket names with periods in them without first turning off SSL. (#125)
+  * Fixed all requests when passing in `'Content-type'` or `'Content-MD5'` headers using any casing other than those exact ones, e.g. `'content-type'`. (#126)
 
 0.4.3 / 2012-12-05
 ==================
