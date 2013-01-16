@@ -181,7 +181,18 @@ module.exports = {
       });
       req.end(string);
   },
-
+  'test .put() a string with filename that contains apostrophe': function(done){
+      var string = "hello I have a ' in my name";
+      var req = client.put('/test/apos\'trophe.txt', {
+          'Content-Length': string.length
+        , 'Content-Type': 'text/plain'
+      });
+      req.on('response', function(res){
+        assert.equal(200, res.statusCode);
+        done();
+      });
+      req.end(string);
+  },
   'test .putStream() with file stream': function(done){
     fs.stat(jsonFixture, function(err, stat){
       if (err) throw err;
@@ -400,7 +411,7 @@ module.exports = {
 
   'test .deleteMultiple()': function(done){
     // intentionally mix no leading slashes or leading slashes: see #121.
-    var files = ['/test/user3.json', 'test/string.txt', '/buffer.txt', '/buffer2.txt', 'google'];
+    var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt', 'google'];
     client.deleteMultiple(files, function (err, res) {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
