@@ -1,3 +1,9 @@
+0.4.7 / 2013-01-17
+==================
+
+  * Fixed 403s when sending requests for files with any of `!'()*` in their name. (#135, @jeremycondon)
+  * Added support for arbitrary extra parameters to `signedUrl`, e.g. for use in generating download URLs. (#133)
+
 0.4.6 / 2012-12-22
 ==================
 
@@ -12,7 +18,7 @@
 ==================
 
   * Added an informative error when using bucket names with periods in them without first turning off SSL. (#125)
-  * Fixed all requests when passing in `'Content-type'` or `'Content-MD5'` headers using any casing other than those exact ones, e.g. `'content-type'`. (#126)
+  * Fixed all requests when passing in `'Content-Type'` or `'Content-MD5'` headers using any casing other than those exact ones, e.g. `'content-type'`. (#126)
 
 0.4.3 / 2012-12-05
 ==================
