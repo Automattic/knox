@@ -1,4 +1,5 @@
 var knox = require('..')
+  , utils = knox.utils
   , signQuery = require('../lib/auth').signQuery
   , fs = require('fs')
   , http = require('http')
@@ -8,6 +9,10 @@ var knox = require('..')
 try {
   var auth = require("./auth.json");
   var client = knox.createClient(auth);
+  assert.notEqual(auth.bucket, auth.bucket2, 'Bucket should not equal bucket2.');
+  var auth2 = utils.merge({}, auth);
+  auth2.bucket = auth2.bucket2;
+  var client2 = knox.createClient(auth2);
   auth.bucket = auth.bucketUsWest2;
   // Without this we get a 307 redirect
   // that putFile can't handle (issue #66). Later
@@ -16,10 +21,11 @@ try {
   // always a good idea for performance
   auth.region = 'us-west-2';
   var clientUsWest2 = knox.createClient(auth);
+
 } catch (err) {
   console.error(err);
   console.error('The tests require ./auth to contain a JSON string with key, ' +
-                'secret, bucket, and bucketUsWest2 in order to run tests. ' +
+                'secret, bucket, bucket2, and bucketUsWest2 in order to run tests. ' +
                 'Both bucket and bucketUsWest2 must exist and should not ' +
                 'contain anything you want to keep. bucketUsWest2 should be ' +
                 'created in the us-west-2 (Oregon) region, not the default ' +
@@ -452,6 +458,41 @@ module.exports = {
           });
         });
       });
+    });
+  },
+
+  'test .copyFileTo()': function(done){
+    var file = '/copy-file-to/user.json';
+
+    client.putFile(jsonFixture, file, function(err, res){
+        client.copyFileTo(file, auth.bucket2, file, function(err, res){
+          assert.ifError(err);
+          assert.equal(200, res.statusCode);
+          client.deleteFile(file, function(err, res) {
+            assert.ifError(err);
+            client2.deleteFile(file, function(err, res) {
+              assert.ifError(err);
+              done();
+            });
+          });
+        });
+    });
+  },
+
+  'test .copyTo()': function(done){
+    var file = '/copy-file-to/user.json';
+
+    client.putFile(jsonFixture, file, function(err, res){
+      client.copyTo(file, auth.bucket2, file).on('response', function(res){
+        assert.equal(200, res.statusCode);
+        client.deleteFile(file, function(err, res) {
+          assert.ifError(err);
+          client2.deleteFile(file, function(err, res) {
+            assert.ifError(err);
+            done();
+          });
+        });
+      }).end();
     });
   },
 
