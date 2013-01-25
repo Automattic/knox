@@ -1,3 +1,8 @@
+0.5.0 / 2013-01-25
+==================
+
+  * Added `copyTo` and `copyFileTo` for copying files between buckets. (#16, @kof)
+
 0.4.7 / 2013-01-17
 ==================
 
