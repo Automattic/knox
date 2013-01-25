@@ -149,7 +149,7 @@ same pattern as above.
 
 ### Advanced Operations
 
-Knox supports a few advanced operations. Like copying files:
+Knox supports a few advanced operations. Like [copying files][copy]:
 
 ```js
 client.copy('/test/Readme.md', '/test/Readme.markdown').on('response', function(res){
@@ -160,19 +160,35 @@ client.copy('/test/Readme.md', '/test/Readme.markdown').on('response', function(
 // or
 
 client.copyFile('/test/Readme.md', '/test/Readme.markdown', function(err, res){
-  // Logic
+  // ...
 });
 ```
 
-and deleting multiple files at once:
+even between buckets:
+
+
+```js
+client.copyTo('/test/Readme.md', 'mirror-bucket', 'test/Readme.md').on('response', function(res){
+  // ...
+}).end();
+
+// or
+
+client.copyFileTo('/test/Readme.md', 'mirror-bucket', 'test/Readme.md', function (err, res){
+  // ...
+});
+
+```
+
+or [deleting multiple files at once][multi-delete]:
 
 ```js
 client.deleteMultiple(['/test/Readme.md', '/test/Readme.markdown'], function(err, res){
-  // Logic
+  // ...
 });
 ```
 
-and [listing all the files in your bucket][list]:
+or [listing all the files in your bucket][list]:
 
 ```js
 client.list({ prefix: 'my-prefix' }, function(err, data){
@@ -209,6 +225,8 @@ client.request('GET', '/test/Readme.md?acl').on('response', function(res){
 }).end();
 ```
 
+[copy]: http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html
+[multi-delete]: http://docs.aws.amazon.com/AmazonS3/latest/API/multiobjectdeleteapi.html
 [list]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketGET.html
 [acl]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html
 
