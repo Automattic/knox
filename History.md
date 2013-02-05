@@ -1,3 +1,11 @@
+
+0.5.2 / 2013-02-05 
+==================
+
+  * fix Client#signedUrl() query-string param support
+  * add DEBUG support
+  * Oh no, I forgot to press Ctrl+S before committing this!
+
 0.5.0 / 2013-01-25
 ==================
 
