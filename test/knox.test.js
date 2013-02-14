@@ -356,6 +356,32 @@ module.exports = {
     }).end();
   },
 
+  'test undefined token is not set in header': function(done){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , token: undefined
+    });
+    var req = client.get('/');
+    assert.equal(false, req._headers.hasOwnProperty('x-amz-security-token'));
+    req.end();
+    done();
+  },
+
+  'test token is set in header': function(done){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , token: 'foo'
+    });
+    var req = client.get('/');
+    assert.equal('foo', req._headers['x-amz-security-token']);
+    req.end();
+    done();
+  },
+
   'test header lowercasing': function(){
     var headers = { 'X-Amz-Acl': 'private' };
     var req = client.put('/test/user.json', headers);
