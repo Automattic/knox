@@ -4,7 +4,8 @@ var knox = require('..')
   , fs = require('fs')
   , http = require('http')
   , assert = require('assert')
-  , crypto = require('crypto');
+  , crypto = require('crypto')
+  , qs = require('querystring');
 
 try {
   var auth = require("./auth.json");
@@ -602,14 +603,15 @@ module.exports = {
   'test .signedUrl() with extra params': function(){
     var date = new Date(2020, 1, 1);
     var timestamp = date.getTime() * 0.001;
-    var signedUrl = client.signedUrl('/test/user.json', date, {
+    var otherParams = {
       filename: 'my?Fi&le.json',
       'response-content-disposition': 'attachment'
-    });
+    };
+    var signedUrl = client.signedUrl('/test/user.json', date, otherParams);
     var signature = signQuery({
         secret: client.secret
       , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json'
+      , resource: '/' + client.bucket + '/test/user.json?' + qs.stringify(otherParams)
     });
 
     assert.equal('https://' + client.bucket +
