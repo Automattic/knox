@@ -225,6 +225,13 @@ client.request('GET', '/test/Readme.md?acl').on('response', function(res){
 }).end();
 ```
 
+Finally, you can construct HTTP or HTTPS URLs for a file like so:
+
+```js
+var readmeUrl = client.http('/test/Readme.md');
+var userDataUrl = client.https('/user.json');
+```
+
 [copy]: http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html
 [multi-delete]: http://docs.aws.amazon.com/AmazonS3/latest/API/multiobjectdeleteapi.html
 [list]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketGET.html
