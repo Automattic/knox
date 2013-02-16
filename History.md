@@ -1,10 +1,13 @@
-
-0.5.2 / 2013-02-05 
+0.5.3 / 2013-02-15
 ==================
 
-  * fix Client#signedUrl() query-string param support
-  * add DEBUG support
-  * Oh no, I forgot to press Ctrl+S before committing this!
+  * The `x-amz-security-token` header is no longer sent when the `token` option is undefined. (#143, @ianshward)
+
+0.5.2 / 2013-02-05
+==================
+
+  * Fixed `signedUrl` query-string param support, as introduced in 0.4.7.
+  * Added [debug](https://npmjs.org/package/debug) support.
 
 0.5.0 / 2013-01-25
 ==================
