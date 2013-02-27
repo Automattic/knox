@@ -58,14 +58,45 @@ module.exports = {
     assert.equal('', auth.canonicalizeHeaders({}));
   },
 
-  'test .canonicalizeResource()': function(){
+  'test .queryStringToSign()': function() {
+    var date = new Date().toUTCString()
+      , resource = 'foo.jpg';
 
+    var strHead = auth.queryStringToSign({
+        verb: 'HEAD'
+      , date: date
+      , resource: resource
+    });
+
+    var expectedHead = [
+        'HEAD\n\n'
+      , date
+      , resource
+    ].join('\n');
+
+    assert.equal(expectedHead, strHead);
+
+    var strGet = auth.queryStringToSign({
+        verb: 'GET'
+      , date: date
+      , resource: resource
+    });
+
+    var expectedGet = [
+        'GET\n\n'
+      , date
+      , resource
+    ].join('\n');
+    assert.equal(expectedGet, strGet);
+  },
+
+  'test .canonicalizeResource()': function(){
     assert.equal(auth.canonicalizeResource('/bucket/'), '/bucket/');
     assert.equal(auth.canonicalizeResource('/bucket/test/user2.json'), '/bucket/test/user2.json');
     assert.equal(auth.canonicalizeResource('/bucket/?acl'), '/bucket/?acl');
     assert.equal(auth.canonicalizeResource('/bucket/?delete'), '/bucket/?delete');
     assert.equal(auth.canonicalizeResource('/bucket/?prefix=logs'), '/bucket/');
     assert.equal(auth.canonicalizeResource('/bucket/?prefix=logs/&delimiter=/'), '/bucket/');
-      assert.equal(auth.canonicalizeResource('/bucket/?prefix=log%20files/&delimiter=/'), '/bucket/');
+    assert.equal(auth.canonicalizeResource('/bucket/?prefix=log%20files/&delimiter=/'), '/bucket/');
   }
 };
