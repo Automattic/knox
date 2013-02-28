@@ -611,7 +611,7 @@ module.exports = {
     var signature = signQuery({
         secret: client.secret
       , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json?' + qs.stringify(otherParams)
+      , resource: '/' + client.bucket + '/test/user.json?' + decodeURIComponent(qs.stringify(otherParams))
     });
 
     assert.equal('https://' + client.bucket +
