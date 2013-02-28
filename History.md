@@ -1,3 +1,9 @@
+0.5.4 / 2013-02-27
+==================
+
+ * Fixed `signedUrl` query-string extra-param support for parameters that contained URL-encodable characters.
+ * Added support for arbitrary verbs (not just `GET`) to `signedUrl`. (#144, @markdaws)
+
 0.5.3 / 2013-02-15
 ==================
 
