@@ -625,6 +625,33 @@ module.exports = {
                  , signedUrl);
   },
 
+  'test .signedUrl() with sts token': function(){
+    var date = new Date(2020, 1, 1);
+    var timestamp = date.getTime() * 0.001;
+    var tokenClient = knox.createClient({
+      bucket: 'example',
+      key: 'foo',
+      secret: 'bar',
+      token: 'baz'
+    });
+    var signedUrl = tokenClient.signedUrl('/test/user.json', date);
+    var signature = signQuery({
+        secret: tokenClient.secret
+      , date: timestamp
+      , resource: '/' + tokenClient.bucket + '/test/user.json'
+      , token: 'baz'
+    });
+
+    assert.equal('https://' + tokenClient.bucket +
+                 '.s3.amazonaws.com/test/user.json?Expires=' +
+                 timestamp +
+                 '&AWSAccessKeyId=' +
+                 tokenClient.key +
+                 '&Signature=' + encodeURIComponent(signature) +
+                 '&x-amz-security-token=baz', signedUrl);
+
+  },
+
   'test .signedUrl() with verb HEAD': function(){
     var date = new Date(2020, 1, 1);
     var timestamp = date.getTime() * 0.001;
