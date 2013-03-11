@@ -88,6 +88,21 @@ module.exports = {
       , resource
     ].join('\n');
     assert.equal(expectedGet, strGet);
+
+    var strGetToken = auth.queryStringToSign({
+        verb: 'GET'
+      , date: date
+      , resource: resource
+      , token: 'foobar'
+    });
+
+    var expectedGetToken = [
+        'GET\n\n'
+      , date
+      , 'x-amz-security-token:foobar'
+      , resource
+    ].join('\n');
+    assert.equal(expectedGetToken, strGetToken);
   },
 
   'test .canonicalizeResource()': function(){
