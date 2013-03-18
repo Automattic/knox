@@ -3,6 +3,7 @@ var knox = require('..')
   , signQuery = require('../lib/auth').signQuery
   , fs = require('fs')
   , http = require('http')
+  , https = require('https')
   , assert = require('assert')
   , crypto = require('crypto')
   , qs = require('querystring');
@@ -517,6 +518,20 @@ module.exports = {
         });
       }).end();
     });
+  },
+
+  'test .signedUrl() with Unicode in query string': function(done){
+    var otherParams = {
+      'response-content-disposition': 'attachment; filename="ümläüt.txt";'
+    };
+    var signedUrl = client.signedUrl('/test/user4.json', new Date(Date.now() + 5000), otherParams, 'GET');
+
+    https.get(signedUrl).on('response', function(res){
+      assert.equal(200, res.statusCode);
+      assert.equal('application/json', res.headers['content-type']);
+      assert.equal(13, res.headers['content-length']);
+      done();
+    }).end();
   },
 
   'test /?delete': function (done) {
