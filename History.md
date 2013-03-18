@@ -1,3 +1,9 @@
+0.5.5 / 2013-03-18
+==================
+
+ * Fixed `signedUrl` query-string extra-param support for parameters that contained Unicode characters. (#149)
+ * Automatically include STS tokens, when a client is created with the `token` option, in URLs generated from `client.signedUrl`. (#147, @willwhite)
+
 0.5.4 / 2013-02-27
 ==================
 
