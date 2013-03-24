@@ -1,124 +1,18 @@
 var knox = require('..')
-  , utils = knox.utils
-  , signQuery = require('../lib/auth').signQuery
+  , initClients = require('./initClients')
   , fs = require('fs')
   , http = require('http')
-  , https = require('https')
   , assert = require('assert')
-  , crypto = require('crypto')
-  , qs = require('querystring');
+  , crypto = require('crypto');
 
-try {
-  var auth = require("./auth.json");
-  var client = knox.createClient(auth);
-  assert.notEqual(auth.bucket, auth.bucket2, 'Bucket should not equal bucket2.');
-  var auth2 = utils.merge({}, auth);
-  auth2.bucket = auth2.bucket2;
-  var client2 = knox.createClient(auth2);
-  auth.bucket = auth.bucketUsWest2;
-  // Without this we get a 307 redirect
-  // that putFile can't handle (issue #66). Later
-  // when there is an implementation of #66 we can test
-  // both with and without this option present, but it's
-  // always a good idea for performance
-  auth.region = 'us-west-2';
-  var clientUsWest2 = knox.createClient(auth);
-
-} catch (err) {
-  console.error(err);
-  console.error('The tests require ./auth to contain a JSON string with key, ' +
-                'secret, bucket, bucket2, and bucketUsWest2 in order to run tests. ' +
-                'Both bucket and bucketUsWest2 must exist and should not ' +
-                'contain anything you want to keep. bucketUsWest2 should be ' +
-                'created in the us-west-2 (Oregon) region, not the default ' +
-                'region.');
-  process.exit(1);
-}
+var clients = initClients();
+var client = clients.client;
+var client2 = clients.client2;
+var clientUsWest2 = clients.clientUsWest2;
 
 var jsonFixture = __dirname + '/fixtures/user.json';
 
 module.exports = {
-  'test .createClient() invalid': function(){
-    assert.throws(
-      function () { knox.createClient({}); },
-      /aws "key" required/
-    );
-
-    assert.throws(
-      function () { knox.createClient({ key: 'foo' }); },
-      /aws "secret" required/
-    );
-
-    assert.throws(
-      function () { knox.createClient({ key: 'foo', secret: 'bar' }); },
-      /aws "bucket" required/
-    );
-
-    assert.throws(
-      function () {
-        knox.createClient({ key: 'foo', secret: 'bar', bucket: 'BuCkEt' });
-      },
-      /bucket names must be all lower case/
-    );
-  },
-
-  'test .createClient() valid': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-    });
-
-    assert.equal('foobar', client.key);
-    assert.equal('baz', client.secret);
-    assert.equal('misc', client.bucket);
-    assert.equal('misc.s3.amazonaws.com', client.endpoint);
-  },
-
-  'test .createClient() custom endpoint': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , endpoint: 's3-eu-west-1.amazonaws.com'
-    });
-
-    assert.equal('s3-eu-west-1.amazonaws.com', client.endpoint);
-  },
-
-  'test .createClient() custom domain': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , domain: 'objects.dreamhost.com'
-    });
-
-    assert.equal('misc.objects.dreamhost.com', client.endpoint);
-  },
-
-  'test .createClient() region is us-west-1': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , region: 'us-west-1'
-    });
-
-    assert.equal('misc.s3-us-west-1.amazonaws.com', client.endpoint);
-  },
-
-  'test .createClient() region explicitly us-standard': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , region: 'us-standard'
-    });
-
-    assert.equal('misc.s3.amazonaws.com', client.endpoint);
-  },
-
   'test .putFile()': function(done){
     var n = 0;
     client.putFile(jsonFixture, '/test/user2.json', function(err, res){
@@ -500,7 +394,7 @@ module.exports = {
     var file = '/copy-file-to/user.json';
 
     client.putFile(jsonFixture, file, function(err, res){
-        client.copyFileTo(file, auth.bucket2, file, function(err, res){
+        client.copyFileTo(file, client2.bucket, file, function(err, res){
           assert.ifError(err);
           assert.equal(200, res.statusCode);
           client.deleteFile(file, function(err, res) {
@@ -518,7 +412,7 @@ module.exports = {
     var file = '/copy-file-to/user.json';
 
     client.putFile(jsonFixture, file, function(err, res){
-      client.copyTo(file, auth.bucket2, file).on('response', function(res){
+      client.copyTo(file, client2.bucket, file).on('response', function(res){
         assert.equal(200, res.statusCode);
         client.deleteFile(file, function(err, res) {
           assert.ifError(err);
@@ -531,21 +425,7 @@ module.exports = {
     });
   },
 
-  'test .signedUrl() with Unicode in query string': function(done){
-    var otherParams = {
-      'response-content-disposition': 'attachment; filename="ümläüt.txt";'
-    };
-    var signedUrl = client.signedUrl('/test/user4.json', new Date(Date.now() + 5000), otherParams, 'GET');
-
-    https.get(signedUrl).on('response', function(res){
-      assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type']);
-      assert.equal(13, res.headers['content-length']);
-      done();
-    }).end();
-  },
-
-  'test /?delete': function (done) {
+  'test /?delete': function(done){
     var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
     xml.push('<Object><Key>test/user4.json</Key></Object>');
     xml.push('</Delete>');
@@ -587,133 +467,5 @@ module.exports = {
 
         done();
       });
-  },
-
-  'test .signedUrl()': function(){
-    // Not much of a test, but hopefully will prevent regressions (see GH-81)
-    var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * 0.001;
-    var signedUrl = client.signedUrl('/test/user.json', date);
-    var signature = signQuery({
-        secret: client.secret
-      , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json'
-    });
-
-    assert.equal('https://' + client.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=' +
-                 timestamp +
-                 '&AWSAccessKeyId=' +
-                 client.key +
-                 '&Signature=' + encodeURIComponent(signature), signedUrl);
-  },
-
-  'test .signedUrl() without a leading slash': function(){
-    var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * 0.001;
-    var signedUrl = client.signedUrl('test/user.json', date); // no leading slash
-    var signature = signQuery({
-        secret: client.secret
-      , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json'
-    });
-
-    assert.equal('https://' + client.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=' +
-                 timestamp +
-                 '&AWSAccessKeyId=' +
-                 client.key +
-                 '&Signature=' + encodeURIComponent(signature), signedUrl);
-  },
-
-  'test .signedUrl() with extra params': function(){
-    var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * 0.001;
-    var otherParams = {
-      filename: 'my?Fi&le.json',
-      'response-content-disposition': 'attachment'
-    };
-    var signedUrl = client.signedUrl('/test/user.json', date, otherParams);
-    var signature = signQuery({
-        secret: client.secret
-      , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json?' + decodeURIComponent(qs.stringify(otherParams))
-    });
-
-    assert.equal('https://' + client.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=' +
-                 timestamp +
-                 '&AWSAccessKeyId=' +
-                 client.key +
-                 '&Signature=' + encodeURIComponent(signature) +
-                 '&filename=' + encodeURIComponent('my?Fi&le.json') +
-                 '&response-content-disposition=attachment'
-                 , signedUrl);
-  },
-
-  'test .signedUrl() with sts token': function(){
-    var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * 0.001;
-    var tokenClient = knox.createClient({
-      bucket: 'example',
-      key: 'foo',
-      secret: 'bar',
-      token: 'baz'
-    });
-    var signedUrl = tokenClient.signedUrl('/test/user.json', date);
-    var signature = signQuery({
-        secret: tokenClient.secret
-      , date: timestamp
-      , resource: '/' + tokenClient.bucket + '/test/user.json'
-      , token: 'baz'
-    });
-
-    assert.equal('https://' + tokenClient.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=' +
-                 timestamp +
-                 '&AWSAccessKeyId=' +
-                 tokenClient.key +
-                 '&Signature=' + encodeURIComponent(signature) +
-                 '&x-amz-security-token=baz', signedUrl);
-
-  },
-
-  'test .signedUrl() with verb HEAD': function(){
-    var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * 0.001;
-    var signedUrl = client.signedUrl('/test/user.json', date, null, 'HEAD');
-    var signature = signQuery({
-        secret: client.secret
-      , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json'
-      , verb: 'HEAD'
-    });
-
-    assert.equal('https://' + client.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=' +
-                 timestamp +
-                 '&AWSAccessKeyId=' +
-                 client.key +
-                 '&Signature=' + encodeURIComponent(signature), signedUrl);
-  },
-
-  'test .signedUrl() with verb GET': function(){
-    var date = new Date(2020, 1, 1);
-    var timestamp = date.getTime() * 0.001;
-    var signedUrl = client.signedUrl('/test/user.json', date, null, 'GET');
-    var signature = signQuery({
-        secret: client.secret
-      , date: timestamp
-      , resource: '/' + client.bucket + '/test/user.json'
-      , verb: 'GET'
-    });
-
-    assert.equal('https://' + client.bucket +
-                 '.s3.amazonaws.com/test/user.json?Expires=' +
-                 timestamp +
-                 '&AWSAccessKeyId=' +
-                 client.key +
-                 '&Signature=' + encodeURIComponent(signature), signedUrl);
   }
-
 };
