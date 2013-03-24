@@ -125,6 +125,7 @@ module.exports = {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
+        res.resume();
         assert.equal('application/json', res.headers['content-type']);
         done();
       }).end();
@@ -137,6 +138,7 @@ module.exports = {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
+        res.resume();
         assert.equal('application/json', res.headers['content-type']);
         done();
       }).end();
@@ -149,6 +151,7 @@ module.exports = {
       assert.ifError(err);
       assert.equal(200, res.statusCode);
       client.get('/test/user2.json').on('response', function(res){
+        res.resume();
         assert.equal('application/json', res.headers['content-type']);
         assert.ok(progressHappened);
         done();
@@ -174,6 +177,7 @@ module.exports = {
           , 'Content-Type': 'application/json'
         });
         req.on('response', function(res){
+          res.resume();
           assert.equal(200, res.statusCode);
           assert.equal(
               'https://'+client.endpoint+'/test/user.json'
@@ -195,6 +199,7 @@ module.exports = {
         , 'Content-Type': 'text/plain'
       });
       req.on('response', function(res){
+        res.resume();
         assert.equal(200, res.statusCode);
         done();
       });
@@ -207,6 +212,7 @@ module.exports = {
         , 'Content-Type': 'text/plain'
       });
       req.on('response', function(res){
+        res.resume();
         assert.equal(200, res.statusCode);
         done();
       });
@@ -328,6 +334,7 @@ module.exports = {
 
   'test .copy()': function(done){
     client.copy('/test/user.json', '/test/user3.json').on('response', function(res){
+      res.resume();
       assert.equal(200, res.statusCode);
       done();
     }).end();
@@ -353,6 +360,7 @@ module.exports = {
 
   'test .get()': function(done){
     client.get('/test/user4.json').on('response', function(res){
+      res.resume();
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type']);
       assert.equal(13, res.headers['content-length']);
@@ -362,6 +370,7 @@ module.exports = {
 
   'test .get() without leading slash': function(done){
     client.get('buffer.txt').on('response', function(res){
+      res.resume();
       assert.equal(200, res.statusCode);
       assert.equal('text/plain', res.headers['content-type']);
       assert.equal(17, res.headers['content-length']);
@@ -422,6 +431,7 @@ module.exports = {
 
   'test .del()': function(done){
     client.del('/test/user.json').on('response', function(res){
+      res.resume();
       assert.equal(204, res.statusCode);
       done();
     }).end();
@@ -538,6 +548,7 @@ module.exports = {
     var signedUrl = client.signedUrl('/test/user4.json', new Date(Date.now() + 5000), otherParams, 'GET');
 
     https.get(signedUrl).on('response', function(res){
+      res.resume();
       assert.equal(200, res.statusCode);
       assert.equal('application/json', res.headers['content-type']);
       assert.equal(13, res.headers['content-length']);
@@ -557,6 +568,7 @@ module.exports = {
     }).on('error', function (err) {
       assert.ifError(err);
     }).on('response', function (res) {
+      res.resume();
       assert.equal(200, res.statusCode);
       done();
     });
@@ -566,6 +578,7 @@ module.exports = {
 
   'test .get() 404': function(done){
     client.get('/test/user.json').on('response', function(res){
+      res.resume();
       assert.equal(404, res.statusCode);
       done();
     }).end();
@@ -573,6 +586,7 @@ module.exports = {
 
   'test .head() 404': function(done){
     client.head('/test/user.json').on('response', function(res){
+      res.resume();
       assert.equal(404, res.statusCode);
       done();
     }).end();
