@@ -86,6 +86,17 @@ module.exports = {
     assert.equal('s3-eu-west-1.amazonaws.com', client.endpoint);
   },
 
+  'test .createClient() custom domain': function(){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , domain: 'objects.dreamhost.com'
+    });
+
+    assert.equal('misc.objects.dreamhost.com', client.endpoint);
+  },
+
   'test .createClient() region is us-west-1': function(){
     var client = knox.createClient({
         key: 'foobar'

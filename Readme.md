@@ -278,6 +278,11 @@ the region option anyway.
 [endpoint-docs]: http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region
 [issue #66]: https://github.com/LearnBoost/knox/issues/66
 
+### `domain`
+
+If you are using an S3-compatible service that isn't hosted by Amazon, you can
+just change the domain using the `domain` option.
+
 ### `secure` and `port`
 
 By default, knox uses HTTPS to connect to S3 on port 443. You can override
