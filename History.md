@@ -1,3 +1,11 @@
+0.6.0 / 2013-03-24
+==================
+
+ * Added a stopgap fix for Knox in Node.js 0.10 with streams2, although we do not yet expose a fully streams2-compatible interface. (#146, @pifantastic)
+ * Fixed "socket hang up" errors (hopefully!) by disabling the default HTTPS agent. (#116, fix discovered by @kof)
+ * Added the `domain` configuration option for easy use of other S3-compatible services. (#154, @clee)
+ * Changed and enhanced `signedUrl`: its third parameter is now `options`, which can contain a `verb` string, a `contentType` string, and a `qs` object. In particular, the new `contentType` capability allows creating pre-signed URLs for PUTs. (#152)
+
 0.5.5 / 2013-03-18
 ==================
 
