@@ -301,9 +301,12 @@ request made by the client.
 
 ### `agent`
 
-If you want to use a custom [HTTP agent][], you can specify this with the
-`agent` option.
+Knox disables the default [HTTP agent][], because it leads to lots of "socket
+hang up" errors when doing more than 5 requests at once. See [#116][] for
+details. If you want to get the default agent back, you can specify
+`agent: require("https").globalAgent`, or use your own.
 
+[#116]: https://github.com/LearnBoost/knox/issues/116#issuecomment-15045187
 [HTTP agent]: http://nodejs.org/docs/latest/api/http.html#http_class_http_agent
 
 
