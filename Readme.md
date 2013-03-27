@@ -149,7 +149,9 @@ same pattern as above.
 
 ### Advanced Operations
 
-Knox supports a few advanced operations. Like [copying files][copy]:
+Knox supports a few advanced operations. Like [copying files][copy]. Using the
+source bucket in the client, the arguments are the original object key and the
+new object key:
 
 ```js
 client.copy('/test/Readme.md', '/test/Readme.markdown').on('response', function(res){
@@ -164,7 +166,8 @@ client.copyFile('/test/Readme.md', '/test/Readme.markdown', function(err, res){
 });
 ```
 
-even between buckets:
+even between buckets, using the source bucket in the client, the arguments are
+the original object key, the destination bucket and the new object key:
 
 
 ```js
