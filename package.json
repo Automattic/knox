@@ -35,5 +35,8 @@
   },
   "directories": {
     "lib": "./lib"
+  },
+  "engines": {
+    "node": ">= 0.8"
   }
 }
