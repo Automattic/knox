@@ -152,14 +152,14 @@ same pattern as above.
 Knox supports a few advanced operations. Like [copying files][copy]:
 
 ```js
-client.copy('/test/Readme.md', '/test/Readme.markdown').on('response', function(res){
+client.copy('/test/source.txt', '/test/dest.txt').on('response', function(res){
   console.log(res.statusCode);
   console.log(res.headers);
 }).end();
 
 // or
 
-client.copyFile('/test/Readme.md', '/test/Readme.markdown', function(err, res){
+client.copyFile('/source.txt', '/dest.txt', function(err, res){
   // ...
 });
 ```
@@ -168,13 +168,13 @@ even between buckets:
 
 
 ```js
-client.copyTo('/test/Readme.md', 'mirror-bucket', 'test/Readme.md').on('response', function(res){
+client.copyTo('/source.txt', 'dest-bucket', '/dest.txt').on('response', function(res){
   // ...
 }).end();
 
 // or
 
-client.copyFileTo('/test/Readme.md', 'mirror-bucket', 'test/Readme.md', function (err, res){
+client.copyFileTo('/source.txt', 'dest-bucket', '/dest.txt', function (err, res){
   // ...
 });
 
