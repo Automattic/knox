@@ -6,8 +6,14 @@ module.exports = function(){
   var client, client2, clientUsWest2;
 
   try {
-    var auth = require("./auth.json");
-    assert.notEqual(auth.bucket, auth.bucket2, 'Bucket should not equal bucket2.');
+    var auth = require('./auth.json');
+
+    assert(auth.bucket, 'bucket must exist');
+    assert(auth.bucket2, 'bucket2 must exist');
+    assert(auth.bucketUsWest2, 'bucketUsWest2 must exist');
+    assert.notEqual(auth.bucket, auth.bucket2, 'bucket should not equal bucket2.');
+    assert.notEqual(auth.bucket, auth.bucketUsWest2, 'bucket should not equal bucketUsWest2.');
+    assert.notEqual(auth.bucket2, auth.bucketUsWest2, 'bucket2 should not equal bucketUsWest2.');
 
     client = knox.createClient(auth);
 
@@ -26,12 +32,12 @@ module.exports = function(){
     clientUsWest2 = knox.createClient(authUsWest2);
   } catch (err) {
     console.error(err);
-    console.error('The tests require ./auth to contain a JSON string with key, ' +
-                  'secret, bucket, bucket2, and bucketUsWest2 in order to run tests. ' +
-                  'Both bucket and bucketUsWest2 must exist and should not ' +
-                  'contain anything you want to keep. bucketUsWest2 should be ' +
-                  'created in the us-west-2 (Oregon) region, not the default ' +
-                  'region.');
+    console.error('The tests require test/auth.json to contain JSON with ' +
+                  'key, secret, bucket, bucket2, and bucketUsWest2 in order ' +
+                  'to run tests. All three buckets must exist and should not ' +
+                  'contain anything you want to keep. bucketUsWest2 should ' +
+                  'be created in the us-west-2 (Oregon) region, not the ' +
+                  'default region.');
     process.exit(1);
   }
 
