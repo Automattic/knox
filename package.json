@@ -25,7 +25,8 @@
   "dependencies": {
     "mime": "*",
     "xml2js": "0.2.x",
-    "debug": "~0.7.0"
+    "debug": "~0.7.0",
+    "stream-counter": "~0.1.0"
   },
   "devDependencies": {
     "mocha": "*"
