@@ -48,7 +48,8 @@ req.on('response', function(res){
 req.end(string);
 ```
 
-By default the _x-amz-acl_ header is _private_. To alter this simply pass this header to the client request method.
+By default the _x-amz-acl_ header is _private_. To alter this simply pass this
+header to the client request method.
 
 ```js
 client.put('/test/obj.json', { 'x-amz-acl': 'public-read' });
@@ -79,7 +80,27 @@ http.get('http://google.com/doodle.png', function(res){
 });
 ```
 
-And if you want a nice interface for putting a buffer or a string of data,
+You can also use your stream's `pipe` method to pipe to the PUT request, but
+you'll still have to set the `'Content-Length'` header. For example:
+
+```js
+fs.stat('./Readme.md', function(err, stat){
+  // Be sure to handle `err`.
+
+  var req = client.put('/Readme.md', {
+      'Content-Length': stat.size
+    , 'Content-Type': 'text/plain'
+  });
+
+  fs.createReadStream('./Readme.md').pipe(req);
+
+  req.on('response', function(res){
+    // Logic
+  });
+});
+```
+
+Finally, if you want a nice interface for putting a buffer or a string of data,
 use `Client#putBuffer()`:
 
 ```js

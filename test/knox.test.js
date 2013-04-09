@@ -106,9 +106,31 @@ module.exports = {
       });
       req.end(string);
   },
+
+  'test piping from a file stream to .put()': function(done) {
+    fs.stat(jsonFixture, function(err, stat){
+      assert.ifError(err);
+
+      var headers = {
+          'Content-Length': stat.size
+        , 'Content-Type': 'application/json'
+      };
+
+      var req = client.put('/test/direct-pipe.json', headers);
+      req.on('response', function(res){
+        assert.equal(200, res.statusCode);
+        done();
+      });
+
+      var fileStream = fs.createReadStream(jsonFixture);
+      fileStream.pipe(req);
+    });
+  },
+
   'test .putStream() with file stream': function(done){
     fs.stat(jsonFixture, function(err, stat){
-      if (err) throw err;
+      assert.ifError(err);
+
       var headers = {
           'Content-Length': stat.size
         , 'Content-Type': 'application/json'
@@ -427,7 +449,7 @@ module.exports = {
 
   'test /?delete': function(done){
     var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
-    xml.push('<Object><Key>test/user4.json</Key></Object>');
+    xml.push('<Object><Key>test/user4.json</Key></Object><Object><Key>test/direct-pipe.json</Key></Object>');
     xml.push('</Delete>');
     xml = xml.join('');
     var req = client.request('POST', '/?delete', {
