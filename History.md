@@ -1,3 +1,10 @@
+0.7.0 / 2013-04-08
+==================
+
+ * Added real streams2 compatibility: Knox does not kick incoming streams into "old mode," nor does it return streams already kicked into "old mode." (#156, @superjoe30).
+ * Fixed a rare bug where sometimes callbacks would be called twice, once with an error then with a failed response. (#159)
+ * Made Node.js 0.8 a requirement in `package.json`; it seems like Knox did not work with Node.js 0.6 anyway.
+
 0.6.0 / 2013-03-24
 ==================
 
