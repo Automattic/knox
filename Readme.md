@@ -359,6 +359,15 @@ filesystem. For simple cases this is often exactly what you want!
 [@superjoe30]: https://github.com/superjoe30
 [s3]: https://npmjs.org/package/s3
 
+### Uploading With Retries and Exponential Backoff
+
+[@jergason][] created [intimidate][], a library wrapping Knox to automatically retry
+failed uploads with exponential backoff. This helps your app deal with intermittent
+connectivity to S3 without bringing it to a ginding halt.
+
+[@jergason]: https://github.com/jergason
+[intimidate]: https://npmjs.org/package/intimidate
+
 
 ## Running Tests
 
