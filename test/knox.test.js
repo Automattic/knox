@@ -13,6 +13,21 @@ var clientUsWest2 = clients.clientUsWest2;
 var jsonFixture = __dirname + '/fixtures/user.json';
 
 module.exports = {
+  'test endpoint with custom port': function(done){
+    var customPortClient = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc'
+      , port: 81
+    });
+
+    assert.equal(
+        'http://misc.s3.amazonaws.com:81/test/user.json'
+      , customPortClient.url('/test/user.json'));
+
+    done();
+  },
+
   'test .putFile()': function(done){
     var n = 0;
     client.putFile(jsonFixture, '/test/user2.json', function(err, res){
