@@ -1,4 +1,4 @@
---ui exports
+--ui bdd
 --slow 1000ms
 --timeout 5000ms
 --reporter spec

@@ -4,7 +4,7 @@ Node Amazon S3 Client.
 
 ## Features
 
-  - Familiar API (`client.get()`, `client.put()`, etc)
+  - Familiar API (`client.get()`, `client.put()`, etc.)
   - Very Node-like low-level request capabilities via `http.Client`
   - Higher-level API with `client.putStream()`, `client.getFile()`, etc.
   - Copying and multi-file delete support
@@ -266,15 +266,16 @@ of the following:
 ### `endpoint`
 
 By default knox will send all requests to the global endpoint
-(bucket.s3.amazonaws.com). This works regardless of the region where the bucket
-is. But if you want to manually set the endpoint (for performance reasons) you
-can do it with the `endpoint` option.
+(s3.amazonaws.com). This works regardless of the region where the bucket
+is. But if you want to manually set the endpoint, e.g. for performance or
+testing reasons, or because you are using a S3-compatible service that isn't
+hosted by Amazon, you can do it with the `endpoint` option.
 
 ### `region`
 
 For your convenience when using buckets not in the US Standard region, you can
-specify the `region` option. When you do so, the `endpoint` hostname is
-automatically assembled.
+specify the `region` option. When you do so, the `endpoint` is automatically
+assembled.
 
 As of this writing, valid values for the `region` option are:
 
@@ -299,11 +300,6 @@ the region option anyway.
 [endpoint-docs]: http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region
 [issue #66]: https://github.com/LearnBoost/knox/issues/66
 
-### `domain`
-
-If you are using an S3-compatible service that isn't hosted by Amazon, you can
-just change the domain using the `domain` option.
-
 ### `secure` and `port`
 
 By default, knox uses HTTPS to connect to S3 on port 443. You can override
@@ -319,6 +315,34 @@ credentials token. This simply sets the _x-amz-security-token_ header on every
 request made by the client.
 
 [sts]: http://docs.amazonwebservices.com/STS/latest/UsingSTS/Welcome.html
+
+### `style`
+
+By default, knox uses the "virtual hosted style" URLs for accessing S3, e.g.
+`bucket.s3.amazonaws.com`. If you pass in `"path"` as the `style` option, you
+can make knox use "path style" URLs, e.g. `s3.amazonaws.com/bucket`. There are
+tradeoffs you should be aware of:
+
+- Virtual hosted style URLs can work with any region, without requiring it to be
+  explicitly specified; path style URLs cannot.
+- You can access programmatically-created buckets only by using virtual hosted
+  style URLs; path style URLs will not work.
+- You can access buckets with periods in their names over SSL using path style
+  URLs; virtual host style URLs will not work unless you turn off certificate
+  validation.
+- You can access buckets with mixed-case names only using path style URLs;
+  virtual host style URLs will not work.
+
+For more information on the differences between these two types of URLs, and
+limitations related to them, see the following S3 documentation pages:
+
+- [Virtual Hosting of Buckets][virtual]
+- [Bucket Configuration Options][config]
+- [Bucket Restrictions and Limitations][limits]
+
+[virtual]: http://docs.aws.amazon.com/AmazonS3/latest/dev/VirtualHosting.html
+[config]: http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketConfiguration.html
+[limits]: http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
 
 ### `agent`
 

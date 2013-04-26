@@ -2,11 +2,11 @@ var knox = require('..')
   , utils = knox.utils
   , assert = require('assert');
 
-module.exports = function(){
+module.exports = function(style){
   var client, client2, clientUsWest2;
 
   try {
-    var auth = require('./auth.json');
+    var auth = utils.merge({ style: style }, require('./auth.json'));
 
     assert(auth.bucket, 'bucket must exist');
     assert(auth.bucket2, 'bucket2 must exist');
@@ -15,7 +15,8 @@ module.exports = function(){
     assert.notEqual(auth.bucket, auth.bucketUsWest2, 'bucket should not equal bucketUsWest2.');
     assert.notEqual(auth.bucket2, auth.bucketUsWest2, 'bucket2 should not equal bucketUsWest2.');
 
-    client = knox.createClient(auth);
+    var auth1 = utils.merge({}, auth);
+    client = knox.createClient(auth1);
 
     var auth2 = utils.merge({}, auth);
     auth2.bucket = auth2.bucket2;

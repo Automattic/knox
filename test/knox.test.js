@@ -5,504 +5,573 @@ var knox = require('..')
   , assert = require('assert')
   , crypto = require('crypto');
 
-var clients = initClients();
-var client = clients.client;
-var client2 = clients.client2;
-var clientUsWest2 = clients.clientUsWest2;
-
 var jsonFixture = __dirname + '/fixtures/user.json';
 
-module.exports = {
-  'test endpoint with custom port': function(done){
-    var customPortClient = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , port: 81
-    });
+runTestsForStyle('virtualHosted', 'virtual hosted');
+runTestsForStyle('path', 'path');
 
-    assert.equal(
-        'http://misc.s3.amazonaws.com:81/test/user.json'
-      , customPortClient.url('/test/user.json'));
+function runTestsForStyle(style, userFriendlyName) {
+  describe('Client operations: ' + userFriendlyName + '-style', function () {
+    var clients = initClients(style);
+    var client = clients.client;
+    var client2 = clients.client2;
+    var clientUsWest2 = clients.clientUsWest2;
 
-    done();
-  },
-
-  'test .putFile()': function(done){
-    var n = 0;
-    client.putFile(jsonFixture, '/test/user2.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-      client.get('/test/user2.json').on('response', function(res){
-        assert.equal('application/json', res.headers['content-type']);
-        done();
-      }).end();
-    });
-  },
-
-  'test .putFile() in us-west-2': function(done){
-    var n = 0;
-    clientUsWest2.putFile(jsonFixture, '/test/user2.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-      client.get('/test/user2.json').on('response', function(res){
-        assert.equal('application/json', res.headers['content-type']);
-        done();
-      }).end();
-    });
-  },
-
-  'test .putFile() "progress" event': function(done){
-    var progressHappened = false;
-    var file = client.putFile(jsonFixture, '/test/user2.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-      client.get('/test/user2.json').on('response', function(res){
-        assert.equal('application/json', res.headers['content-type']);
-        assert.ok(progressHappened);
-        done();
-      }).end();
-    });
-
-    file.on('progress', function(e){
-      progressHappened = true;
-      assert(e.percent);
-      assert(e.total);
-      assert(e.written);
-    });
-  },
-
-  'test .put()': function(done){
-    var n = 0;
-    fs.stat(jsonFixture, function(err, stat){
-      if (err) throw err;
-      fs.readFile(jsonFixture, function(err, buf){
-        if (err) throw err;
-        var req = client.put('/test/user.json', {
-            'Content-Length': stat.size
-          , 'Content-Type': 'application/json'
-        });
-        req.on('response', function(res){
-          assert.equal(200, res.statusCode);
-          assert.equal(
-              'https://'+client.endpoint+'/test/user.json'
-            , client.url('/test/user.json'));
-          assert.equal(
-              'https://'+client.endpoint+'/test/user.json'
-            , req.url);
-          done();
-        });
-        req.end(buf);
-      });
-    });
-  },
-
-  'test .put() a string': function(done){
-      var string = "hello I am a string";
-      var req = client.put('/test/string.txt', {
-          'Content-Length': string.length
-        , 'Content-Type': 'text/plain'
-      });
-      req.on('response', function(res){
-        assert.equal(200, res.statusCode);
-        done();
-      });
-      req.end(string);
-  },
-  'test .put() a string with filename that contains apostrophe': function(done){
-      var string = "hello I have a ' in my name";
-      var req = client.put('/test/apos\'trophe.txt', {
-          'Content-Length': string.length
-        , 'Content-Type': 'text/plain'
-      });
-      req.on('response', function(res){
-        assert.equal(200, res.statusCode);
-        done();
-      });
-      req.end(string);
-  },
-
-  'test piping from a file stream to .put()': function(done) {
-    fs.stat(jsonFixture, function(err, stat){
-      assert.ifError(err);
-
-      var headers = {
-          'Content-Length': stat.size
-        , 'Content-Type': 'application/json'
-      };
-
-      var req = client.put('/test/direct-pipe.json', headers);
-      req.on('response', function(res){
-        assert.equal(200, res.statusCode);
-        done();
-      });
-
-      var fileStream = fs.createReadStream(jsonFixture);
-      fileStream.pipe(req);
-    });
-  },
-
-  'test .putStream() with file stream': function(done){
-    fs.stat(jsonFixture, function(err, stat){
-      assert.ifError(err);
-
-      var headers = {
-          'Content-Length': stat.size
-        , 'Content-Type': 'application/json'
-      };
-      var stream = fs.createReadStream(jsonFixture);
-      client.putStream(stream, '/test/user.json', headers, function(err, res){
-        assert.ifError(err);
-        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-        done();
-      });
-    });
-  },
-
-  'test .putStream() with http stream': function(done){
-    var options = {
-        host: 'google.com'
-      , path: '/'
-    };
-    http.get(options, function(res){
-      var headers = {
-          'Content-Length': res.headers['content-length']
-        , 'Content-Type': res.headers['content-type']
-      };
-      client.putStream(res, '/google', headers, function (err, res) {
-        assert.ifError(err);
-        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-        done();
-      });
-    });
-  },
-
-  'test .putStream() with http stream "progress" event': function(done){
-    var progressHappened = false;
-    var options = {
-        host: 'google.com'
-      , path: '/'
-    };
-    http.get(options, function(res){
-      var headers = {
-          'Content-Length': res.headers['content-length']
-        , 'Content-Type': res.headers['content-type']
-      };
-      var req = client.putStream(res, '/google', headers, function (err, res) {
-        assert.ifError(err);
-        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-        assert.ok(progressHappened);
-        done();
-      });
-
-      req.on('progress', function(e){
-        progressHappened = true;
-        assert(e.percent);
-        assert(e.total);
-        assert(e.written);
-      });
-    });
-  },
-
-  'test .putStream() without "Content-Length" header errors': function(done){
-    var stream = fs.createReadStream(jsonFixture);
-    var headers = {
-      'Content-Type': 'application/json'
-    };
-    client.putStream(stream, '/test/user.json', headers, function(err,res){
-      assert.ok(err);
-      assert(/Content-Length/.test(err.message));
-      done();
-    });
-  },
-
-  'test .putStream() with lowercase "content-length" header is ok': function(done){
-    fs.stat(jsonFixture, function(err, stat){
-      if (err) throw err;
-      var headers = {
-          'content-length': stat.size
-        , 'Content-Type': 'application/json'
-      };
-      var stream = fs.createReadStream(jsonFixture);
-      client.putStream(stream, '/test/user.json', headers, function(err, res){
-        assert.ifError(err);
-        if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-        done();
-      });
-    });
-  },
-
-  'test .putBuffer()': function(done){
-    var buffer = new Buffer('a string of stuff');
-    var headers = { 'Content-Type': 'text/plain' };
-    client.putBuffer(buffer, '/buffer.txt', headers, function (err, res) {
-      assert.ifError(err);
-      if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-      done();
-    });
-  },
-
-  'test .putBuffer() with lowercase "content-type" header works': function(done){
-    var buffer = new Buffer('a string of stuff');
-    var headers = { 'content-type': 'text/plain' };
-    client.putBuffer(buffer, '/buffer2.txt', headers, function (err, res) {
-      assert.ifError(err);
-      if (100 !== res.statusCode) assert.equal(200, res.statusCode);
-      client.getFile('/buffer2.txt', function (err, res) {
-        assert.ifError(err);
-        assert.equal(200, res.statusCode);
-        assert.equal(res.headers['content-type'], 'text/plain');
-        done();
-      });
-    });
-  },
-
-  'test .copy()': function(done){
-    client.copy('/test/user.json', '/test/user3.json').on('response', function(res){
-      assert.equal(200, res.statusCode);
-      done();
-    }).end();
-  },
-
-  'test .copyFile()': function(done){
-    client.copyFile('test/user.json', 'test/user4.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-      done();
-    }).end();
-  },
-
-  'test .getFile()': function(done){
-    client.getFile('/test/user.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type']);
-      assert.equal(13, res.headers['content-length']);
-      done();
-    });
-  },
-
-  'test .get()': function(done){
-    client.get('/test/user4.json').on('response', function(res){
-      assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type']);
-      assert.equal(13, res.headers['content-length']);
-      done();
-    }).end();
-  },
-
-  'test .get() without leading slash': function(done){
-    client.get('buffer.txt').on('response', function(res){
-      assert.equal(200, res.statusCode);
-      assert.equal('text/plain', res.headers['content-type']);
-      assert.equal(17, res.headers['content-length']);
-      done();
-    }).end();
-  },
-
-  'test undefined token is not set in header': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , token: undefined
-    });
-    var req = client.get('/');
-    assert.equal(false, req._headers.hasOwnProperty('x-amz-security-token'));
-  },
-
-  'test token is set in header': function(){
-    var client = knox.createClient({
-        key: 'foobar'
-      , secret: 'baz'
-      , bucket: 'misc'
-      , token: 'foo'
-    });
-    var req = client.get('/');
-    assert.equal('foo', req._headers['x-amz-security-token']);
-  },
-
-  'test header lowercasing': function(){
-    var headers = { 'X-Amz-Acl': 'private' };
-    var req = client.put('/test/user.json', headers);
-
-    assert.equal('private', req.getHeader('x-amz-acl'));
-
-    req.on('error', function (){}); // swallow "socket hang up" from aborting
-    req.abort();
-  },
-
-  'test .head()': function(done){
-    client.head('/test/user.json').on('response', function(res){
-      assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type']);
-      assert.equal(13, res.headers['content-length']);
-      done();
-    }).end();
-  },
-
-  'test .headFile()': function(done){
-    client.headFile('/test/user.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-      assert.equal('application/json', res.headers['content-type']);
-      assert.equal(13, res.headers['content-length']);
-      done();
-    });
-  },
-
-  'test .del()': function(done){
-    client.del('/test/user.json').on('response', function(res){
-      assert.equal(204, res.statusCode);
-      done();
-    }).end();
-  },
-
-  'test .deleteFile()': function(done){
-    client.deleteFile('/test/user2.json', function(err, res){
-      assert.ifError(err);
-      assert.equal(204, res.statusCode);
-      done();
-    });
-  },
-
-  'test .request() to get ACL (?acl)': function (done) {
-    var req = client.request('GET', '/test/user3.json?acl')
-      .on('error', function (err) {
-        assert.ifError(err);
-      }).on('response', function (res) {
-        var data = '';
-        res.on('data', function (chunk) {
-          data += chunk;
-        }).on('end', function () {
-          assert.ok(data.indexOf('<Permission>FULL_CONTROL</Permission>') !== -1);
-          done();
-        }).on('error', done);
-      }).end();
-  },
-
-  'test .deleteMultiple()': function(done){
-    // intentionally mix no leading slashes or leading slashes: see #121.
-    var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt', 'google'];
-    client.deleteMultiple(files, function (err, res) {
-      assert.ifError(err);
-      assert.equal(200, res.statusCode);
-
-      client.list(function (err, data) {
-        assert.ifError(err);
-        var keys = data.Contents.map(function (entry) { return entry.Key; });
-
-        assert(keys.indexOf('test/user3.json') === -1);
-        assert(keys.indexOf('test/string.txt') === -1);
-        assert(keys.indexOf('buffer.txt') === -1);
-
-        done();
-      });
-    });
-  },
-
-  'test .list()': function(done){
-    var files = ['/list/user1.json', '/list/user2.json'];
-
-    client.putFile(jsonFixture, files[0], function(err, res){
-      client.putFile(jsonFixture, files[1], function(err, res){
-        client.list({prefix: 'list'}, function(err, data){
+    describe('put()', function () {
+      specify('from a file statted and read into a buffer', function (done) {
+        fs.stat(jsonFixture, function (err, stat) {
           assert.ifError(err);
-          assert.equal(data.Prefix, 'list');
-          assert.strictEqual(data.IsTruncated, false);
-          assert.strictEqual(data.MaxKeys, 1000);
-          assert.equal(data.Contents.length, 2);
-          assert.ok(data.Contents[0].LastModified instanceof Date);
-          assert.equal(typeof data.Contents[0].Size, 'number');
-          assert.deepEqual(
-            Object.keys(data.Contents[0]),
-            ['Key', 'LastModified', 'ETag', 'Size', 'Owner', 'StorageClass']
-          );
-          client.deleteMultiple(files, function(err, res) {
+          fs.readFile(jsonFixture, function (err, buffer) {
             assert.ifError(err);
+            var req = client.put('/test/user.json', {
+                'Content-Length': stat.size
+              , 'Content-Type': 'application/json'
+            });
+
+            assert.equal(req.url, client.url('/test/user.json'));
+
+            req.on('response', function (res) {
+              assert.equal(res.statusCode, 200);
+              done();
+            });
+
+            req.end(buffer);
+          });
+        });
+      });
+
+      specify('piping from a file stream', function (done) {
+        fs.stat(jsonFixture, function (err, stat) {
+          assert.ifError(err);
+          var req = client.put('/test/direct-pipe.json', {
+              'Content-Length': stat.size
+            , 'Content-Type': 'application/json'
+          });
+
+          req.on('response', function (res) {
+            assert.equal(res.statusCode, 200);
+            done();
+          });
+
+          var fileStream = fs.createReadStream(jsonFixture);
+          fileStream.pipe(req);
+        });
+      });
+
+      specify('from a string written to the request', function (done) {
+        var string = 'hello I am a string';
+        var req = client.put('/test/string.txt', {
+            'Content-Length': string.length
+          , 'Content-Type': 'text/plain'
+        });
+
+        req.on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+
+        req.end(string);
+      });
+
+      specify('from a string written to the request, into a filename with an apostrophe', function (done) {
+        var string = 'hello I have a \' in my name';
+        var req = client.put('/test/apos\'trophe.txt', {
+            'Content-Length': string.length
+          , 'Content-Type': 'text/plain'
+        });
+
+        req.on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+
+        req.end(string);
+      });
+
+      it('should lower-case headers on requests', function () {
+        var headers = { 'X-Amz-Acl': 'private' };
+        var req = client.put('/test/user.json', headers);
+
+        assert.equal(req.getHeader('x-amz-acl'), 'private');
+
+        req.on('error', function (){}); // swallow "socket hang up" from aborting
+        req.abort();
+      });
+    });
+
+    describe('putStream()', function () {
+      specify('from a file stream', function (done) {
+        fs.stat(jsonFixture, function (err, stat) {
+          assert.ifError(err);
+
+          var headers = {
+              'Content-Length': stat.size
+            , 'Content-Type': 'application/json'
+          };
+
+          var fileStream = fs.createReadStream(jsonFixture);
+          client.putStream(fileStream, '/test/user.json', headers, function (err, res) {
+            assert.ifError(err);
+            assert.equal(res.statusCode, 200);
+            done();
+          });
+        });
+      });
+
+      specify('from a HTTP stream', function (done) {
+        http.get({ host: 'google.com', path: '/' }, function (res) {
+          var headers = {
+              'Content-Length': res.headers['content-length']
+            , 'Content-Type': res.headers['content-type']
+          };
+          client.putStream(res, '/google', headers, function (err, res) {
+            assert.ifError(err);
+            assert.equal(res.statusCode, 200);
+            done();
+          });
+        });
+      });
+
+      it('should emit "progress" events', function (done) {
+        http.get({ host: 'google.com', path: '/' }, function (res) {
+          var headers = {
+              'Content-Length': res.headers['content-length']
+            , 'Content-Type': res.headers['content-type']
+          };
+
+          var progressHappened = false;
+
+          var req = client.putStream(res, '/google', headers, function (err, res) {
+            assert.ifError(err);
+            assert.equal(res.statusCode, 200);
+            assert(progressHappened);
+            done();
+          });
+
+          req.on('progress', function (event) {
+            progressHappened = true;
+            assert(event.percent);
+            assert(event.total);
+            assert(event.written);
+          });
+        });
+      });
+
+      it('should error early if there is no "Content-Length" header', function (done) {
+        var stream = fs.createReadStream(jsonFixture);
+        var headers = { 'Content-Type': 'application/json' };
+        client.putStream(stream, '/test/user.json', headers, function (err, res) {
+          assert(err);
+          assert(/Content-Length/.test(err.message));
+          done();
+        });
+      });
+
+      it('should work with a lower-case "content-length" header', function (done) {
+        fs.stat(jsonFixture, function (err, stat) {
+          assert.ifError(err);
+
+          var headers = {
+              'content-length': stat.size
+            , 'Content-Type': 'application/json'
+          };
+
+          var fileStream = fs.createReadStream(jsonFixture);
+          client.putStream(fileStream, '/test/user.json', headers, function (err, res) {
+            assert.ifError(err);
+            assert.equal(res.statusCode, 200);
             done();
           });
         });
       });
     });
-  },
 
-  'test .copyFileTo()': function(done){
-    var file = '/copy-file-to/user.json';
-
-    client.putFile(jsonFixture, file, function(err, res){
-        client.copyFileTo(file, client2.bucket, file, function(err, res){
+    describe('putFile()', function () {
+      specify('the basic case', function (done) {
+        client.putFile(jsonFixture, '/test/user2.json', function (err, res) {
           assert.ifError(err);
-          assert.equal(200, res.statusCode);
-          client.deleteFile(file, function(err, res) {
+          assert.equal(res.statusCode, 200);
+
+          client.get('/test/user2.json').on('response', function (res) {
+            assert.equal(res.headers['content-type'], 'application/json');
+            done();
+          }).end();
+        });
+      });
+
+      it('should work the same in us-west-2', function (done) {
+        clientUsWest2.putFile(jsonFixture, '/test/user2.json', function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          clientUsWest2.get('/test/user2.json').on('response', function (res) {
+            assert.equal(res.headers['content-type'], 'application/json');
+            done();
+          }).end();
+        });
+      });
+
+      it('should emit "progress" events', function (done) {
+        var progressHappened = false;
+
+        var file = client.putFile(jsonFixture, '/test/user2.json', function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          clientUsWest2.get('/test/user2.json').on('response', function (res) {
+            assert.equal(res.headers['content-type'], 'application/json');
+            assert(progressHappened);
+            done();
+          }).end();
+        });
+
+        file.on('progress', function (event) {
+          progressHappened = true;
+          assert(event.percent);
+          assert(event.total);
+          assert(event.written);
+        });
+      });
+    });
+
+    describe('putBuffer()', function () {
+      specify('the basic case', function (done) {
+        var buffer = new Buffer('a string of stuff');
+        var headers = { 'Content-Type': 'text/plain' };
+
+        client.putBuffer(buffer, '/buffer.txt', headers, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+      });
+
+      specify('with a lower-case "content-type" header', function (done) {
+        var buffer = new Buffer('a string of stuff');
+        var headers = { 'content-type': 'text/plain' };
+
+        client.putBuffer(buffer, '/buffer2.txt', headers, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          client.getFile('/buffer2.txt', function (err, res) {
             assert.ifError(err);
-            client2.deleteFile(file, function(err, res) {
+            assert.equal(res.statusCode, 200);
+            assert.equal(res.headers['content-type'], 'text/plain');
+            done();
+          });
+        });
+      });
+    });
+
+    describe('copy()', function () {
+      it('should return with 200 OK', function (done) {
+        client.copy('/test/user.json', '/test/user3.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        }).end();
+      });
+    });
+
+    describe('copyTo()', function () {
+      it('should return with 200 OK', function (done) {
+        client.copyTo('/test/user.json', client2.bucket, '/test/user3.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        }).end();
+      });
+    });
+
+    describe('copyFile()', function () {
+      it('should return with 200 OK', function (done) {
+        client.copyFile('/test/user.json', '/test/user4.json', function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        }).end();
+      });
+    });
+
+    describe('copyFileTo()', function () {
+      it('should return with 200 OK', function (done) {
+        client.copyFileTo('/test/user4.json', client2.bucket, '/test/user4.json', function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        }).end();
+      });
+    });
+
+    describe('get()', function () {
+      specify('the basic case', function (done) {
+        client.get('/test/user.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], 13);
+          done();
+        }).end();
+      });
+
+      it('should work without a leading slash', function (done) {
+        client.get('test/user.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], 13);
+          done();
+        }).end();
+      });
+
+      it('should give a 404 for the file not found', function (done) {
+        client.get('/test/whatever').on('response', function (res) {
+          assert.equal(res.statusCode, 404);
+          done();
+        }).end();
+      });
+
+      it('should set tokens passed to client construction as the x-amz-security-token header', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc'
+          , token: 'foo'
+        });
+
+        var req = client.get('/');
+        assert.equal(req.getHeader('x-amz-security-token'), 'foo');
+
+        req.on('error', function (){}); // swallow "socket hang up" from aborting
+        req.abort();
+      });
+
+      it('should not set a token header if the token option is undefined', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc'
+          , token: undefined
+        });
+
+        var req = client.get('/');
+        assert(!req.getHeader('x-amz-security-token'));
+
+        req.on('error', function (){}); // swallow "socket hang up" from aborting
+        req.abort();
+      });
+    });
+
+    describe('getFile()', function () {
+      specify('the basic case', function (done) {
+        client.getFile('/test/user.json', function(err, res){
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], 13);
+          done();
+        });
+      });
+    });
+
+    describe('head()', function () {
+      specify('the basic case', function (done) {
+        client.head('/test/user.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], 13);
+          done();
+        }).end();
+      });
+
+      it('should work without a leading slash', function (done) {
+        client.head('test/user.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], 13);
+          done();
+        }).end();
+      });
+
+      it('should give a 404 for the file not found', function (done) {
+        client.head('/test/whatever').on('response', function (res) {
+          assert.equal(res.statusCode, 404);
+          done();
+        }).end();
+      });
+    });
+
+    describe('headFile()', function () {
+      specify('the basic case', function (done) {
+        client.headFile('/test/user.json', function(err, res){
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], 13);
+          done();
+        });
+      });
+    });
+
+    describe('list()', function () {
+      it('should list files with a specified prefix', function (done) {
+        var files = ['/list/user1.json', '/list/user2.json'];
+
+        client.putFile(jsonFixture, files[0], function (err, res) {
+          assert.ifError(err);
+          client.putFile(jsonFixture, files[1], function (err, res) {
+            assert.ifError(err);
+            client.list({ prefix: 'list' }, function (err, data) {
               assert.ifError(err);
+
+              assert.strictEqual(data.Prefix, 'list');
+              assert.strictEqual(data.IsTruncated, false);
+              assert.strictEqual(data.MaxKeys, 1000);
+              assert.strictEqual(data.Contents.length, 2);
+              assert(data.Contents[0].LastModified instanceof Date);
+              assert.strictEqual(typeof data.Contents[0].Size, 'number');
+              assert.deepEqual(
+                Object.keys(data.Contents[0]),
+                ['Key', 'LastModified', 'ETag', 'Size', 'Owner', 'StorageClass']
+              );
+
               done();
             });
           });
         });
+      });
     });
-  },
 
-  'test .copyTo()': function(done){
-    var file = '/copy-file-to/user.json';
+    describe('request()', function () {
+      it('should work to get an object\'s ACL via ?acl', function (done) {
+        var req = client.request('GET', '/test/user3.json?acl')
+          .on('error', done)
+          .on('response', function (res) {
+            var data = '';
+            res.on('data', function (chunk) {
+              data += chunk;
+            }).on('end', function () {
+              assert(data.indexOf('<Permission>FULL_CONTROL</Permission>') !== -1);
+              done();
+            }).on('error', done);
+          }).end();
+      });
 
-    client.putFile(jsonFixture, file, function(err, res){
-      client.copyTo(file, client2.bucket, file).on('response', function(res){
-        assert.equal(200, res.statusCode);
-        client.deleteFile(file, function(err, res) {
+      it('should work to delete files via ?delete', function (done) {
+        var xml = '<?xml version="1.0" encoding="UTF-8"?><Delete>' +
+                  '<Object><Key>test/user4.json</Key></Object>' +
+                  '<Object><Key>test/direct-pipe.json</Key></Object>' +
+                  '<Object><Key>list/user1.json</Key></Object>' +
+                  '<Object><Key>list/user2.json</Key></Object>' +
+                  '</Delete>';
+
+        var req = client.request('POST', '/?delete', {
+          'Content-Length': xml.length,
+          'Content-MD5': crypto.createHash('md5').update(xml).digest('base64'),
+          'Accept:': '*\/*'
+        })
+        .on('error',done)
+        .on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        })
+        .end(xml);
+      });
+    });
+
+    describe('del()', function () {
+      it('should return with 204 No Content', function (done) {
+        client.del('/test/user.json').on('response', function (res) {
+          assert.equal(res.statusCode, 204);
+          done();
+        }).end();
+      });
+    });
+
+    describe('deleteFile()', function () {
+      it('should return with 204 No Content', function (done) {
+        client.deleteFile('/test/user2.json', function (err, res) {
           assert.ifError(err);
-          client2.deleteFile(file, function(err, res) {
+          assert.equal(res.statusCode, 204);
+          done();
+        });
+      });
+    });
+
+    describe('deleteMultiple()', function () {
+      it('should remove the files as seen in list()', function (done) {
+        // Intentionally mix no leading slashes or leading slashes: see #121.
+        var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt', 'google'];
+        client.deleteMultiple(files, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          client.list(function (err, data) {
             assert.ifError(err);
+            var keys = data.Contents.map(function (entry) { return entry.Key; });
+
+            assert(keys.indexOf('test/user3.json') === -1);
+            assert(keys.indexOf('test/string.txt') === -1);
+            assert(keys.indexOf('test/apos\'trophe.txt') === -1);
+            assert(keys.indexOf('buffer.txt') === -1);
+            assert(keys.indexOf('buffer2.txt') === -1);
+            assert(keys.indexOf('google') === -1);
+
             done();
           });
         });
-      }).end();
-    });
-  },
-
-  'test /?delete': function(done){
-    var xml = ['<?xml version="1.0" encoding="UTF-8"?>\n','<Delete>'];
-    xml.push('<Object><Key>test/user4.json</Key></Object><Object><Key>test/direct-pipe.json</Key></Object>');
-    xml.push('</Delete>');
-    xml = xml.join('');
-    var req = client.request('POST', '/?delete', {
-      'Content-Length': xml.length,
-      'Content-MD5': crypto.createHash('md5').update(xml).digest('base64'),
-      'Accept:': '*/*'
-    }).on('error', function (err) {
-      assert.ifError(err);
-    }).on('response', function (res) {
-      assert.equal(200, res.statusCode);
-      done();
-    });
-    req.write(xml);
-    req.end();
-  },
-
-  'test .get() 404': function(done){
-    client.get('/test/user.json').on('response', function(res){
-      assert.equal(404, res.statusCode);
-      done();
-    }).end();
-  },
-
-  'test .head() 404': function(done){
-    client.head('/test/user.json').on('response', function(res){
-      assert.equal(404, res.statusCode);
-      done();
-    }).end();
-  },
-
-  'test that we cleaned up and are not using people\'s S3 $$$': function(done){
-      client.list(function (err, data) {
-        assert.ifError(err);
-        var keys = data.Contents.map(function (entry) { return entry.Key; });
-
-        assert.deepEqual(keys, []);
-
-        done();
       });
-  }
-};
+
+      it('should work in bucket2', function (done) {
+        client2.deleteMultiple(['test/user3.json', 'test/user4.json'], function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+      });
+
+      it('should work in bucketUsWest2', function (done) {
+        clientUsWest2.deleteMultiple(['test/user2.json'], function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+      });
+    });
+
+    describe('we should clean up and not use people\'s S3 $$$', function () {
+      specify('in bucket', function (done) {
+        client.list(function (err, data) {
+          assert.ifError(err);
+
+          // Do the assertion like this for nicer error reporting.
+          var keys = data.Contents.map(function (entry) { return entry.Key; });
+          assert.deepEqual(keys, []);
+
+          done();
+        });
+      });
+
+      specify('in bucket2', function (done) {
+        client2.list(function (err, data) {
+          assert.ifError(err);
+
+          // Do the assertion like this for nicer error reporting.
+          var keys = data.Contents.map(function (entry) { return entry.Key; });
+          assert.deepEqual(keys, []);
+
+          done();
+        });
+      });
+
+      specify('in bucketUsWest2', function (done) {
+        clientUsWest2.list(function (err, data) {
+          assert.ifError(err);
+
+          // Do the assertion like this for nicer error reporting.
+          var keys = data.Contents.map(function (entry) { return entry.Key; });
+          assert.deepEqual(keys, []);
+
+          done();
+        });
+      });
+    });
+  });
+}
