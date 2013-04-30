@@ -81,5 +81,15 @@ module.exports = {
     });
 
     assert.equal('misc.s3.amazonaws.com', client.endpoint);
+  },
+
+  'test .createClient() bucket with dots': function(){
+    var client = knox.createClient({
+        key: 'foobar'
+      , secret: 'baz'
+      , bucket: 'misc.com'
+    });
+
+    assert.equal('s3.amazonaws.com/misc.com', client.endpoint);
   }
 };
