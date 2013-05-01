@@ -43,13 +43,17 @@ module.exports = {
 
   'test .canonicalizeHeaders()': function(){
     var str = auth.canonicalizeHeaders({
-        'X-Amz-Date': 'some date'
+        'X-Amz-Copy-Source-If-Match': 'etagvalue'  
+      , 'X-Amz-Copy-Source': '/bucket/object'
+      , 'X-Amz-Date': 'some date'
       , 'X-Amz-Acl': 'private'
       , 'X-Foo': 'bar'
     });
 
     var expected = [
         'x-amz-acl:private'
+      , 'x-amz-copy-source:/bucket/object'
+      , 'x-amz-copy-source-if-match:etagvalue'
       , 'x-amz-date:some date'
     ].join('\n');
 
