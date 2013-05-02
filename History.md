@@ -1,3 +1,9 @@
+0.7.1 / 2013-05-01
+==================
+
+ * If using a custom port, reflect it in the `endpoint` property and in any URLs created using the client. (#168, @jbuck)
+ * Fix requests using certain Amazon headers, like the conditional copy headers. (#174, @rrjamie)
+
 0.7.0 / 2013-04-08
 ==================
 
