@@ -6,7 +6,9 @@ var knox = require('..')
   , url = require('url')
   , qs = require('querystring');
 
-var client = initClients().client;
+var clients = initClients()
+  , client = clients.client
+  , clientBucketWithDots = clients.clientBucketWithDots;
 
 var string = JSON.stringify({ name: 'Domenic '});
 
@@ -32,8 +34,42 @@ module.exports = {
     .end(string);
   },
 
+  'test .signedUrl() for PUT and bucket with dots': function(done){
+    var signedUrl = clientBucketWithDots.signedUrl('/test/user2.json', new Date(Date.now() + 50000), {
+      verb: 'PUT',
+      contentType: 'application/json'
+    });
+
+    var options = url.parse(signedUrl);
+    options.method = 'PUT';
+    options.headers = {
+      'Content-Length': string.length,
+      'Content-Type': 'application/json'
+    };
+
+    https.request(options).on('response', function(res){
+      assert.equal(200, res.statusCode);
+      done();
+    })
+    .on('error', assert.ifError)
+    .end(string);
+  },
+
   'test .signedUrl()': function(done){
     var signedUrl = client.signedUrl('/test/user.json', new Date(Date.now() + 50000));
+
+    https.get(signedUrl).on('response', function(res){
+      assert.equal(200, res.statusCode);
+      assert.equal('application/json', res.headers['content-type']);
+      assert.equal(string.length, res.headers['content-length']);
+      done();
+    })
+    .on('error', assert.ifError)
+    .end();
+  },
+
+  'test .signedUrl() for bucket with dots': function(done){
+    var signedUrl = clientBucketWithDots.signedUrl('/test/user2.json', new Date(Date.now() + 50000));
 
     https.get(signedUrl).on('response', function(res){
       assert.equal(200, res.statusCode);

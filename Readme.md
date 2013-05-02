@@ -380,7 +380,8 @@ _./test/auth.json_, which contains your credentials as JSON, for example:
   "secret": "<secret-here>",
   "bucket": "<your-bucket-name>",
   "bucket2": "<another-bucket-name>",
-  "bucketUsWest2": "<bucket-in-us-west-2-region-here>"
+  "bucketUsWest2": "<bucket-in-us-west-2-region-here>",
+  "bucketWithDots": "<bucket-with-at-least-one-dot-in-the-name>"
 }
 ```
 

@@ -9,6 +9,8 @@ var clients = initClients();
 var client = clients.client;
 var client2 = clients.client2;
 var clientUsWest2 = clients.clientUsWest2;
+var clientUsWest2 = clients.clientUsWest2;
+var clientBucketWithDots = clients.clientBucketWithDots;
 
 var jsonFixture = __dirname + '/fixtures/user.json';
 
@@ -29,7 +31,6 @@ module.exports = {
   },
 
   'test .putFile()': function(done){
-    var n = 0;
     client.putFile(jsonFixture, '/test/user2.json', function(err, res){
       assert.ifError(err);
       assert.equal(200, res.statusCode);
@@ -41,11 +42,21 @@ module.exports = {
   },
 
   'test .putFile() in us-west-2': function(done){
-    var n = 0;
     clientUsWest2.putFile(jsonFixture, '/test/user2.json', function(err, res){
       assert.ifError(err);
       assert.equal(200, res.statusCode);
-      client.get('/test/user2.json').on('response', function(res){
+      clientUsWest2.get('/test/user2.json').on('response', function(res){
+        assert.equal('application/json', res.headers['content-type']);
+        done();
+      }).end();
+    });
+  },
+
+  'test .putFile() for bucket with dots': function(done) {
+    clientBucketWithDots.putFile(jsonFixture, '/test/user2.json', function(err, res){
+      assert.ifError(err);
+      assert.equal(200, res.statusCode);
+      clientBucketWithDots.get('/test/user2.json').on('response', function(res){
         assert.equal('application/json', res.headers['content-type']);
         done();
       }).end();
@@ -73,7 +84,6 @@ module.exports = {
   },
 
   'test .put()': function(done){
-    var n = 0;
     fs.stat(jsonFixture, function(err, stat){
       if (err) throw err;
       fs.readFile(jsonFixture, function(err, buf){
