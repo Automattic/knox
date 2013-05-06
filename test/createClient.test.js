@@ -24,20 +24,143 @@ describe('knox.createClient()', function () {
       );
     });
 
-    it('should throw when bucket names are not all lower-case', function () {
+    it('should throw when an invalid style is given', function () {
       assert.throws(
-        function () { knox.createClient({ key: 'foo', secret: 'bar', bucket: 'BuCkEt' }); },
-        /bucket names must be all lower case/
+        function () {
+          knox.createClient({
+              key: 'foo'
+            , secret: 'bar'
+            , bucket: 'bucket'
+            , style: 'gangnam'
+          });
+        },
+        function (err) {
+          return err instanceof Error &&
+                 /style must be "virtualHosted" or "path"/.test(err.message);
+        }
       );
     });
 
-    it('should throw when an invalid style is given', function () {
-      assert.throws(
-        function () { knox.createClient({ key: 'foo', secret: 'bar', bucket: 'bucket', style: 'gangnam' }); },
-        function (err) {
-          return err instanceof Error && /style must be "virtualHosted" or "path"/.test(err.message);
-        }
-      );
+    describe('bucket names', function () {
+      describe('in us-standard region', function () {
+        it('should throw when bucket names are too short', function () {
+          assert.throws(
+            function () {
+              knox.createClient({ key: 'foo', secret: 'bar', bucket: 'bu' });
+            },
+            /less than 3 characters/
+          );
+        });
+
+        it('should throw when bucket names are too long', function () {
+          var bucket = new Array(257).join('b');
+          assert.throws(
+            function () {
+              knox.createClient({ key: 'foo', secret: 'bar', bucket: bucket });
+            },
+            /more than 255 characters/
+          );
+        });
+
+        it('should throw when bucket names contain invalid characters', function () {
+          assert.throws(
+            function () {
+              knox.createClient({ key: 'foo', secret: 'bar', bucket: 'buc!ket' });
+            },
+            /invalid characters/
+          );
+        });
+      });
+
+      describe('in us-west-1 region', function () {
+        it('should throw when bucket names are too long', function () {
+          var bucket = new Array(65).join('b');
+          assert.throws(
+            function () {
+              knox.createClient({
+                  key: 'foo'
+                , secret: 'bar'
+                , bucket: bucket
+                , region: 'us-west-1'
+              });
+            },
+            /more than 63 characters/
+          );
+        });
+
+        it('should throw when bucket names contain invalid characters', function () {
+          assert.throws(
+            function () {
+              knox.createClient({
+                  key: 'foo'
+                , secret: 'bar'
+                , bucket: 'buck_et'
+                , region: 'us-west-1'
+              });
+            },
+            /valid period-separated labels/
+          );
+        });
+
+        it('should throw when bucket names look like IPv4 addresses', function () {
+          assert.throws(
+            function () {
+              knox.createClient({
+                  key: 'foo'
+                , secret: 'bar'
+                , bucket: '192.0.0.12'
+                , region: 'us-west-1'
+              });
+            },
+            /IPv4 address/
+          );
+        });
+      });
+
+      describe('when forcing virtual hosted style', function () {
+        it('should throw when bucket names are too long', function () {
+          var bucket = new Array(65).join('b');
+          assert.throws(
+            function () {
+              knox.createClient({
+                  key: 'foo'
+                , secret: 'bar'
+                , bucket: bucket
+                , style: 'virtualHosted'
+              });
+            },
+            /more than 63 characters/
+          );
+        });
+
+        it('should throw when bucket names contain invalid characters', function () {
+          assert.throws(
+            function () {
+              knox.createClient({
+                  key: 'foo'
+                , secret: 'bar'
+                , bucket: 'buck_et'
+                , style: 'virtualHosted'
+              });
+            },
+            /valid period-separated labels/
+          );
+        });
+
+        it('should throw when bucket names look like IPv4 addresses', function () {
+          assert.throws(
+            function () {
+              knox.createClient({
+                  key: 'foo'
+                , secret: 'bar'
+                , bucket: '192.0.0.12'
+                , style: 'virtualHosted'
+              });
+            },
+            /IPv4 address/
+          );
+        });
+      });
     });
   });
 
@@ -54,12 +177,13 @@ describe('knox.createClient()', function () {
       assert.equal(client.bucket, 'misc');
     });
 
-    describe('with virtual host style', function () {
+    describe('with virtual hosted style', function () {
       it('should use a default region and endpoint given a bucket', function () {
         var client = knox.createClient({
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
+          , style: 'virtualHosted'
         });
 
         assert.equal(client.secure, true);
@@ -75,6 +199,7 @@ describe('knox.createClient()', function () {
           , secret: 'baz'
           , bucket: 'misc'
           , endpoint: 'objects.dreamhost.com'
+          , style: 'virtualHosted'
         });
 
         assert.equal(client.secure, true);
@@ -90,6 +215,7 @@ describe('knox.createClient()', function () {
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
+          , style: 'virtualHosted'
           , region: 'us-west-1'
         });
 
@@ -105,6 +231,7 @@ describe('knox.createClient()', function () {
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
+          , style: 'virtualHosted'
           , region: 'us-standard'
         });
 
@@ -120,6 +247,7 @@ describe('knox.createClient()', function () {
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
+          , style: 'virtualHosted'
           , region: 'us-west-1'
           , port: 1234
         });
@@ -136,6 +264,7 @@ describe('knox.createClient()', function () {
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
+          , style: 'virtualHosted'
           , region: 'us-west-1'
           , port: 1234
           , secure: true
@@ -247,6 +376,94 @@ describe('knox.createClient()', function () {
         assert.equal(client.region, 'us-west-1');
         assert.equal(client.endpoint, 's3-us-west-1.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3-us-west-1.amazonaws.com:1234/misc/file');
+      });
+    });
+
+    describe('with automatic style determination', function () {
+      it('should choose virtual hosted style by default', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc'
+        });
+
+        assert.equal(client.secure, true);
+        assert.equal(client.style, 'virtualHosted');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
+      });
+
+      it('should choose path style if the bucket name contains a period', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc.bucket'
+        });
+
+        assert.equal(client.secure, true);
+        assert.equal(client.style, 'path');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'https://s3.amazonaws.com/misc.bucket/file');
+      });
+
+      it('should choose path style if the bucket name contains an upper-case character', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'MiscBucket'
+        });
+
+        assert.equal(client.secure, true);
+        assert.equal(client.style, 'path');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'https://s3.amazonaws.com/MiscBucket/file');
+      });
+
+      it('should choose path style if the bucket name contains a non-DNS-compliant character', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc_bucket'
+        });
+
+        assert.equal(client.secure, true);
+        assert.equal(client.style, 'path');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'https://s3.amazonaws.com/misc_bucket/file');
+      });
+
+      it('should choose path style if the bucket name starts with a dash', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: '-bucket'
+        });
+
+        assert.equal(client.secure, true);
+        assert.equal(client.style, 'path');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'https://s3.amazonaws.com/-bucket/file');
+      });
+
+      it('should choose virtual hosted style if the bucket name contains a period but secure is set to false',
+         function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc.bucket'
+          , secure: false
+        });
+
+        assert.equal(client.secure, false);
+        assert.equal(client.style, 'virtualHosted');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'http://misc.bucket.s3.amazonaws.com/file');
       });
     });
   });
