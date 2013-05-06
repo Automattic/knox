@@ -318,9 +318,10 @@ request made by the client.
 
 ### `style`
 
-By default, knox uses the "virtual hosted style" URLs for accessing S3, e.g.
-`bucket.s3.amazonaws.com`. If you pass in `"path"` as the `style` option, you
-can make knox use "path style" URLs, e.g. `s3.amazonaws.com/bucket`. There are
+By default, knox tries to use the "virtual hosted style" URLs for accessing S3,
+e.g. `bucket.s3.amazonaws.com`. If you pass in `"path"` as the `style` option,
+or pass in a `bucket` value that cannot be used with virtual hosted style URLs,
+knox will use "path style" URLs, e.g. `s3.amazonaws.com/bucket`. There are
 tradeoffs you should be aware of:
 
 - Virtual hosted style URLs can work with any region, without requiring it to be
