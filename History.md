@@ -1,3 +1,11 @@
+0.8.0 / 2013-05-06
+==================
+
+ * Now allows path-style bucket access using `style` option, and automatically chooses it in a few cases:
+   - DNS-uncompliant bucket names (in the US Standard region, where they are allowed)
+   - When `secure` is not set to `false`, but the bucket name contains a period
+ * More extensive validation of bucket names, with good error messages, as per [the Amazon documentation](http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html).
+
 0.7.1 / 2013-05-01
 ==================
 
