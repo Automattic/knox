@@ -45,6 +45,28 @@ function runTestsForStyle(style, userFriendlyName) {
         .end(jsonString);
       });
 
+      specify('PUT (with spaces in the file name)', function (done) {
+        var signedUrl = client.signedUrl(
+            'user with spaces.json'
+          , new Date(Date.now() + 50000)
+          , { verb: 'PUT', contentType: 'application/json' }
+        );
+
+        var options = parseUrl(signedUrl);
+        options.method = 'PUT';
+        options.headers = {
+          'Content-Length': jsonString.length,
+          'Content-Type': 'application/json'
+        };
+
+        https.request(options).on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        })
+        .on('error', assert.ifError)
+        .end(jsonString);
+      });
+
       specify('GET (with leading slash)', function (done) {
         var signedUrl = client.signedUrl(
             '/test/user.json'
@@ -116,6 +138,22 @@ function runTestsForStyle(style, userFriendlyName) {
         .end();
       });
 
+      specify('GET (with spaces in the name)', function (done) {
+        var signedUrl = client.signedUrl(
+            'user with spaces.json'
+          , new Date(Date.now() + 50000)
+        );
+
+        https.get(signedUrl).on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          assert.equal(res.headers['content-type'], 'application/json');
+          assert.equal(res.headers['content-length'], jsonString.length);
+          done();
+        })
+        .on('error', assert.ifError)
+        .end();
+      });
+
       specify('HEAD', function (done) {
         var signedUrl = client.signedUrl(
             '/test/user.json'
@@ -138,6 +176,23 @@ function runTestsForStyle(style, userFriendlyName) {
       specify('DELETE', function (done) {
         var signedUrl = client.signedUrl(
             '/test/user.json'
+          , new Date(Date.now() + 50000)
+          , { verb: 'DELETE' }
+        );
+
+        var options = parseUrl(signedUrl);
+        options.method = 'DELETE';
+        https.request(options).on('response', function (res) {
+          assert.equal(res.statusCode, 204);
+          done();
+        })
+        .on('error', assert.ifError)
+        .end();
+      });
+
+      specify('DELETE (with spaces in the file name)', function (done) {
+        var signedUrl = client.signedUrl(
+            'user with spaces.json'
           , new Date(Date.now() + 50000)
           , { verb: 'DELETE' }
         );
