@@ -393,6 +393,12 @@ connectivity to S3 without bringing it to a ginding halt.
 [@jergason]: https://github.com/jergason
 [intimidate]: https://npmjs.org/package/intimidate
 
+### Listing and Copying Large Buckets
+
+[@goodeggs][] created [knox-copy][] to easily copy and stream keys of buckets beyond Amazon's 1000 key page size limit.
+
+[@goodeggs]: https://github.com/goodeggs
+[knox-copy]: https://npmjs.org/package/knox-copy
 
 ## Running Tests
 
