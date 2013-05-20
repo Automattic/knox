@@ -1,3 +1,8 @@
+0.8.1 / 2013-05-19
+==================
+
+ * Fixed a regression introduced in 0.8.0 that, in certain cases that only some people were able to reproduce, caused 307 responses to every request.
+
 0.8.0 / 2013-05-06
 ==================
 
