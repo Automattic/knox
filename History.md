@@ -1,3 +1,8 @@
+0.8.2 / 2013-05-20
+==================
+
+ * Fixed a potential issue where request listeners were not cleaned up properly if a callback threw an error. (spollack)
+
 0.8.1 / 2013-05-19
 ==================
 
