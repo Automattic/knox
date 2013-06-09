@@ -400,6 +400,12 @@ connectivity to S3 without bringing it to a ginding halt.
 [@goodeggs]: https://github.com/goodeggs
 [knox-copy]: https://npmjs.org/package/knox-copy
 
+
+[@segmentio][] created [s3-lister][] to stream a list of bucket keys using the new streams2 interface.
+
+[@segmentio]: https://github.com/segmentio
+[s3-lister]: https://npmjs.org/package/s3-lister
+
 ## Running Tests
 
 To run the test suite you must first have an S3 account. Then create a file named
