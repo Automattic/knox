@@ -1,3 +1,5 @@
+"use strict";
+
 var knox = require('..')
   , assert = require('assert');
 

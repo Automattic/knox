@@ -1,7 +1,4 @@
-
-/**
- * Module dependencies.
- */
+"use strict";
 
 var knox = require('..')
   , utils = knox.utils

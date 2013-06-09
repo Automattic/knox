@@ -1,3 +1,5 @@
+"use strict";
+
 var knox = require('..')
   , auth = knox.auth
   , assert = require('assert');

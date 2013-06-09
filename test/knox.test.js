@@ -1,3 +1,5 @@
+"use strict";
+
 var knox = require('..')
   , initClients = require('./initClients')
   , fs = require('fs')
