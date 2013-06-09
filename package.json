@@ -6,7 +6,7 @@
     "amazon",
     "s3"
   ],
-  "version": "0.8.2",
+  "version": "0.8.3",
   "author": "TJ Holowaychuk <tj@learnboost.com>",
   "contributors": [
     "TJ Holowaychuk <tj@learnboost.com>",

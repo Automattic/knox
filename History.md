@@ -1,3 +1,8 @@
+0.8.3 / 2013-06-09
+==================
+
+ * No longer modifies `options` objects passed to `knox.createClient`.
+
 0.8.2 / 2013-05-20
 ==================
 
