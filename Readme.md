@@ -187,18 +187,18 @@ client.copyFile('/source.txt', '/dest.txt', function(err, res){
 
 even between buckets:
 
-
 ```js
 client.copyTo('/source.txt', 'dest-bucket', '/dest.txt').on('response', function(res){
   // ...
 }).end();
+```
 
-// or
+and even between buckets in different regions:
 
-client.copyFileTo('/source.txt', 'dest-bucket', '/dest.txt', function (err, res){
+```js
+client.copyTo('/source.txt', { region: 'us-west-2', bucket: 'dest-bucket' }, '/dest.txt', function(res){
   // ...
-});
-
+}).end();
 ```
 
 or [deleting multiple files at once][multi-delete]:
