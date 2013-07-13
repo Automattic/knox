@@ -196,7 +196,8 @@ client.copyTo('/source.txt', 'dest-bucket', '/dest.txt').on('response', function
 and even between buckets in different regions:
 
 ```js
-client.copyTo('/source.txt', { region: 'us-west-2', bucket: 'dest-bucket' }, '/dest.txt', function(res){
+var destOptions = { region: 'us-west-2', bucket: 'dest-bucket' };
+client.copyTo('/source.txt', destOptions, '/dest.txt', function(res){
   // ...
 }).end();
 ```
