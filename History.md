@@ -1,3 +1,10 @@
+0.8.4 / 2013-07-13
+==================
+
+ * Add the ability to pass arbitrary destination options to `copyTo`. (kof)
+ * Fix a regression where custom ports were not being used properly in the actual HTTP requests. (aslakhellesoy)
+ * Re-emit errors from the underlying HTTP request when using `putFile`.
+
 0.8.3 / 2013-06-09
 ==================
 
