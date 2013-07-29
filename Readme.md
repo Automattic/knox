@@ -62,7 +62,7 @@ usage:
 
 ```js
 client.putFile('my.json', '/user.json', function(err, res){
-  // Logic
+  // Always either do something with `res` or at least call `res.resume()`.
 });
 ```
 
@@ -75,7 +75,7 @@ http.get('http://google.com/doodle.png', function(res){
     , 'Content-Type': res.headers['content-type']
   };
   client.putStream(res, '/doodle.png', headers, function(err, res){
-    // Logic
+    // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
   });
 });
 ```
@@ -95,7 +95,7 @@ fs.stat('./Readme.md', function(err, stat){
   fs.createReadStream('./Readme.md').pipe(req);
 
   req.on('response', function(res){
-    // Logic
+    // ...
   });
 });
 ```
@@ -109,7 +109,7 @@ var headers = {
   'Content-Type': 'text/plain'
 };
 client.putBuffer(buffer, '/string.txt', headers, function(err, res){
-  // Logic
+  // ...
 });
 ```
 
@@ -139,7 +139,7 @@ you the raw request:
 
 ```js
 client.getFile('/test/Readme.md', function(err, res){
-  // Logic
+  // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
 });
 ```
 
@@ -159,7 +159,7 @@ flexible) solution:
 
 ```js
 client.deleteFile('/test/Readme.md', function(err, res){
-  // Logic
+  // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
 });
 ```
 
