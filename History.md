@@ -1,3 +1,8 @@
+0.8.5 / 2013-07-29
+==================
+
+ * Fix bucket name validation to allow short segments, e.g. in `buck.e.t`.
+
 0.8.4 / 2013-07-13
 ==================
 
