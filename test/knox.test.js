@@ -511,7 +511,8 @@ function runTestsForStyle(style, userFriendlyName) {
     describe('deleteMultiple()', function () {
       it('should remove the files as seen in list()', function (done) {
         // Intentionally mix no leading slashes or leading slashes: see #121.
-        var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt', 'google'];
+        var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt',
+                     'google', 'buffer with spaces.txt'];
         client.deleteMultiple(files, function (err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
