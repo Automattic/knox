@@ -1,3 +1,10 @@
+0.8.6 / 2013-07-31
+==================
+
+ * Fix normalization of `CommonPrefixes` to an array when doing a `client.list` operation. (mackyi)
+ * Fix doing operations with spaces in filenames.
+ * Throw when an invalid port is passed to the constructor.
+
 0.8.5 / 2013-07-29
 ==================
 
