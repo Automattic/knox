@@ -43,6 +43,23 @@ describe('knox.createClient()', function () {
       );
     });
 
+    it.only('should throw when an invalid port', function () {
+      assert.throws(
+        function () {
+          knox.createClient({
+              key: 'foo'
+            , secret: 'bar'
+            , bucket: 'bucket'
+            , port: ''
+          });
+        },
+        function (err) {
+          return err instanceof Error &&
+                 /port must be a number/.test(err.message);
+        }
+      );
+    });
+
     describe('bucket names', function () {
       describe('in us-standard region', function () {
         it('should throw when bucket names are too short', function () {
