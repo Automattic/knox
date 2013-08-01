@@ -264,6 +264,17 @@ function runTestsForStyle(style, userFriendlyName) {
           });
         });
       });
+
+      specify('with spaces in the file name', function (done) {
+        var buffer = new Buffer('a string of stuff');
+        var headers = { 'Content-Type': 'text/plain' };
+
+        client.putBuffer(buffer, '/buffer with spaces.txt', headers, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+      });
     });
 
     describe('copy()', function () {
