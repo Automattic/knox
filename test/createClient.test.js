@@ -43,7 +43,7 @@ describe('knox.createClient()', function () {
       );
     });
 
-    it.only('should throw when an invalid port', function () {
+    it('should throw when an invalid port', function () {
       assert.throws(
         function () {
           knox.createClient({
