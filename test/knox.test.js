@@ -90,6 +90,22 @@ function runTestsForStyle(style, userFriendlyName) {
         req.end(string);
       });
 
+      specify('should upload keys with strange unicode values', function (done) {
+        var data = 'knox';
+
+        var req = client.put('/ø', {
+            'Content-Length': data.length
+          , 'Content-Type': 'text/plain'
+        });
+
+        req.on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+
+        req.end(data);
+      });
+
       it('should lower-case headers on requests', function () {
         var headers = { 'X-Amz-Acl': 'private' };
         var req = client.put('/test/user.json', headers);
@@ -280,6 +296,15 @@ function runTestsForStyle(style, userFriendlyName) {
     describe('copy()', function () {
       it('should return with 200 OK', function (done) {
         client.copy('/test/user.json', '/test/user3.json').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        }).end();
+      });
+    });
+
+    describe('copy() with unicode characters', function() {
+      it('should return with 200 OK', function(done) {
+        client.copy('/ø', '/ø/ø').on('response', function(res) {
           assert.equal(res.statusCode, 200);
           done();
         }).end();
@@ -512,7 +537,7 @@ function runTestsForStyle(style, userFriendlyName) {
       it('should remove the files as seen in list()', function (done) {
         // Intentionally mix no leading slashes or leading slashes: see #121.
         var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt',
-                     'google', 'buffer with spaces.txt'];
+                     'google', 'buffer with spaces.txt', '/ø', 'ø/ø'];
         client.deleteMultiple(files, function (err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
@@ -527,6 +552,9 @@ function runTestsForStyle(style, userFriendlyName) {
             assert(keys.indexOf('buffer.txt') === -1);
             assert(keys.indexOf('buffer2.txt') === -1);
             assert(keys.indexOf('google') === -1);
+            assert(keys.indexOf('buffer with spaces.txt') === -1);
+            assert(keys.indexOf('ø') === -1);
+            assert(keys.indexOf('ø/ø') === -1);
 
             done();
           });
