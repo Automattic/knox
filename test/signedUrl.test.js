@@ -25,6 +25,12 @@ function runTestsForStyle(style, userFriendlyName) {
     });
 
     describe('using the signed URL to perform HTTP requests', function () {
+      // These tests seem to fail if we don't slow down a bit, probably due to
+      // Amazon throttling us. So insert a delay.
+      beforeEach(function (done) {
+        setTimeout(done, 2000);
+      });
+
       specify('PUT', function (done) {
         var signedUrl = client.signedUrl(
             '/test/user.json'
