@@ -475,6 +475,34 @@ function runTestsForStyle(style, userFriendlyName) {
           });
         });
       });
+
+      it('should list files with a specified prefix with slash', function (done) {
+        var files = ['/list/slash-1.json', '/list/slash-2.json'];
+
+        client.putFile(jsonFixture, files[0], function (err, res) {
+          assert.ifError(err);
+          client.putFile(jsonFixture, files[1], function (err, res) {
+            assert.ifError(err);
+            client.list({ prefix: 'list/slash-' }, function (err, data) {
+              assert.ifError(err);
+
+              assert.strictEqual(data.Prefix, 'list/slash-');
+              assert.strictEqual(data.IsTruncated, false);
+              assert.strictEqual(data.MaxKeys, 1000);
+              assert.strictEqual(data.Contents.length, 2);
+              assert(data.Contents[0].LastModified instanceof Date);
+              assert.strictEqual(typeof data.Contents[0].Size, 'number');
+              assert.deepEqual(
+                Object.keys(data.Contents[0]),
+                ['Key', 'LastModified', 'ETag', 'Size', 'Owner', 'StorageClass']
+              );
+
+              done();
+            });
+          });
+        });
+      });
+
     });
 
     describe('request()', function () {
@@ -498,6 +526,8 @@ function runTestsForStyle(style, userFriendlyName) {
                   '<Object><Key>test/direct-pipe.json</Key></Object>' +
                   '<Object><Key>list/user1.json</Key></Object>' +
                   '<Object><Key>list/user2.json</Key></Object>' +
+                  '<Object><Key>list/slash-1.json</Key></Object>' +
+                  '<Object><Key>list/slash-2.json</Key></Object>' +
                   '</Delete>';
 
         var req = client.request('POST', '/?delete', {
