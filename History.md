@@ -1,3 +1,8 @@
+0.8.8 / 2013-11-27
+==================
+
+ * Fix double-encoding bug introduced in 0.8.7, where using `client.list` with a prefix containing special characters would fail. (colinmutter)
+
 0.8.7 / 2013-11-21
 ==================
 
