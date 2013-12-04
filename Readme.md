@@ -371,7 +371,7 @@ which you want to avoid if possible. Fortunately, [@nathanoehlman][] has created
 the excellent [knox-mpu][] package to let you use multipart upload with knox if
 you need it!
 
-[multipart upload]: aws.typepad.com/aws/2010/11/amazon-s3-multipart-upload.html
+[multipart upload]: http://aws.typepad.com/aws/2010/11/amazon-s3-multipart-upload.html
 [rather-complicated]: http://stackoverflow.com/q/8653146/3191
 [@nathanoehlman]: https://github.com/nathanoehlman
 [knox-mpu]: https://npmjs.org/package/knox-mpu
