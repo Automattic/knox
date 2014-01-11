@@ -1,3 +1,5 @@
 /test/auth.json
 /node_modules/
 /npm-debug.log
+/knox.iml
+/.idea
