@@ -359,6 +359,13 @@ function runTestsForStyle(style, userFriendlyName) {
         }).end();
       });
 
+      it('should work with special characters in file name', function (done) {
+        client.get('test/abc+def.txt').on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        }).end();
+      });
+
       it('should give a 404 for the file not found', function (done) {
         client.get('/test/whatever').on('response', function (res) {
           assert.equal(res.statusCode, 404);
