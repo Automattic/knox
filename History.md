@@ -1,3 +1,8 @@
+0.8.9 / 2014-02-08
+==================
+
+ * Fix reported sporadic error with `client.list` getting null data by reporting it instead of crashing. (pauliusuza)
+
 0.8.8 / 2013-11-27
 ==================
 
