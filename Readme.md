@@ -407,6 +407,11 @@ connectivity to S3 without bringing it to a ginding halt.
 [@segmentio]: https://github.com/segmentio
 [s3-lister]: https://npmjs.org/package/s3-lister
 
+[@drob][] created [s3-deleter][], a writable stream that batch-deletes bucket keys.
+
+[@drob]: https://github.com/drob
+[s3-deleter]: https://npmjs.org/package/s3-deleter
+
 ## Running Tests
 
 To run the test suite you must first have an S3 account. Then create a file named
