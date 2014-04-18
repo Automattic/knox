@@ -143,6 +143,43 @@ client.getFile('/test/Readme.md', function(err, res){
 });
 ```
 
+Here is an example by [@niftylettuce](https://github.com/niftylettuce) of how to `Client#getFile()` with an asset that is gzipped and return its gunzipped buffer:
+
+```js
+var path = require('path')
+var zlib = require('zlib')
+var gm = require('gm')
+var file = 'https://mybucket.s3.amazonaws.com/my-gzipped-image.png'
+var basename = path.basename(file)
+
+getGzippedFileBuffer(basename, function(err, buffer) {
+  if (err) throw err
+  // do something with buffer (e.g. resize it)
+  // you could instead upload with client.putBuffer
+  // and then remove with client.deleteFile using basename
+  gm(buffer).resize(200).writeFile(path.join(__dirname, 'resized.png'), function(err) {
+    if (err) throw err
+    console.log('resized file saved to ' + path.join(__dirname, 'resized.png'))
+  })
+})
+
+function getGzippedFileBuffer(basename, callback) {
+  var gunzip = zlib.createGunzip()
+  var buffers = []
+  client.getFile(oldFile, function(err, res) {
+    if (err) return callback(err)
+    gunzip.on('data', function(data) {
+      buffers.push(data)
+    })
+    gunzip.on('end', function() {
+      callback(null, Buffer.concat(buffers))
+    })
+    gunzip.on('error', callback)
+    res.pipe(gunzip)
+  })
+}
+```
+
 ### DELETE
 
 Delete our file:
