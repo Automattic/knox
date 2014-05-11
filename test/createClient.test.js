@@ -261,6 +261,22 @@ describe('knox.createClient()', function () {
         assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
       });
 
+      it('should derive endpoint correctly from explicit us-east-1 region', function () {
+        var client = knox.createClient({
+            key: 'foobar'
+          , secret: 'baz'
+          , bucket: 'misc'
+          , style: 'virtualHosted'
+          , region: 'us-east-1'
+        });
+
+        assert.equal(client.secure, true);
+        assert.equal(client.style, 'virtualHosted');
+        assert.equal(client.region, 'us-standard');
+        assert.equal(client.endpoint, 's3.amazonaws.com');
+        assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
+      });
+
       it('should set secure to false and update the URL when given a port', function () {
         var client = knox.createClient({
             key: 'foobar'
