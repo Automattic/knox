@@ -1,3 +1,8 @@
+0.8.10 / 2014-05-11
+===================
+
+ * Fix mapping of `us-east-1` region to be `s3.amazonaws.com`, instead of `s3-us-east-1.amazonaws.com`. (coen-hyde)
+
 0.8.9 / 2014-02-08
 ==================
 
