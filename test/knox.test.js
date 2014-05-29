@@ -90,6 +90,21 @@ function runTestsForStyle(style, userFriendlyName) {
         req.end(string);
       });
 
+      specify('from a string written to the request, into a filename with an \'#\' sign', function (done) {
+        var string = 'hello I have a version \'#\' in my extension';
+        var req = client.put('/test/versioned.txt#1', {
+            'Content-Length': string.length
+          , 'Content-Type': 'text/plain'
+        });
+
+        req.on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+
+        req.end(string);
+      });
+
       specify('should upload keys with strange unicode values', function (done) {
         var data = 'knox';
 
@@ -567,7 +582,7 @@ function runTestsForStyle(style, userFriendlyName) {
       it('should remove the files as seen in list()', function (done) {
         // Intentionally mix no leading slashes or leading slashes: see #121.
         var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt',
-                     'google', 'buffer with spaces.txt', '/ø', 'ø/ø'];
+                     'google', 'buffer with spaces.txt', '/ø', 'ø/ø', '/test/versioned.txt#1'];
         client.deleteMultiple(files, function (err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
@@ -585,6 +600,7 @@ function runTestsForStyle(style, userFriendlyName) {
             assert(keys.indexOf('buffer with spaces.txt') === -1);
             assert(keys.indexOf('ø') === -1);
             assert(keys.indexOf('ø/ø') === -1);
+            assert(keys.indexOf('/test/versioned.txt#1') === -1);
 
             done();
           });
