@@ -1,3 +1,11 @@
+0.9.0 / 2014-06-11
+===================
+
+ * Update dependencies: Knox will now no longer work on Node 0.8.
+ * Fix files with `#` in their filename not working. (kristokaiv)
+ * Fix a variety of intermittent double-callback bugs, e.g. both response and error, or two errors. If there are two errors, or an error on the request after the response is delivered, those are now swallowed. (willisblackburn, domenic)
+ * Fix missing return value of `client.deleteFile`.
+
 0.8.10 / 2014-05-11
 ===================
 
