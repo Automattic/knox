@@ -101,6 +101,34 @@ function runTestsForStyle(style, userFriendlyName) {
         .end(jsonString);
       });
 
+      specify('PUT (with x-amz-meta-myField)', function (done) {
+        var signedUrl = client.signedUrl(
+            'acl.json'
+          , new Date(Date.now() + 50000)
+          , {
+                verb: 'PUT'
+              , contentType: 'application/json'
+              , extraHeaders: {'x-amz-meta-myField': 'mySignedFieldValue'}
+            }
+        );
+
+        var options = parseUrl(signedUrl);
+        options.method = 'PUT';
+        options.headers = {
+          'Content-Length': jsonString.length,
+          'Content-Type': 'application/json',
+          'x-amz-meta-myField': 'mySignedFieldValue'
+        };
+
+        https.request(options).on('response', function (res) {
+          assert.equal(res.statusCode, 200);
+          done();
+        })
+        .on('error', assert.ifError)
+        .end(jsonString);
+      });
+
+
       specify('GET (with leading slash)', function (done) {
         var signedUrl = client.signedUrl(
             '/test/user.json'
