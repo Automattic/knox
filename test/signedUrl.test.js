@@ -109,7 +109,6 @@ function runTestsForStyle(style, userFriendlyName) {
                 verb: 'PUT'
               , contentType: 'application/json'
               , extraHeaders: {'x-amz-meta-myField': 'mySignedFieldValue'}
-              , 'x-amz-acl': 'public-read'
             }
         );
 
