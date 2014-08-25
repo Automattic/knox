@@ -1,3 +1,9 @@
+0.9.1 / 2014-08-24
+==================
+
+ * Remove `Expect: 100-continue` headers from PUT and copy commands. We weren't using them correctly anyway.
+ * Add `extraHeaders` option to `signedUrl`. (dweinstein)
+
 0.9.0 / 2014-06-11
 ===================
 
