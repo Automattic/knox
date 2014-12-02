@@ -33,11 +33,13 @@ request. You pass in the filename as the first parameter, some headers for the
 second, and then listen for a `'response'` event on the request. Then send the
 request using `req.end()`. If we get a 200 response, great!
 
+> If you send a string, set `Content-Length` to the length of the buffer of your string, rather than of the string itself.
+
 ```js
 var object = { foo: "bar" };
 var string = JSON.stringify(object);
 var req = client.put('/test/obj.json', {
-    'Content-Length': string.length
+    'Content-Length': Buffer.byteLength(string)
   , 'Content-Type': 'application/json'
 });
 req.on('response', function(res){
