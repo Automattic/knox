@@ -39,7 +39,7 @@ request using `req.end()`. If we get a 200 response, great!
 var object = { foo: "bar" };
 var string = JSON.stringify(object);
 var req = client.put('/test/obj.json', {
-    'Content-Length': new Buffer(string).length
+    'Content-Length': Buffer.byteLength(string)
   , 'Content-Type': 'application/json'
 });
 req.on('response', function(res){
