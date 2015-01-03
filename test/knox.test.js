@@ -317,6 +317,17 @@ function runTestsForStyle(style, userFriendlyName) {
           done();
         });
       });
+
+      specify('with ? in the file name', function (done) {
+        var buffer = new Buffer('a string of stuff');
+        var headers = { 'Content-Type': 'text/plain' };
+
+        client.putBuffer(buffer, '/buffer?with?questions.txt', headers, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+      });
     });
 
     describe('copy()', function () {
@@ -593,7 +604,8 @@ function runTestsForStyle(style, userFriendlyName) {
       it('should remove the files as seen in list()', function (done) {
         // Intentionally mix no leading slashes or leading slashes: see #121.
         var files = ['/test/user3.json', 'test/string.txt', '/test/apos\'trophe.txt', '/buffer.txt', '/buffer2.txt',
-                     'google', 'buffer with spaces.txt', 'buffer+with+pluses.txt', '/ø', 'ø/ø', '/test/versioned.txt#1'];
+                     'google', 'buffer with spaces.txt', 'buffer+with+pluses.txt', 'buffer?with?questions.txt',
+                      '/ø', 'ø/ø', '/test/versioned.txt#1'];
         client.deleteMultiple(files, function (err, res) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
@@ -610,6 +622,7 @@ function runTestsForStyle(style, userFriendlyName) {
             assert(keys.indexOf('google') === -1);
             assert(keys.indexOf('buffer with spaces.txt') === -1);
             assert(keys.indexOf('buffer+with+pluses.txt') === -1);
+            assert(keys.indexOf('buffer?with?questions.txt') === -1);
             assert(keys.indexOf('ø') === -1);
             assert(keys.indexOf('ø/ø') === -1);
             assert(keys.indexOf('/test/versioned.txt#1') === -1);
