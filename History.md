@@ -1,3 +1,8 @@
+0.9.2 / 2015-01-05
+==================
+
+ * Fix encoding of filenames with `+` or `?` characters in them. (hurrymaplelad)
+
 0.9.1 / 2014-08-24
 ==================
 
