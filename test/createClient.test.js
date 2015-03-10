@@ -61,7 +61,7 @@ describe('knox.createClient()', function () {
     });
 
     describe('bucket names', function () {
-      describe('in us-standard region', function () {
+      describe('in us-east-1 region', function () {
         it('should throw when bucket names are too short', function () {
           assert.throws(
             function () {
@@ -207,7 +207,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'virtualHosted');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
       });
@@ -245,18 +245,18 @@ describe('knox.createClient()', function () {
         assert.equal(client.url('file'), 'https://misc.s3-us-west-1.amazonaws.com/file');
       });
 
-      it('should derive endpoint correctly from explicit us-standard region', function () {
+      it('should derive endpoint correctly from explicit us-east-1 region', function () {
         var client = knox.createClient({
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
           , style: 'virtualHosted'
-          , region: 'us-standard'
+          , region: 'us-east-1'
         });
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'virtualHosted');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
       });
@@ -272,7 +272,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'virtualHosted');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
       });
@@ -324,7 +324,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'path');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3.amazonaws.com/misc/file');
       });
@@ -362,18 +362,18 @@ describe('knox.createClient()', function () {
         assert.equal(client.url('file'), 'https://s3-us-west-1.amazonaws.com/misc/file');
       });
 
-      it('should derive endpoint correctly from explicit us-standard region', function () {
+      it('should derive endpoint correctly from explicit us-east-1 region', function () {
         var client = knox.createClient({
             key: 'foobar'
           , secret: 'baz'
           , bucket: 'misc'
           , style: 'path'
-          , region: 'us-standard'
+          , region: 'us-east-1'
         });
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'path');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3.amazonaws.com/misc/file');
       });
@@ -424,7 +424,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'virtualHosted');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://misc.s3.amazonaws.com/file');
       });
@@ -438,7 +438,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'path');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3.amazonaws.com/misc.bucket/file');
       });
@@ -452,7 +452,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'path');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3.amazonaws.com/MiscBucket/file');
       });
@@ -466,7 +466,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'path');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3.amazonaws.com/misc_bucket/file');
       });
@@ -480,7 +480,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, true);
         assert.equal(client.style, 'path');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'https://s3.amazonaws.com/-bucket/file');
       });
@@ -496,7 +496,7 @@ describe('knox.createClient()', function () {
 
         assert.equal(client.secure, false);
         assert.equal(client.style, 'virtualHosted');
-        assert.equal(client.region, 'us-standard');
+        assert.equal(client.region, 'us-east-1');
         assert.equal(client.endpoint, 's3.amazonaws.com');
         assert.equal(client.url('file'), 'http://misc.bucket.s3.amazonaws.com/file');
       });

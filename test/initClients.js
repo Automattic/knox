@@ -5,7 +5,7 @@ var knox = require('..')
   , assert = require('assert');
 
 module.exports = function(style){
-  var client, client2, clientUsWest2;
+  var client, client2, clientUsWest2, clientEuFrankfurt;
 
   try {
     var auth = utils.merge({ style: style }, require('./auth.json'));
@@ -13,9 +13,13 @@ module.exports = function(style){
     assert(auth.bucket, 'bucket must exist');
     assert(auth.bucket2, 'bucket2 must exist');
     assert(auth.bucketUsWest2, 'bucketUsWest2 must exist');
+    assert(auth.bucketEuCentral1, 'bucketEuCentral1 must exist');
     assert.notEqual(auth.bucket, auth.bucket2, 'bucket should not equal bucket2.');
     assert.notEqual(auth.bucket, auth.bucketUsWest2, 'bucket should not equal bucketUsWest2.');
     assert.notEqual(auth.bucket2, auth.bucketUsWest2, 'bucket2 should not equal bucketUsWest2.');
+    assert.notEqual(auth.bucket, auth.bucketEuCentral1, 'bucket should not equal bucketEuCentral1.');
+    assert.notEqual(auth.bucket2, auth.bucketEuCentral1, 'bucket2 should not equal bucketEuCentral1.');
+    assert.notEqual(auth.bucketUsWest2, auth.bucketEuCentral1, 'bucketUsWest2 should not equal bucketEuCentral1.');
 
     var auth1 = utils.merge({}, auth);
     client = knox.createClient(auth1);
@@ -26,13 +30,20 @@ module.exports = function(style){
 
     var authUsWest2 = utils.merge({}, auth);
     authUsWest2.bucket = auth.bucketUsWest2;
+
+    var authEuFrankfurt = utils.merge({}, auth);
+    authEuFrankfurt.bucket = auth.bucketEuCentral1;
+
     // Without this we get a 307 redirect
     // that putFile can't handle (issue #66). Later
     // when there is an implementation of #66 we can test
     // both with and without this option present, but it's
     // always a good idea for performance
     authUsWest2.region = 'us-west-2';
+    authEuFrankfurt.region = 'eu-central-1';
+
     clientUsWest2 = knox.createClient(authUsWest2);
+    clientEuFrankfurt = knox.createClient(authUsWest2);
   } catch (err) {
     console.error(err);
     console.error('The tests require test/auth.json to contain JSON with ' +
@@ -44,5 +55,5 @@ module.exports = function(style){
     process.exit(1);
   }
 
-  return { client: client, client2: client2, clientUsWest2: clientUsWest2 };
+  return { client: client, client2: client2, clientUsWest2: clientUsWest2, clientEuFrankfurt: clientEuFrankfurt };
 };

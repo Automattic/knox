@@ -18,6 +18,7 @@ function runTestsForStyle(style, userFriendlyName) {
     var client = clients.client;
     var client2 = clients.client2;
     var clientUsWest2 = clients.clientUsWest2;
+    var clientEuFrankfurt = clients.clientEuFrankfurt;
 
     describe('put()', function () {
       specify('from a file statted and read into a buffer', function (done) {
@@ -119,16 +120,6 @@ function runTestsForStyle(style, userFriendlyName) {
         });
 
         req.end(data);
-      });
-
-      it('should lower-case headers on requests', function () {
-        var headers = { 'X-Amz-Acl': 'private' };
-        var req = client.put('/test/user.json', headers);
-
-        assert.equal(req.getHeader('x-amz-acl'), 'private');
-
-        req.on('error', function (){}); // swallow "socket hang up" from aborting
-        req.abort();
       });
     });
 
@@ -244,6 +235,18 @@ function runTestsForStyle(style, userFriendlyName) {
         });
       });
 
+      it('should work the same in eu-central-1', function (done) {
+        clientEuFrankfurt.putFile(jsonFixture, '/test/user2.json', function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          clientEuFrankfurt.get('/test/user2.json').on('response', function (res) {
+            assert.equal(res.headers['content-type'], 'application/json');
+            done();
+          }).end();
+        });
+      });
+
       it('should emit "progress" events', function (done) {
         var progressHappened = false;
 
@@ -251,7 +254,7 @@ function runTestsForStyle(style, userFriendlyName) {
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
 
-          clientUsWest2.get('/test/user2.json').on('response', function (res) {
+          client.get('/test/user2.json').on('response', function (res) {
             assert.equal(res.headers['content-type'], 'application/json');
             assert(progressHappened);
             done();
@@ -281,7 +284,7 @@ function runTestsForStyle(style, userFriendlyName) {
 
       specify('with a lower-case "content-type" header', function (done) {
         var buffer = new Buffer('a string of stuff');
-        var headers = { 'content-type': 'text/plain' };
+        var headers = { 'Content-Type': 'text/plain' };
 
         client.putBuffer(buffer, '/buffer2.txt', headers, function (err, res) {
           assert.ifError(err);
@@ -568,16 +571,13 @@ function runTestsForStyle(style, userFriendlyName) {
                   '</Delete>';
 
         var req = client.request('POST', '/?delete', {
-          'Content-Length': xml.length,
-          'Content-MD5': crypto.createHash('md5').update(xml).digest('base64'),
-          'Accept:': '*\/*'
-        })
+          'Content-Type': 'application/xml'
+        }, xml)
         .on('error',done)
         .on('response', function (res) {
           assert.equal(res.statusCode, 200);
           done();
-        })
-        .end(xml);
+        });
       });
     });
 
@@ -607,6 +607,7 @@ function runTestsForStyle(style, userFriendlyName) {
                      'google', 'buffer with spaces.txt', 'buffer+with+pluses.txt', 'buffer?with?questions.txt',
                       '/ø', 'ø/ø', '/test/versioned.txt#1'];
         client.deleteMultiple(files, function (err, res) {
+
           assert.ifError(err);
           assert.equal(res.statusCode, 200);
 
@@ -647,6 +648,14 @@ function runTestsForStyle(style, userFriendlyName) {
           done();
         });
       });
+
+      it('should work in bucketEuCentral1', function (done) {
+        clientEuFrankfurt.deleteMultiple(['test/user2.json'], function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+          done();
+        });
+      });
     });
 
     describe('we should clean up and not use people\'s S3 $$$', function () {
@@ -676,6 +685,17 @@ function runTestsForStyle(style, userFriendlyName) {
 
       specify('in bucketUsWest2', function (done) {
         clientUsWest2.list(function (err, data) {
+          assert.ifError(err);
+
+          // Do the assertion like this for nicer error reporting.
+          var keys = data.Contents.map(function (entry) { return entry.Key; });
+          assert.deepEqual(keys, []);
+
+          done();
+        });
+      });
+      specify('in bucketEuCentral1', function (done) {
+        clientEuFrankfurt.list(function (err, data) {
           assert.ifError(err);
 
           // Do the assertion like this for nicer error reporting.
