@@ -11,7 +11,7 @@
   "contributors": [
     "TJ Holowaychuk <tj@learnboost.com>",
     "Domenic Denicola <domenic@domenicdenicola.com>",
-    "Oleg Slobodksoi <oleg008@gmail.com>"
+    "Oleg Slobodskoi <oleg008@gmail.com>"
   ],
   "license": "MIT",
   "main": "./lib/index.js",
