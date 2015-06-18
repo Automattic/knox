@@ -12,10 +12,24 @@ describe('knox.createClient()', function () {
       );
     });
 
+    it('should not ask for a key when accessKeyId is passed', function () {
+      assert.throws(
+        function () { knox.createClient({accessKeyId: 'foo'}); },
+        /aws "secret" required/
+      );
+    });
+
     it('should ask for a secret when only a key is passed', function () {
       assert.throws(
         function () { knox.createClient({ key: 'foo' }); },
         /aws "secret" required/
+      );
+    });
+
+    it('should not ask for a secret when secretAccessKey is passed', function () {
+      assert.throws(
+        function () { knox.createClient({ accessKeyId: 'foo', secretAccessKey: 'bar' }); },
+        /aws "bucket" required/
       );
     });
 
@@ -188,6 +202,18 @@ describe('knox.createClient()', function () {
       var client = knox.createClient({
           key: 'foobar'
         , secret: 'baz'
+        , bucket: 'misc'
+      });
+
+      assert.equal(client.key, 'foobar');
+      assert.equal(client.secret, 'baz');
+      assert.equal(client.bucket, 'misc');
+    });
+
+    it('should copy over alias properties', function () {
+      var client = knox.createClient({
+          accessKeyId: 'foobar'
+        , secretAccessKey: 'baz'
         , bucket: 'misc'
       });
 
