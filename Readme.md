@@ -71,7 +71,7 @@ client.putFile('my.json', '/user.json', function(err, res){
 Another alternative is to stream via `Client#putStream()`, for example:
 
 ```js
-http.get('http://google.com/doodle.png', function(res){
+http.get('http://www.google.com/doodle.png', function(res){
   var headers = {
       'Content-Length': res.headers['content-length']
     , 'Content-Type': res.headers['content-type']
@@ -258,8 +258,8 @@ var userDataUrl = client.https('/user.json');
 
 [copy]: http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html
 [multi-delete]: http://docs.aws.amazon.com/AmazonS3/latest/API/multiobjectdeleteapi.html
-[list]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTBucketGET.html
-[acl]: http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectGETacl.html
+[list]: http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketGET.html
+[acl]: http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectGETacl.html
 
 ## Client Creation Options
 
@@ -301,7 +301,7 @@ specify the region option.** This will eventually be addressed by resolving
 the region option anyway.
 
 [endpoint-docs]: http://docs.amazonwebservices.com/general/latest/gr/rande.html#s3_region
-[issue #66]: https://github.com/LearnBoost/knox/issues/66
+[issue #66]: https://github.com/Automattic/knox/issues/66
 
 ### `secure` and `port`
 
@@ -317,7 +317,7 @@ the client with a `token` parameter containing the temporary security
 credentials token. This simply sets the _x-amz-security-token_ header on every
 request made by the client.
 
-[sts]: http://docs.amazonwebservices.com/STS/latest/UsingSTS/Welcome.html
+[sts]: http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html
 
 ### `style`
 
@@ -345,7 +345,7 @@ limitations related to them, see the following S3 documentation pages:
 - [Bucket Restrictions and Limitations][limits]
 
 [virtual]: http://docs.aws.amazon.com/AmazonS3/latest/dev/VirtualHosting.html
-[config]: http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketConfiguration.html
+[config]: http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
 [limits]: http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
 
 ### `agent`
@@ -373,10 +373,10 @@ which you want to avoid if possible. Fortunately, [@nathanoehlman][] has created
 the excellent [knox-mpu][] package to let you use multipart upload with knox if
 you need it!
 
-[multipart upload]: http://aws.typepad.com/aws/2010/11/amazon-s3-multipart-upload.html
+[multipart upload]: https://aws.amazon.com/blogs/aws/amazon-s3-multipart-upload/
 [rather-complicated]: http://stackoverflow.com/q/8653146/3191
 [@nathanoehlman]: https://github.com/nathanoehlman
-[knox-mpu]: https://npmjs.org/package/knox-mpu
+[knox-mpu]: https://www.npmjs.com/package/knox-mpu
 
 ### Easy Download/Upload
 
@@ -385,7 +385,7 @@ very easy to upload local files directly to S3, and download them back to your
 filesystem. For simple cases this is often exactly what you want!
 
 [@superjoe30]: https://github.com/superjoe30
-[s3]: https://npmjs.org/package/s3
+[s3]: https://www.npmjs.com/package/s3
 
 ### Uploading With Retries and Exponential Backoff
 
@@ -394,25 +394,25 @@ failed uploads with exponential backoff. This helps your app deal with intermitt
 connectivity to S3 without bringing it to a ginding halt.
 
 [@jergason]: https://github.com/jergason
-[intimidate]: https://npmjs.org/package/intimidate
+[intimidate]: https://www.npmjs.com/package/intimidate
 
 ### Listing and Copying Large Buckets
 
 [@goodeggs][] created [knox-copy][] to easily copy and stream keys of buckets beyond Amazon's 1000 key page size limit.
 
 [@goodeggs]: https://github.com/goodeggs
-[knox-copy]: https://npmjs.org/package/knox-copy
+[knox-copy]: https://www.npmjs.com/package/knox-copy
 
 
 [@segmentio][] created [s3-lister][] to stream a list of bucket keys using the new streams2 interface.
 
 [@segmentio]: https://github.com/segmentio
-[s3-lister]: https://npmjs.org/package/s3-lister
+[s3-lister]: https://www.npmjs.com/package/s3-lister
 
 [@drob][] created [s3-deleter][], a writable stream that batch-deletes bucket keys.
 
 [@drob]: https://github.com/drob
-[s3-deleter]: https://npmjs.org/package/s3-deleter
+[s3-deleter]: https://www.npmjs.com/package/s3-deleter
 
 ## Running Tests
 
