@@ -288,6 +288,7 @@ As of this writing, valid values for the `region` option are:
 * EU (Ireland): `eu-west-1`
 * Asia Pacific (Singapore): `ap-southeast-1`
 * Asia Pacific (Tokyo): `ap-northeast-1`
+* Asia Pacific (Seoul): `ap-northeast-2`
 * South America (Sao Paulo): `sa-east-1`
 
 If new regions are added later, their subdomain names will also work when passed
