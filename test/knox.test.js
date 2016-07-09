@@ -570,7 +570,7 @@ function runTestsForStyle(style, userFriendlyName) {
         var req = client.request('POST', '/?delete', {
           'Content-Length': xml.length,
           'Content-MD5': crypto.createHash('md5').update(xml).digest('base64'),
-          'Accept:': '*\/*'
+          'Accept': '*\/*'
         })
         .on('error',done)
         .on('response', function (res) {

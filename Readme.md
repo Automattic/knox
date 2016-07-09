@@ -1,5 +1,7 @@
 # knox
 
+[![Build Status](https://travis-ci.org/Automattic/knox.svg?branch=master)](http://travis-ci.org/Automattic/knox)
+
 Node Amazon S3 Client.
 
 ## Features

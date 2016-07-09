@@ -1,0 +1,17 @@
+language: node_js
+
+node_js:
+  - '0.10'
+  - '4'
+  - '6'
+
+before_script:
+  - ./test/travis/setUpTravis.sh > ./test/auth.json
+
+script:
+  - npm test
+
+env:
+  global:
+    - secure: LNtTrtAU/ssuJvf591LUJSK2Cuz+J0so91WnRgNZMfIH6cshyt+JusXXPpkaz73tn8U6zrjJoJ4kzGzKCOWixS4VhzdEaVnbEyJADXVA9F0hpI0ywlBSt/JKcPykm644HoXPYgd1q8BG4YiG+JKvz9kMLixWKKy/FaZJDg/XH+h0aEORxneu4W0PSJaY9nJJTf8eovg3mHHAKqJrXVYIxVlN5NT3pojVItQPEcEnvqzK1gIobxqS+SBaAsQXrPQ/v0m8ksTIylT8cLzppXhOHmO/31PZsvm0hXDsiYfkKPI9iDN1hISMn391ce/iEQQoDFWirjggrYb57uJNhek0NFUbtMDdf0XFKX2GmrelpONAZvlIJ+TU424HoekVq8Msv6Pp+hVkpAAsppGqEYK0HDyH3yT5WxZbrEKIGl/xYhfAPn1EQrPt+Xv9SQUfqqttR9uFmc9okqGmHxBkW1dCq1ChjRtqTDo2wOZlAGxpkPcfnad0gwNT+CfY0vtPmbLnM34lz7TlwdwP9xlBDOMyPKDu6OtdSKf6puz/0jXmIh7XdAxp8s+95Ig8qvGZaE2nu7HGdCkt5By691Fz19WtHQpqYhwTTNorJPHTUMpOBe+9f+mmQrvYDPXgQQ4EaGjEbYzl1Xv9YSckteJRnlYr4fLEYulP5BYQS4/W+s7bX4g=
+    - secure: T20xTA/DHhzrIKvrmZ0FRKUThdiKFfvlwR8o5Rniyid0hPe9bd6hb0d46MMXcsTwKpMb9465UoNAI9WbgZGld2+iaUdNuXTvVnVbRnUYI3o74ACpNaNQLiCB+ywR57XbBeoKFwPKRRTI4dil3VWkFq6hT+wGCNW/ZJnEOCEInR20xp9GNm3C/phOZdiwX6Bnxku9rcWmYaOmb/cnfLaXM2/EdlDORcmFXCDzoyYSmS9RjbCxjaqf/toqvNFxJSl6r/6ryBpgaDfgpBpbwXlDC/Ie/C33XKEiGjA2bw8TXSYVXgOgdJrGxM7exIh+mjrl7/2p+p9v+oTPJHOu6B/ml1zvluzPiz1v9dan4bAd9CRTgOmdeD3aeh56Q/HErCLO9bEPyMWKjVBqwhlrcOadz2eByIT7BdnLMkDMiXPR1O+1duOinEg6U9zX/vCLBCpnIlLGwN/AIQbsp4Gp89gqtxbC7bI4sB4TgcKKdbqAuRiHJ1CcybI4g0Py/zFjwXsrD/vh+8ukD5+JHx/3mTzZRCSZRe/EM/IyLeIRI/TbEB+ePJSKeyXLVdo7hfIyAxWwlwEyXlg2qfnJb3jylbdkFmpJ2/bbmDm93IXtcuhOmYKHqp2Lzt8mOloqoIm5As/Db5rP54xanImWGveWpw9RyKcANX8UivkX6dDKYvqCxrc=
