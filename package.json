@@ -28,10 +28,13 @@
     "once": "^1.3.0"
   },
   "devDependencies": {
+    "coveralls": "2.x",
+    "istanbul": "0.4.x",
     "mocha": "*"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test_cov": "istanbul cover node_modules/mocha/bin/_mocha --report lcov"
   },
   "directories": {
     "lib": "./lib"
