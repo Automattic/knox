@@ -1,6 +1,7 @@
 # knox
 
 [![Build Status](https://travis-ci.org/Automattic/knox.svg?branch=master)](http://travis-ci.org/Automattic/knox)
+[![Coverage Status](https://coveralls.io/repos/github/Automattic/knox/badge.svg?branch=master)](https://coveralls.io/github/Automattic/knox?branch=master)
 
 Node Amazon S3 Client.
 
@@ -437,3 +438,14 @@ Then install the dev dependencies and execute the test suite:
 $ npm install
 $ npm test
 ```
+
+### Running coverage tests
+
+Execute:
+
+```
+$ npm install
+$ npm run test_cov
+```
+
+And navigate to _coverage/lcov-report/index.html_ to view HTML report.

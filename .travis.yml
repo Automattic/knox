@@ -3,13 +3,25 @@ language: node_js
 node_js:
   - '0.10'
   - '4'
-  - '6'
+  - 'node'
+
+# Gives us faster boot time, see https://docs.travis-ci.com/user/ci-environment/
+sudo: false
 
 before_script:
   - ./test/travis/setUpTravis.sh > ./test/auth.json
 
 script:
   - npm test
+
+matrix:
+  include:
+    - node_js: 'node'
+      env: LCOV=true
+      script:
+        - npm run test_cov
+      after_script:
+        - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 env:
   global:
