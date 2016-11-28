@@ -21,7 +21,7 @@ module.exports = function(style){
     client = knox.createClient(auth1);
 
     var auth2 = utils.merge({}, auth);
-    auth2.bucket = auth2.bucket2;
+    auth2.bucket = auth.bucket;
     client2 = knox.createClient(auth2);
 
     var authUsWest2 = utils.merge({}, auth);
