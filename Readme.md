@@ -391,7 +391,7 @@ filesystem. For simple cases this is often exactly what you want!
 
 [@jergason][] created [intimidate][], a library wrapping Knox to automatically retry
 failed uploads with exponential backoff. This helps your app deal with intermittent
-connectivity to S3 without bringing it to a ginding halt.
+connectivity to S3 without bringing it to a grinding halt.
 
 [@jergason]: https://github.com/jergason
 [intimidate]: https://npmjs.org/package/intimidate
