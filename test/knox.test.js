@@ -265,6 +265,35 @@ function runTestsForStyle(style, userFriendlyName) {
           assert(event.written);
         });
       });
+
+      it('should handle filenames with an apostrophe in filename header', function (done) {
+        var header = { 'x-amz-meta-filename': 'hello I have a \' in my name' };
+
+        clientUsWest2.putFile(jsonFixture, '/test/user2.json', header, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          clientUsWest2.get('/test/user2.json').on('response', function (res) {
+            assert.equal(res.headers['content-type'], 'application/json');
+            done();
+          }).end();
+        });
+      });
+
+      it('should handle filenames with strange unicode values in filename header', function (done) {
+        var header = { 'x-amz-meta-filename': 'ø' };
+
+        clientUsWest2.putFile(jsonFixture, '/test/user2.json', header, function (err, res) {
+          assert.ifError(err);
+          assert.equal(res.statusCode, 200);
+
+          clientUsWest2.get('/test/user2.json').on('response', function (res) {
+            assert.equal(res.headers['content-type'], 'application/json');
+            done();
+          }).end();
+        });
+      });
+
     });
 
     describe('putBuffer()', function () {
