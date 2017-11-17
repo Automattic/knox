@@ -21,7 +21,7 @@
   },
   "bugs": "https://github.com/LearnBoost/knox/issues",
   "dependencies": {
-    "mime": "*",
+    "mime": "^1.4.1",
     "xml2js": "^0.4.4",
     "debug": "^2.2.0",
     "stream-counter": "^1.0.0",
