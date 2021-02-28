@@ -266,6 +266,15 @@ var userDataUrl = client.https('/user.json');
 Besides the required `key`, `secret`, and `bucket` options, you can supply any
 of the following:
 
+
+### `accessKeyId`
+
+Alias to `key`
+
+### `secretAccessKey`
+
+Alias to `secret`
+
 ### `endpoint`
 
 By default knox will send all requests to the global endpoint
